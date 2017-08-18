@@ -1,7 +1,7 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Getopt Extender",
    "author" : [
-      "Kaz Utashiro <kaz@utashiro.com>"
+      "Kazumasa Utashiro"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.0.10, CPAN::Meta::Converter version 2.143240",
@@ -42,7 +42,7 @@
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.008001"
+            "perl" : "5.016"
          }
       },
       "test" : {
@@ -52,5 +52,20 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/kaz-utashiro/Getopt-EX/issues"
+      },
+      "homepage" : "https://github.com/kaz-utashiro/Getopt-EX",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/kaz-utashiro/Getopt-EX.git",
+         "web" : "https://github.com/kaz-utashiro/Getopt-EX"
+      }
+   },
+   "version" : "v1.1.1",
+   "x_authority" : "cpan:UTASHIRO",
+   "x_contributors" : [
+      "Kaz Utashiro <utashiro@cpan.org>"
+   ]
 }

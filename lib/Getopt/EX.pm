@@ -1,4 +1,7 @@
 package Getopt::EX;
+use 5.016;
+use version; our $VERSION = version->declare("v1.1.1");
+
 
 1;
 
@@ -192,7 +195,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015 Kazumasa Utashiro
+Copyright 2015-2017 Kazumasa Utashiro
 
 =head1 LICENSE
 
