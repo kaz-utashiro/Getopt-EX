@@ -120,7 +120,7 @@ sub expand {
 	my($name, $re, $string) = @$defent;
 	s/$re/$string/g;
     }
-    s/(\$ENV\{ (['"]?) \w+ \g{-1} \})/$1/xgee;
+    s{ (\$ENV\{ (['"]?) \w+ \g{-1} \}) }{ eval($1) // $1 }xge;
 }
 
 use constant BUILTIN => "__BUILTIN__";
