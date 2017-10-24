@@ -348,20 +348,20 @@ sub run_inits {
     my $module = $obj->module;
 
     ##
-    ## Call function specified with module.
-    ##
-    for my $call ($obj->call) {
-	my $func = $call->can('call') ? $call : parse_func($call);
-	$func->call;
-    }
-
-    ##
     ## Call &initialize if defined.
     ##
     my $init = "${module}::initialize";
     if (defined &$init) {
 	no strict 'refs';
 	&$init($obj, $argv);
+    }
+
+    ##
+    ## Call function specified with module.
+    ##
+    for my $call ($obj->call) {
+	my $func = $call->can('call') ? $call : parse_func($call);
+	$func->call;
     }
 }
 
