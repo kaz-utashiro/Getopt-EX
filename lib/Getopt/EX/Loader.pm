@@ -35,7 +35,7 @@ sub configure {
     my %opt = @_;
 
     for my $opt (qw(BASECLASS MODULE_OPT DEFAULT)) {
-	if (my $value = delete $opt{$opt}) {
+	if (defined (my $value = delete $opt{$opt})) {
 	    $obj->{$opt} = $value;
 	}
     }
@@ -228,12 +228,13 @@ sub expand {
 
 sub modules {
     my $obj = shift;
-    my $base = $obj->baseclass or return ();
+    my $base = $obj->baseclass // return ();
     $base =~ s/::/\//g;
+    $base = "/$base" if $base ne "";
 
     grep { /^[a-z]/ }
     map  { /(\w+)\.pm$/ }
-    map  { glob "$_/$base/*.pm" }
+    map  { glob $_ . $base . "/*.pm" }
     @INC;
 }
 
