@@ -227,8 +227,25 @@ sub help {
 sub parsetext {
     my $obj = shift;
     my $text = shift;
-    while ($text =~ /(.+)\n?/g) {
-	$obj->parseline($1);
+    my $re = qr{
+	(?|
+	    # HERE document
+	    (.+\s) << (?<mark>\w+) \n
+	    (?<here> (?s:.*?) \n )
+	    \g{mark}\n
+	|
+	    (.+)\n?
+	)
+    }x;
+    while ($text =~ m/$re/g) {
+	my $line = do {
+	    if (defined $+{here}) {
+		$1 . $+{here};
+	    } else {
+		$1;
+	    }
+	};
+	$obj->parseline($line);
     }
     $obj;
 }
@@ -437,6 +454,14 @@ use in command line,
     define (#kana) \p{InKatakana}
     option --kanalist --nocolor -o --join --re '(#kana)+(\n(#kana)+)*'
     help   --kanalist List up Katakana string
+
+Here-document can be used to define string inluding newlines.
+
+    define __script__ <<EOS
+    {
+    	...
+    }  
+    EOS
 
 =item B<help> I<name>
 
