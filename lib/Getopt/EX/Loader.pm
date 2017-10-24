@@ -198,30 +198,39 @@ sub expand {
     ##
   ARGV:
     for (my $i = 0; $i < @$argv; $i++) {
+
 	last if $argv->[$i] eq '--';
-	my($opt, $value) = split /=/, $argv->[$i], 2;
+	my $current = $argv->[$i];
+
 	for my $bucket ($obj->buckets) {
-	    if (my @s = $bucket->getopt($opt)) {
 
-		splice @$argv, $i, 1, ($opt, $value) if defined $value;
-
-		##
-		## Convert $<n> and $<shift>
-		##
-		my @follow = splice @$argv, $i;
-		s/\$<(\d+)>/$follow[$1]/ge foreach @s;
-		shift @follow;
-		s/\$<shift>/shift @follow/ge foreach @s;
-
-		printf(STDERR "\@ARGV = %s\n",
-		       join(' ', @$argv, @s, @follow)) if $debug;
-
-		my @module = $obj->modopt(\@s);
-
-		my @default = map { $_->default } @module;
-		push @$argv, @default, @s, @follow;
-		redo ARGV;
+	    ##
+	    ## Try entire string match, and check --option=value.
+	    ##
+	    my @s = $bucket->getopt($current);
+	    if (not @s) {
+		$current =~ /^(.+?)=(.*)/ or next;
+		@s = $bucket->getopt($1)  or next;
+		splice @$argv, $i, 1, ($1, $2);
 	    }
+
+	    ##
+	    ## Convert $<n> and $<shift>
+	    ##
+	    my @follow = splice @$argv, $i;
+	    s/\$<(\d+)>/$follow[$1]/ge foreach @s;
+	    shift @follow;
+	    s/\$<shift>/shift @follow/ge foreach @s;
+
+	    printf(STDERR "\@ARGV = %s\n",
+		   join(' ', @$argv, @s, @follow)) if $debug;
+
+	    my @module = $obj->modopt(\@s);
+
+	    my @default = map { $_->default } @module;
+	    push @$argv, @default, @s, @follow;
+
+	    redo ARGV if $i < @$argv;
 	}
     }
 }
