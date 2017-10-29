@@ -214,13 +214,33 @@ sub expand {
 		splice @$argv, $i, 1, ($1, $2);
 	    }
 
-	    ##
-	    ## Convert $<n> and $<shift>
-	    ##
 	    my @follow = splice @$argv, $i;
-	    s/\$<(\d+)>/$follow[$1]/ge foreach @s;
+
+	    ##
+	    ## $<n>
+	    ##
+	    s/\$<(-?\d+)>/$follow[$1]/ge foreach @s;
+
 	    shift @follow;
-	    s/\$<shift>/shift @follow/ge foreach @s;
+
+	    ##
+	    ## $<shift>, $<move>, $<remove>, $<copy>
+	    ##
+	    @s = map sub {
+		s/\$<shift>/@follow ? shift @follow : ''/ge;
+		my($cmd) = m{^\$ < (.+) >$}x or return $_;
+		($cmd =~ m{^(?<cmd> move | remove | copy )
+			   (?: \(      (?<off> -?\d+ ) ?
+				  (?: ,(?<len> -?\d+ ))? \) )? $ }x)
+		    or return $_;
+		my $p = ($+{cmd} ne 'copy')
+		    ? \@follow
+		    : do { my @new = @follow; \@new };
+		my @arg = @$p == 0 ? ()
+		    : defined $+{len} ? splice @$p, $+{off}//0, $+{len}
+		    : splice @$p, $+{off}//0;
+		($+{cmd} eq 'remove') ? () : @arg;
+	    }->(), @s;
 
 	    printf(STDERR "\@ARGV = %s\n",
 		   join(' ', @$argv, @s, @follow)) if $debug;

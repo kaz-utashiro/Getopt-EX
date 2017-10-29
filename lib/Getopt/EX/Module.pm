@@ -412,10 +412,14 @@ default option.
 
 For the purpose to include following arguments within replaced
 strings, two special notations can be used in option definition.
-String C<$E<lt>nE<gt>> is replaced by the I<n>th argument after the
-substituted option, where I<n> is number start from one.  String
-C<$E<lt>shiftE<gt>> is replaced by following command line argument and
-the argument is removed from option list.
+
+String C<< $<n> >> is replaced by the I<n>th argument after the
+substituted option, where I<n> is number start from one.  Because C<<
+$<0> >> is replaced by the defined option itself, you have to care
+about infinite loop.
+
+String C<< $<shift> >> is replaced by following command line argument
+and the argument is removed from list.
 
 For example, when
 
@@ -428,6 +432,29 @@ is defined, command
 will be evaluated as this:
 
     greple --le &line=10,20-30,40
+
+There are three special arguments to manipulate option behavior and
+the rest of arguments.  Argument C<< $<move> >> moves all following
+arguments there, C<< $<remove> >> just removes them, and C<< $<copy>
+>> copies them.  These does not work when included in a part of
+string.
+
+They take optional one or two parameters, those are passed to Perl
+C<splice> function as I<offset> and I<length>.  C<< $<move(0,1)> >> is
+same as C<< $<shift> >>; C<< $<copy(0,1)> >> is same as C<< $<1> >>;
+C<< $<move> >> is same as C<< $<move(0)> >>; C<< $<move(-1)> >> moves
+the last argument; C<< $move(1,1) >> moves second argument.  Next
+example exchange following two arguments.
+
+    option --exch $<move(1,1)>
+
+Because C<< $<move(0,0)> >> does nothing, you can use it to ignore
+option.
+
+    option --deprecated $<move(0,0)>
+
+Note that these handling does not work for B<default> option.  This is
+an implementation issue, and may change in the future.
 
 =item B<expand> I<name> I<string>
 
@@ -496,7 +523,7 @@ loaded before processing I<--dig> option.
 
 =over 4
 
-=item B<new>
+=item B<new> I<configure option>
 
 Create object.  Parameters are just passed to C<configure> method.
 
