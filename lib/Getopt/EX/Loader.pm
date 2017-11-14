@@ -147,7 +147,7 @@ sub parseopt {
     ## Check -Mmod::func(arg) or -Mmod::func=arg
     ##
     if ($argv->[0] =~ s{
-	^ (?<name> \w+ )
+	^ (?<name> \w+ (?: :: \w+)* )
 	  (?:
 	    ::
 	    (?<call>
