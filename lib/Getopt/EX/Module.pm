@@ -56,6 +56,7 @@ sub configure {
 	$obj->module($module);
 	eval "package $pkg; use $module";
 	croak "$module: $@" if $@;
+	$obj->define('__PACKAGE__' => $module);
 	local *data = "${module}::DATA";
 	if (not eof *data) {
 	    $obj->readrc(*data);
@@ -490,6 +491,8 @@ Here-document can be used to define string inluding newlines.
     	...
     }  
     EOS
+
+Special macro C<__PACKAGE__> is pre-defined to module name.
 
 =item B<help> I<name>
 
