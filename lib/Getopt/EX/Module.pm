@@ -346,6 +346,7 @@ sub run_inits {
     my $obj = shift;
     my $argv = shift;
     my $module = $obj->module;
+    local @ARGV;
 
     ##
     ## Call &initialize if defined.
