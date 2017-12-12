@@ -4,7 +4,7 @@
       "Kazumasa Utashiro"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.10, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v3.0.13, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
@@ -63,7 +63,7 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "v1.2.1",
+   "version" : "v1.3.1",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kaz Utashiro <utashiro@cpan.org>"
