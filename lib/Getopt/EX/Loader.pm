@@ -109,7 +109,7 @@ sub deal_with {
 	if (my $bucket = eval { $obj->load_module($default) }) {
 	    $bucket->run_inits($argv);
 	} else {
-	    die $@ unless $! =~ /^No such file or directory/;
+	    $!{ENOENT} or die $@;
 	}
     }
     $obj->modopt($argv);
@@ -163,7 +163,13 @@ sub parseopt {
     }
 
     my $mod = shift @$argv;
-    my $bucket = eval { $obj->load_module($mod) } or die $@;
+    my $bucket = eval { $obj->load_module($mod) } or do {
+	if ($!{ENOENT}) {
+	    die "$mod: module not found\n";
+	} else {
+	    die $@;
+	}
+    };
 
     if ($call) {
 	$bucket->call(join '::', $bucket->module, $call);
