@@ -125,29 +125,32 @@ sub ansi_numbers {
     @numbers;
 }
 
-sub CSI {
-    @_  ? "\e[" . ( join ';', @_ ) . 'm'
+# Control Sequence Introducer
+use constant CSI => "\e[";
+
+# Set Graphic Rendition
+sub SGI {
+    @_  ? CSI . ( join ';', @_ ) . 'm'
 	: ''
 }
 
 sub ansi_indicator {
     my $spec = shift;
     my @numbers = ansi_numbers $spec;
-    @numbers ? CSI @numbers : undef;
+    @numbers ? SGI @numbers : undef;
 }
 
 sub ansi_pair {
     my $spec = shift;
     my $start = ansi_indicator $spec;
-    my $end = CSI 0 if $start;
+    my $end = SGI 0 if $start;
     ($start // '', $end // '');
 }
 
 my %colorcache;
 my $reset_re;
 BEGIN {
-    my $reset = CSI 0;
-    $reset_re = qr/\Q$reset/;
+    $reset_re = qr{ \e\[[0;]*m (?: \e\[[0;]*[Km] )* }x;
 }
 
 sub colorize {
