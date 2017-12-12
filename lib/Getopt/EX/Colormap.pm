@@ -54,6 +54,7 @@ my %numbers = (
     ';' => undef,	# ; : NOP
     X => undef,		# X : NOP
     N => undef,		# N : None (NOP)
+    E => 'EL',		# E : Erace Line
     Z => 0,		# Z : Zero (Reset)
     D => 1,		# D : Double-Struck (Bold)
     P => 2,		# P : Pale (Dark)
@@ -87,6 +88,7 @@ sub ansi_numbers {
 		      | L(?:[01][0-9]|[2][0-3]) )	# 24 grey levels
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
 	     | (?<efct> [;XNZDPIUFQSVJ] )		# effects
+	     | (?<othr> [E] )				# others
 	     | (?<err>  .+ )				# error
 	     )
 	    }xig) {
@@ -112,14 +114,16 @@ sub ansi_numbers {
 	elsif (my $c16 = $+{c16}) {
 	    push @numbers, $numbers{$c16} + ($BG ? 10 : 0);
 	}
-	elsif (my $efct = $+{efct}) {
+	elsif (my $efct = $+{efct} || $+{othr}) {
 	    $efct = uc $efct;
 	    push @numbers, $numbers{$efct} if defined $numbers{$efct};
 	}
 	elsif (my $err = $+{err}) {
 	    die "Color spec error: \"$err\" in \"$_\".\n"
 	}
-	else { die }
+	else {
+	    die "$_: Something strange.\n";
+	}
 	
     }
     @numbers;
@@ -134,10 +138,28 @@ sub SGI {
 	: ''
 }
 
+sub EL {
+    CSI . ( join ';', @_ ) . 'K';
+}
+
 sub ansi_indicator {
     my $spec = shift;
     my @numbers = ansi_numbers $spec;
-    @numbers ? SGI @numbers : undef;
+    my @indicators;
+    while (@numbers) {
+	my @sgi;
+	while (@numbers > 0 and $numbers[0] !~ /\D/) {
+	    push @sgi, shift @numbers;
+	}
+	push @indicators, SGI @sgi if @sgi;
+
+	while (@numbers > 0 and $numbers[0] =~ /\D/) {
+	    my $subname = shift @numbers;
+	    no strict 'refs';
+	    push @indicators, $subname->();
+	}
+    }
+    join '', @indicators;
 }
 
 sub ansi_pair {
@@ -179,8 +201,7 @@ sub apply_color {
     else {
 	$cache->{$color} //= [ ansi_pair($color) ];
 	my($s, $e) = @{$cache->{$color}};
-	$text =~ s/(^|$reset_re)([^\e\r\n]+)/${1}${s}${2}${e}/mg
-	    if $s ne "";
+	$text =~ s/(^|$reset_re)([^\e\r\n]*)/${1}${s}${2}${e}/mg;
 	return $text;
     }
 }
@@ -335,6 +356,8 @@ with other special effects :
     V  8 Vanish (concealed)
     J  9 Junk (crossed out)
 
+    E    Erase Line
+
     ;  No effect
     X  No effect
 
@@ -366,6 +389,9 @@ Samples:
 
 24-bit RGB color sequence is supported but disabled by default.  Set
 C<$COLOR_RGB24> module variable to enable.
+
+Character "E" is special.  It clears the line from cursor to the end
+of the line.  At this time, background color is set to the area.
 
 
 =head1 FUNCTION SPEC
