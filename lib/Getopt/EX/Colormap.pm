@@ -54,7 +54,7 @@ my %numbers = (
     ';' => undef,	# ; : NOP
     X => undef,		# X : NOP
     N => undef,		# N : None (NOP)
-    E => 'EL',		# E : Erace Line
+    E => '{EL}',	# E : Erace Line
     Z => 0,		# Z : Zero (Reset)
     D => 1,		# D : Double-Struck (Bold)
     P => 2,		# P : Pale (Dark)
@@ -82,21 +82,17 @@ sub ansi_numbers {
     while (m{\G
 	     (?:
 	       (?<slash> /)				# /
-	     | (?<sgi>  H\d[x\d]* )			# SGI params
 	     | (?<h24>  [0-9a-f]{6} )			# 24bit hex
 	     | (?<c256> [0-5][0-5][0-5]			# 216 (6x6x6) colors
 		      | L(?:[01][0-9]|[2][0-3]) )	# 24 grey levels
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
-	     | (?<efct> [;XNZDPIUFQSVJ] )		# effects
-	     | (?<othr> [E] )				# others
+	     | (?<efct> [;XNZEDPIUFQSVJ] )		# effects
+	     | (?<csi>  { \w+[\d,;]* } )		# other CSI
 	     | (?<err>  .+ )				# error
 	     )
 	    }xig) {
 	if ($+{slash}) {
 	    $BG++ and die "Color spec error: $_\n";
-	}
-	elsif (my $sgi = $+{sgi}) {
-	    push @numbers, $sgi =~ /(\d+)/g;
 	}
 	elsif (my $h24 = $+{h24}) {
 	    if ($COLOR_RGB24) {
@@ -114,9 +110,12 @@ sub ansi_numbers {
 	elsif (my $c16 = $+{c16}) {
 	    push @numbers, $numbers{$c16} + ($BG ? 10 : 0);
 	}
-	elsif (my $efct = $+{efct} || $+{othr}) {
+	elsif (my $efct = $+{efct}) {
 	    $efct = uc $efct;
 	    push @numbers, $numbers{$efct} if defined $numbers{$efct};
+	}
+	elsif (my $csi = $+{csi}) {
+	    push @numbers, uc $csi;
 	}
 	elsif (my $err = $+{err}) {
 	    die "Color spec error: \"$err\" in \"$_\".\n"
@@ -129,17 +128,37 @@ sub ansi_numbers {
     @numbers;
 }
 
-# Control Sequence Introducer
-use constant CSI => "\e[";
+use constant {
+    CSI   => "\e[",
+    RESET => "\e[m",
+};
 
-# Set Graphic Rendition
-sub SGI {
-    @_  ? CSI . ( join ';', @_ ) . 'm'
-	: ''
-}
+my %csi_terminator = (
+    CUU	=> 'A',    # Cursor up
+    CUD	=> 'B',    # Cursor Down
+    CUF	=> 'C',    # Cursor Forward
+    CUB	=> 'D',    # Cursor Back
+    CNL	=> 'E',    # Cursor Next Line
+    CPL	=> 'F',    # Cursor Previous line
+    CHA	=> 'G',    # Cursor Horizontal Absolute
+    CUP	=> 'H',    # Cursor Position
+    ED  => 'J',    # Erase in Display
+    EL  => 'K',    # Erase in Line
+    SU  => 'S',    # Scroll Up
+    SD  => 'T',    # Scroll Down
+    HVP	=> 'f',    # Horizontal Vertical Position
+    SGR	=> 'm',    # Select Graphic Rendition
+    SCP	=> 's',    # Save Cursor Position
+    RCP	=> 'u',    # Restore Cursor Position
+    );
 
-sub EL {
-    CSI . ( join ';', @_ ) . 'K';
+sub csi_code {
+    my $name = shift;
+    my $c = $csi_terminator{$name} or do {
+	warn "$name: Unknown ANSI name.\n";
+	return '';
+    };
+    CSI . join(';', @_) . $c;
 }
 
 sub ansi_indicator {
@@ -147,16 +166,16 @@ sub ansi_indicator {
     my @numbers = ansi_numbers $spec;
     my @indicators;
     while (@numbers) {
-	my @sgi;
+	my @sgr;
 	while (@numbers > 0 and $numbers[0] !~ /\D/) {
-	    push @sgi, shift @numbers;
+	    push @sgr, shift @numbers;
 	}
-	push @indicators, SGI @sgi if @sgi;
+	push @indicators, csi_code('SGR', @sgr) if @sgr;
 
 	while (@numbers > 0 and $numbers[0] =~ /\D/) {
-	    my $subname = shift @numbers;
-	    no strict 'refs';
-	    push @indicators, $subname->();
+	    my $csi = shift @numbers;
+	    my($name, $param) = $csi =~ /^{([A-Z]+)(.*)}/ or die "$csi: bad";
+	    push @indicators, csi_code($name, $param =~ /\d+/g);
 	}
     }
     join '', @indicators;
@@ -165,7 +184,7 @@ sub ansi_indicator {
 sub ansi_pair {
     my $spec = shift;
     my $start = ansi_indicator $spec;
-    my $end = SGI 0 if $start;
+    my $end = RESET if $start;
     ($start // '', $end // '');
 }
 
@@ -361,13 +380,6 @@ with other special effects :
     ;  No effect
     X  No effect
 
-and arbitrary numbers beginning with "H", those are directly converted
-into escape sequence.  Use "x" to indicate multiple numbers.  Remember
-associated with Hollerith constants.
-
-    H4      underline
-    H1x3x7  bold / italic / stand-out
-
 If the spec includes C</>, left side is considered as foreground color
 and right side as background.  If multiple colors are given in same
 spec, all indicators are produced in the order of their presence.
@@ -390,9 +402,33 @@ Samples:
 24-bit RGB color sequence is supported but disabled by default.  Set
 C<$COLOR_RGB24> module variable to enable.
 
-Character "E" is special.  It clears the line from cursor to the end
-of the line.  At this time, background color is set to the area.
+Character "E" is abbreviation for "{EL}", and it clears the line from
+cursor to the end of the line.  At this time, background color is set
+to the area.
 
+Other ANSI CSI sequences are also available in the form of "{NAME}",
+despite there are few reasons to use them.
+
+    CUU	 Cursor up
+    CUD	 Cursor Down
+    CUF	 Cursor Forward
+    CUB	 Cursor Back
+    CNL	 Cursor Next Line
+    CPL	 Cursor Previous line
+    CHA	 Cursor Horizontal Absolute
+    CUP	 Cursor Position
+    ED   Erase in Display
+    EL   Erase in Line
+    SU   Scroll Up
+    SD   Scroll Down
+    HVP	 Horizontal Vertical Position
+    SGR	 Select Graphic Rendition
+    SCP	 Save Cursor Position
+    RCP	 Restore Cursor Position
+
+These name accept following optional numerical parameters, using
+semicolon (';') to separate multiple ones.  For example, color spec
+C<DK/544> can be described as C<{SGR1;30;48;5;224}>.
 
 =head1 FUNCTION SPEC
 
