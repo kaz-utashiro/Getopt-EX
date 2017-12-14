@@ -2,6 +2,11 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+v1.4.1 2017-12-14T18:05:54Z
+
+    - [Loader.pm] Add config option PARSE_MODULE_OPT and IGNORE_NO_MODULE.
+    - [Colormap.pm] Support generic ANSI CSI sequence in the form of "{NAME}".
+
 v1.3.1 2017-12-12T15:05:01Z
 
     - [Colormap.pm] Add E effect char to erase line.
