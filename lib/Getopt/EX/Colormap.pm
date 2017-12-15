@@ -6,12 +6,13 @@ use warnings;
 use Exporter 'import';
 our @EXPORT      = qw();
 our %EXPORT_TAGS = ();
-our @EXPORT_OK   = qw(colorize);
+our @EXPORT_OK   = qw(colorize ansi_code csi_code);
 our @ISA         = qw(Getopt::EX::LabeledParam);
 
 use Carp;
 use Scalar::Util qw(blessed);
 use Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
 
 use Getopt::EX::LabeledParam;
 
@@ -54,7 +55,7 @@ my %numbers = (
     ';' => undef,	# ; : NOP
     X => undef,		# X : NOP
     N => undef,		# N : None (NOP)
-    E => '{EL}',	# E : Erace Line
+    E => 'EL',		# E : Erace Line
     Z => 0,		# Z : Zero (Reset)
     D => 1,		# D : Double-Struck (Bold)
     P => 2,		# P : Pale (Dark)
@@ -86,8 +87,13 @@ sub ansi_numbers {
 	     | (?<c256> [0-5][0-5][0-5]			# 216 (6x6x6) colors
 		      | L(?:[01][0-9]|[2][0-3]) )	# 24 grey levels
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
-	     | (?<efct> [;XNZEDPIUFQSVJ] )		# effects
-	     | (?<csi>  { \w+[\d,;]* } )		# other CSI
+	     | (?<efct> [;XNZDPIUFQSVJ] )		# effects
+	     | (?<csi>  { (?<csi_name>[A-Z]+)		# other CSI
+			  (?<P> \( )?			# optional (
+			  (?<csi_param>[\d,;]*)		# 0;1;2
+			  (?(<P>) \) )			# closing )
+			}
+		      | (?<csi_abbr>[E]) )		# abbreviation
 	     | (?<err>  .+ )				# error
 	     )
 	    }xig) {
@@ -104,18 +110,24 @@ sub ansi_numbers {
 		push @numbers, ($BG ? 48 : 38), 5, ansi256_number $h24;
 	    }
 	}
-	elsif (my $c256 = $+{c256}) {
-	    push @numbers, ($BG ? 48 : 38), 5, ansi256_number $c256;
+	elsif ($+{c256}) {
+	    push @numbers, ($BG ? 48 : 38), 5, ansi256_number $+{c256};
 	}
-	elsif (my $c16 = $+{c16}) {
-	    push @numbers, $numbers{$c16} + ($BG ? 10 : 0);
+	elsif ($+{c16}) {
+	    push @numbers, $numbers{$+{c16}} + ($BG ? 10 : 0);
 	}
-	elsif (my $efct = $+{efct}) {
-	    $efct = uc $efct;
+	elsif ($+{efct}) {
+	    my $efct = uc $+{efct};
 	    push @numbers, $numbers{$efct} if defined $numbers{$efct};
 	}
-	elsif (my $csi = $+{csi}) {
-	    push @numbers, uc $csi;
+	elsif ($+{csi}) {
+	    push @numbers, do {
+		if ($+{csi_abbr}) {
+		    [ $numbers{uc $+{csi_abbr}} ];
+		} else {
+		    [ uc $+{csi_name}, $+{csi_param} =~ /\d+/g ];
+		}
+	    };
 	}
 	elsif (my $err = $+{err}) {
 	    die "Color spec error: \"$err\" in \"$_\".\n"
@@ -161,29 +173,28 @@ sub csi_code {
     CSI . join(';', @_) . $c;
 }
 
-sub ansi_indicator {
+sub ansi_code {
     my $spec = shift;
     my @numbers = ansi_numbers $spec;
-    my @indicators;
+    my @code;
     while (@numbers) {
-	my @sgr;
-	while (@numbers > 0 and $numbers[0] !~ /\D/) {
-	    push @sgr, shift @numbers;
-	}
-	push @indicators, csi_code('SGR', @sgr) if @sgr;
-
-	while (@numbers > 0 and $numbers[0] =~ /\D/) {
-	    my $csi = shift @numbers;
-	    my($name, $param) = $csi =~ /^{([A-Z]+)(.*)}/ or die "$csi: bad";
-	    push @indicators, csi_code($name, $param =~ /\d+/g);
+	my $item = shift @numbers;
+	if (ref($item) eq 'ARRAY') {
+	    push @code, csi_code @$item;
+	} else {
+	    my @sgr = ($item);
+	    while (@numbers and not ref $numbers[0]) {
+		push @sgr, shift @numbers;
+	    }
+	    push @code, csi_code 'SGR', @sgr;
 	}
     }
-    join '', @indicators;
+    join '', @code;
 }
 
 sub ansi_pair {
     my $spec = shift;
-    my $start = ansi_indicator $spec;
+    my $start = ansi_code $spec;
     my $end = RESET if $start;
     ($start // '', $end // '');
 }
@@ -276,12 +287,12 @@ Getopt::EX::Colormap - ANSI terminal color and option support
   GetOptions('colormap|cm:s' => @opt_colormap);
 
   require Getopt::EX::Colormap;
-  my $handler = new Getopt::EX::Colormap;
-  $handler->load_params(@opt_colormap);  
+  my $cm = new Getopt::EX::Colormap;
+  $cm->load_params(@opt_colormap);  
 
-  print handler->color('FILE', 'FILE labeled text');
+  print $cm->color('FILE', 'FILE labeled text');
 
-  print handler->index_color($index, 'TEXT');
+  print $cm->index_color($index, 'TEXT');
 
     or
 
@@ -297,9 +308,9 @@ but it may be useful to give simple uniform way to specify complicated
 color setting from command line.
 
 This module assumes the color information is given in two ways: one in
-labeled table, and one in indexed list.
+labeled list, and one in indexed list.
 
-This is a example of labeled table:
+This is an example of labeled list:
 
     --cm 'COMMAND=SE,OMARK=CS,NMARK=MS' \
     --cm 'OTEXT=C,NTEXT=M,*CHANGE=BD/445,DELETE=APPEND=RD/544' \
@@ -310,7 +321,7 @@ specified by I<LABEL=> style precedence.  Multiple labels can be set
 for same value by connecting them together.  Label name can be
 specified with C<*> and C<?> wild characters.
 
-List example is like this:
+Indexed list example is like this:
 
     --cm 555/100,555/010,555/001 \
     --cm 555/011,555/101,555/110 \
@@ -332,7 +343,7 @@ for more detail.
 
 =head1 COLOR SPEC
 
-Color specification is combination of single uppercase character
+Color specification is a combination of single uppercase character
 representing 8 colors :
 
     R  Red
@@ -400,7 +411,7 @@ Samples:
     W/w  L03/L20  303030/c6c6c6 : grey on grey
 
 24-bit RGB color sequence is supported but disabled by default.  Set
-C<$COLOR_RGB24> module variable to enable.
+C<$COLOR_RGB24> module variable to enable it.
 
 Character "E" is abbreviation for "{EL}", and it clears the line from
 cursor to the end of the line.  At this time, background color is set
@@ -409,26 +420,27 @@ to the area.
 Other ANSI CSI sequences are also available in the form of "{NAME}",
 despite there are few reasons to use them.
 
-    CUU	 Cursor up
-    CUD	 Cursor Down
-    CUF	 Cursor Forward
-    CUB	 Cursor Back
-    CNL	 Cursor Next Line
-    CPL	 Cursor Previous line
-    CHA	 Cursor Horizontal Absolute
-    CUP	 Cursor Position
-    ED   Erase in Display
-    EL   Erase in Line
-    SU   Scroll Up
-    SD   Scroll Down
-    HVP	 Horizontal Vertical Position
-    SGR	 Select Graphic Rendition
-    SCP	 Save Cursor Position
-    RCP	 Restore Cursor Position
+    CUU n   Cursor up
+    CUD n   Cursor Down
+    CUF n   Cursor Forward
+    CUB n   Cursor Back
+    CNL n   Cursor Next Line
+    CPL n   Cursor Previous line
+    CHA n   Cursor Horizontal Absolute
+    CUP n,m Cursor Position
+    ED  n   Erase in Display (0 after, 1 before, 2 entire, 3 w/buffer)
+    EL  n   Erase in Line (0 after, 1 before, 2 entire)
+    SU  n   Scroll Up
+    SD  n   Scroll Down
+    HVP n,m Horizontal Vertical Position
+    SGR n*  Select Graphic Rendition
+    SCP     Save Cursor Position
+    RCP     Restore Cursor Position
 
-These name accept following optional numerical parameters, using
-semicolon (';') to separate multiple ones.  For example, color spec
-C<DK/544> can be described as C<{SGR1;30;48;5;224}>.
+These name accept following optional numerical parameters, using comma
+(',') or semicolon (';') to separate multiple ones, with optional
+braces.  For example, color spec C<DK/544> can be described as
+C<{SGR1;30;48;5;224}> or more readable C<{SGR(1,30,48,5,224)}>.
 
 =head1 FUNCTION SPEC
 
@@ -557,3 +569,5 @@ See super class L<Getopt::EX::LabeledParam>.
 
 L<Getopt::EX>,
 L<Getopt::EX::LabeledParam>
+
+L<https://en.wikipedia.org/wiki/ANSI_escape_code>
