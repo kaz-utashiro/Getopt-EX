@@ -2,6 +2,12 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+v1.4.2 2017-12-16T07:38:27Z
+
+    Colormap.pm
+    - Copy {EL} sequence to ending RESET, to keep the effect on multiple lines.
+    - Improve Colormap.pm and write test.
+
 v1.4.1 2017-12-14T18:05:54Z
 
     - [Loader.pm] Add config option PARSE_MODULE_OPT and IGNORE_NO_MODULE.
