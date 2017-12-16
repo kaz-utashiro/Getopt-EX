@@ -196,6 +196,15 @@ sub ansi_pair {
     my $spec = shift;
     my $start = ansi_code $spec;
     my $end = RESET if $start;
+
+    ##
+    ## XXX: This is necessary to keep the effect of EL when the text
+    ## is wrappted to next line.  Looks for better solution.
+    ##
+    if ($start =~ /(\e\[[0;]*K)$/) {
+	$end = $1 . $end;
+    }
+
     ($start // '', $end // '');
 }
 
@@ -415,7 +424,9 @@ C<$COLOR_RGB24> module variable to enable it.
 
 Character "E" is abbreviation for "{EL}", and it clears the line from
 cursor to the end of the line.  At this time, background color is set
-to the area.
+to the area.  When this code is found at the end of start sequence, it
+is copied to just before ending reset sequence, to kepp the effect
+even when the text is wrapped to multiple lines.
 
 Other ANSI CSI sequences are also available in the form of "{NAME}",
 despite there are few reasons to use them.

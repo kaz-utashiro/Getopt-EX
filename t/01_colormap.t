@@ -28,4 +28,13 @@ is(ansi_code("{SGR}"), "\e[m", "{SGR}");
 is(ansi_code("{SGR1;30;48;5;224}"), "\e[1;30;48;5;224m", "{SGR...}");
 is(ansi_code("{SGR(1,30,48,5,224)}"), "\e[1;30;48;5;224m", "{SGR(...)}");
 
+like(ansi_end("DK/544E"), qr/^\e\[?K/, "E before RESET");
+like(ansi_end("DK/544{EL}"), qr/^\e\[?K/, "{EL} before RESET");
+
 done_testing;
+
+sub ansi_end {
+    my $color = shift;
+    my($s, $e) = Getopt::EX::Colormap::ansi_pair($color);
+    $e;
+}
