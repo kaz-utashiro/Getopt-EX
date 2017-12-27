@@ -11,7 +11,7 @@ our @EXPORT_OK   = qw();
 
 use Data::Dumper;
 use Text::ParseWords qw(shellwords);
-use List::Util qw(first);
+use List::Util qw(first pairmap);
 
 use Getopt::EX::Func qw(parse_func);
 
@@ -20,6 +20,7 @@ sub new {
     my $obj = bless {
 	Module => undef,
 	Base => undef,
+	Mode => { FUNCTION => 0, WILDCARD => 0 },
 	Define => [],
 	Expand  => [],
 	Option => [],
@@ -139,6 +140,15 @@ sub expand {
     s{ (\$ENV\{ (['"]?) \w+ \g{-1} \}) }{ eval($1) // $1 }xge;
 }
 
+sub mode {
+    my $obj = shift;
+    @_ == 1 and return $obj->{Mode}->{uc shift};
+    die "Unexpected parameter." if @_ % 2;
+    pairmap {
+	$obj->{Mode}->{uc $a} = $b;
+    } @_;
+}
+
 use constant BUILTIN => "__BUILTIN__";
 sub validopt { $_[0] ne BUILTIN }
 
@@ -211,6 +221,38 @@ sub getlocal {
     my @e = $e ? @$e : ();
     shift @e;
     @e;
+}
+
+sub expand_args {
+    my $obj = shift;
+    my @args = @_;
+
+    ##
+    ## Expand `&function' style arguments.
+    ##
+    if ($obj->mode('function')) {
+	@args = map {
+	    if (/^&(.+)/) {
+		my $func = parse_func $obj->module . "::$1";
+		$func ? $func->call : $_;
+	    } else {
+		$_;
+	    }
+	}
+	@args;
+    }
+
+    ##
+    ## Expand wildcards.
+    ##
+    if ($obj->mode('wildcard')) {
+	@args = map {
+	    my @glob = glob $_;
+	    @glob ? @glob : $_;
+	} @args;
+    }
+
+    @args;
 }
 
 sub default {
@@ -598,5 +640,24 @@ Get built-in options.
 =item B<autoload>
 
 Set autoload module.
+
+=item B<mode>
+
+Set argument treatment mode.  Arguments produced by option expansion
+will be the subject of post-process.  This method define the behavior
+of it.
+
+=over 4
+
+=item B<mode>(B<function> => 1)
+
+Interpret the argument start with '&' as a function, and replace it by
+the result of the function call.
+
+=item B<mode>(B<wildcard> => 1)
+
+Replace wildcard argument by matched file names.
+
+=back
 
 =back

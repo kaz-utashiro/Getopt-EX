@@ -264,6 +264,8 @@ sub expand {
 		($+{cmd} eq 'remove') ? () : @arg;
 	    }->(), @s;
 
+	    @s = $bucket->expand_args(@s);
+
 	    printf(STDERR "\@ARGV = %s\n",
 		   join(' ', @$argv, @s, @follow)) if $debug;
 
