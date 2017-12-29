@@ -2,7 +2,9 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
-    - Implement Getopt::EX::Module::mode method.
+v1.6.0 2017-12-29T01:51:01Z
+
+    - Introduce new "mode" command.
 
 v1.5.1 2017-12-21T14:09:25Z
 
