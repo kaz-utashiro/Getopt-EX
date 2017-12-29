@@ -313,7 +313,9 @@ sub parseline {
     my $line = shift;
     my @arg = split ' ', $line, 3;
 
-    if (@arg < 3) {
+    my %min_args = ( mode => 1, DEFAULT => 3 );
+    my $min_args = $min_args{$arg[0]} || $min_args{DEFAULT};
+    if (@arg < $min_args) {
 	warn sprintf("Parse error in %s: %s\n", $obj->title, $line);
 	return;
     }
@@ -363,6 +365,14 @@ sub parseline {
     elsif ($arg[0] eq "autoload") {
 	shift @arg;
 	$obj->autoload(@arg);
+    }
+    elsif ($arg[0] eq "mode") {
+	shift @arg;
+	for (@arg) {
+	    if (/^(no-?)?(.*)/i) {
+		$obj->mode($2 => $1 ? 0 : 1);
+	    }
+	}
     }
     elsif ($arg[0] eq "help") {
 	$obj->help($arg[1], $arg[2]);

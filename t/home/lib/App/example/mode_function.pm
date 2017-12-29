@@ -4,7 +4,7 @@ use warnings;
 
 sub initialize {
     my $mod = shift;
-    $mod->mode(function => 1);
+    # $mod->mode(function => 1);
 }
 
 sub bye {
@@ -14,5 +14,7 @@ sub bye {
 1;
 
 __DATA__
+
+mode function
 
 option --bye &bye
