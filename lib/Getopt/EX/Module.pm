@@ -525,9 +525,6 @@ option.
 
     option --deprecated $<move(0,0)>
 
-Note that these handling does not work for B<default> option.  This is
-an implementation issue, and may change in the future.
-
 =item B<expand> I<name> I<string>
 
 Define local option I<name>.  Command B<expand> is almost same as

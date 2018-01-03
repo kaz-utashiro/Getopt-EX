@@ -209,7 +209,7 @@ sub expand {
     unshift @$argv, map {
 	if (my @s = $_->default()) {
 	    my @modules = $obj->modopt(\@s);
-	    @s, map { $_->default } @modules;
+	    [ @s, map { $_->default } @modules ];
 	} else {
 	    ();
 	}
@@ -226,14 +226,24 @@ sub expand {
 
 	for my $bucket ($obj->buckets) {
 
-	    ##
-	    ## Try entire string match, and check --option=value.
-	    ##
-	    my @s = $bucket->getopt($current);
-	    if (not @s) {
-		$current =~ /^(.+?)=(.*)/ or next;
-		@s = $bucket->getopt($1)  or next;
-		splice @$argv, $i, 1, ($1, $2);
+	    my @s;
+	    if (ref $current eq 'ARRAY') {
+		##
+		## Expand defaults.
+		##
+		@s = @$current;
+		$current = 'DEFAULT';
+	    }
+	    else {
+		##
+		## Try entire string match, and check --option=value.
+		##
+		@s = $bucket->getopt($current);
+		if (not @s) {
+		    $current =~ /^(.+?)=(.*)/ or next;
+		    @s = $bucket->getopt($1)  or next;
+		    splice @$argv, $i, 1, ($1, $2);
+		}
 	    }
 
 	    my @follow = splice @$argv, $i;
