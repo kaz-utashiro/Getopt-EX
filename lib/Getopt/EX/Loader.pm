@@ -276,12 +276,18 @@ sub expand {
 
 	    @s = $bucket->expand_args(@s);
 
-	    printf(STDERR "\@ARGV = %s\n",
-		   join(' ', @$argv, @s, @follow)) if $debug;
+	    if ($debug) {
+		printf STDERR
+		    "\@ARGV = %s\n",
+		    join(' ',
+			 @$argv,
+			 join(' ', '<', @s, '>'),
+			 @follow);
+	    }
 
 	    my @module = $obj->modopt(\@s);
 
-	    my @default = map { $_->default } @module;
+	    my @default = map { [ $_->default ] } @module;
 	    push @$argv, @default, @s, @follow;
 
 	    redo ARGV if $i < @$argv;
