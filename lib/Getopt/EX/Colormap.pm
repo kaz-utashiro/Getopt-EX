@@ -2,6 +2,7 @@ package Getopt::EX::Colormap;
 
 use strict;
 use warnings;
+use Graphics::ColorNames;
 
 use Exporter 'import';
 our @EXPORT      = qw();
@@ -78,6 +79,8 @@ my %numbers = (
     W => 37, w => 97,	# W : White
     );
 
+tie my %color_table, 'Graphics::ColorNames', qw(WWW);
+
 sub rgb24 {
     my $rgb = shift;
     if ($COLOR_RGB24) {
@@ -126,6 +129,7 @@ sub ansi_numbers {
 			  (?(<P>) \) )			# closing )
 			}
 		      | (?<csi_abbr>[E]) )		# abbreviation
+	     | : (?<name> \w+ )				# :colorname
 	     | (?<err>  .+ )				# error
 	     )
 	    }xig) {
@@ -156,6 +160,13 @@ sub ansi_numbers {
 		    [ uc $+{csi_name}, $+{csi_param} =~ /\d+/g ];
 		}
 	    };
+	}
+	elsif ($+{name}) {
+	    if (my $rgb = $color_table{$+{name}}) {
+		push @numbers, 38 + $xg->offset, rgb24($rgb);
+	    } else {
+		die "Unknown color name: $+{name}\n";
+	    }
 	}
 	elsif (my $err = $+{err}) {
 	    die "Color spec error: \"$err\" in \"$_\".\n"
@@ -486,6 +497,10 @@ These name accept following optional numerical parameters, using comma
 (',') or semicolon (';') to separate multiple ones, with optional
 braces.  For example, color spec C<DK/544> can be described as
 C<{SGR1;30;48;5;224}> or more readable C<{SGR(1,30,48,5,224)}>.
+
+=head1 COLOR NAMES
+
+Color names are experimentaly supported in this version.
 
 =head1 FUNCTION SPEC
 

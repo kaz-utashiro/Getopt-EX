@@ -40,6 +40,10 @@ is(ansi_code("{SGR(1,30,48,5,224)}"), "\e[1;30;48;5;224m", "{SGR(...)}");
 like(ansi_end("DK/544E"), qr/^\e\[?K/, "E before RESET");
 like(ansi_end("DK/544{EL}"), qr/^\e\[?K/, "{EL} before RESET");
 
+
+is(ansi_code(":moccasin"), "\e\[38;5;223m", "color name (:moccasin)");
+
+
 done_testing;
 
 sub ansi_end {
