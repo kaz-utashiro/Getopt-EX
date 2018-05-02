@@ -2,6 +2,8 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+    - Accept alternative names for builtin option.
+
 v1.7.3 2018-04-05T10:49:59Z
 
     - Update the colormap syntax.
