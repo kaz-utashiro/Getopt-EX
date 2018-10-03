@@ -9,10 +9,18 @@ is(ansi_code("R"), "\e[31m", "color name");
 is(ansi_code("W/R"), "\e[37;41m", "background");
 is(ansi_code("RDPIUFSVJ"), "\e[31;1;2;3;4;5;7;8;9m", "effect");
 
-is(ansi_code("ABCDEF"), "\e[38;5;152m", "hex");
+is(ansi_code("ABCDEF"), "\e[38;5;152m", "hex24");
 {
     local $Getopt::EX::Colormap::COLOR_RGB24 = 1;
-    is(ansi_code("ABCDEF"), "\e[38;2;171;205;239m", "hex 24bit");
+    is(ansi_code("ABCDEF"), "\e[38;2;171;205;239m", "hex24 24bit");
+}
+
+is(ansi_code("#AABBCC"), "\e[38;5;146m", "hex24 with #");
+is(ansi_code("#ABC"),    "\e[38;5;146m", "hex12");
+{
+    local $Getopt::EX::Colormap::COLOR_RGB24 = 1;
+    is(ansi_code("#AABBCC"), "\e[38;2;170;187;204m", "hex24 24bit");
+    is(ansi_code("#ABC"),    "\e[38;2;170;187;204m", "hex12 24bit");
 }
 
 is(ansi_code("DK/544"), "\e[1;30;48;5;224m", "256 color");

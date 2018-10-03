@@ -28,8 +28,10 @@ sub ansi256_number {
 	$1 > 23 and die "Color spec error: $code";
 	$grey = 0 + $1;
     }
-    elsif ($code =~ /^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i) {
+    elsif ($code =~ m{^(?| \# ([0-9a-f])([0-9a-f])([0-9a-f])
+			 | \#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2}) )$}xi) {
 	my($rx, $gx, $bx) = map { hex } $1, $2, $3;
+	do { $_ *= 0x11 for $rx, $gx, $bx } if length $1 == 1;
 	if ($rx != 255 and $rx == $gx and $rx == $bx) {
 	    ##
 	    ## Divide area into 25 segments, and map to BLACK and 24 GREYS
@@ -81,7 +83,18 @@ sub rgb24 {
     if ($COLOR_RGB24) {
 	return (2,
 		map { hex $_ }
-		$rgb =~ /^([\da-f]{2})([\da-f]{2})([\da-f]{2})/i);
+		$rgb =~ /^\#?([\da-f]{2})([\da-f]{2})([\da-f]{2})/i);
+    } else {
+	return (5, ansi256_number $rgb);
+    }
+}
+
+sub rgb12 {
+    my $rgb = shift;
+    if ($COLOR_RGB24) {
+	return (2,
+		map { 0x11 * hex }
+		$rgb =~ /^#([\da-f])([\da-f])([\da-f])/i);
     } else {
 	return (5, ansi256_number $rgb);
     }
@@ -101,8 +114,9 @@ sub ansi_numbers {
     while (m{\G
 	     (?:
 	       (?<slash> /)				# /
-	     | (?<h24>  [0-9a-f]{6} )			# 24bit hex
-	     | (?<c256> [0-5][0-5][0-5]			# 216 (6x6x6) colors
+	     | (?<h24>  \#?[0-9a-f]{6} )		# 24bit hex
+	     | (?<h12>  \#[0-9a-f]{3} )			# 12bit hex
+	     | (?<c256>   [0-5][0-5][0-5]		# 216 (6x6x6) colors
 		      | L(?:[01][0-9]|[2][0-3]) )	# 24 grey levels
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
 	     | (?<efct> [;XNZDPIUFQSVJ] )		# effects
@@ -120,6 +134,9 @@ sub ansi_numbers {
 	}
 	elsif ($+{h24}) {
 	    push @numbers, 38 + $xg->offset, rgb24($+{h24});
+	}
+	elsif ($+{h12}) {
+	    push @numbers, 38 + $xg->offset, rgb12($+{h12});
 	}
 	elsif ($+{c256}) {
 	    push @numbers, 38 + $xg->offset, 5, ansi256_number $+{c256};
@@ -384,14 +401,17 @@ and alternative (usually brighter) colors in lowercase:
 or RGB values and 24 grey levels if using ANSI 256 or full color
 terminal :
 
-    000000 .. FFFFFF : 24bit RGB colors
-    000 .. 555       : 6x6x6 RGB 216 colors
-    L00 .. L23       : 24 grey levels
+    #000000 .. #FFFFFF : 24bit RGB colors
+    #000    .. #FFF    : 12bit RGB 4096 colors
+    000 .. 555         : 6x6x6 RGB 216 colors
+    L00 .. L23         : 24 grey levels
 
 =over 4
 
-Note that, when values are all same in 24bit RGB, it is converted to
-24 grey level, otherwise 6x6x6 216 color.
+Begining # can be omitted in 24bit RGB notation.
+
+When values are all same in 24bit or 12bit RGB, it is converted to 24
+grey level, otherwise 6x6x6 216 color.
 
 =back
 
