@@ -426,6 +426,12 @@ grey level, otherwise 6x6x6 216 color.
 
 =back
 
+or color names starting with colon:
+
+    :red :blue :green :cyan :magenta :yellow
+    :aliceblue :honeydue :hotpink :mooccasin
+    :medium_aqua_marine
+
 with other special effects :
 
     Z  0 Zero (reset)
@@ -500,7 +506,44 @@ C<{SGR1;30;48;5;224}> or more readable C<{SGR(1,30,48,5,224)}>.
 
 =head1 COLOR NAMES
 
-Color names are experimentaly supported in this version.
+Color names are experimentaly supported in this version.  Currently
+names are listed in L<Graphics::ColorNames::WWW> module.  Following
+colors are available.
+
+=over 4
+
+aliceblue antiquewhite aqua aquamarine azure beige bisque black
+blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse
+chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan
+darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta
+darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen
+darkslateblue darkslategray darkslategrey darkturquoise darkviolet
+deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite
+forestgreen fuchsia fuscia gainsboro ghostwhite gold goldenrod gray
+grey green greenyellow honeydew hotpink indianred indigo ivory khaki
+lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral
+lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey
+lightpink lightsalmon lightseagreen lightskyblue lightslategray
+lightslategrey lightsteelblue lightyellow lime limegreen linen magenta
+maroon mediumaquamarine mediumblue mediumorchid mediumpurple
+mediumseagreen mediumslateblue mediumspringgreen mediumturquoise
+mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite
+navy oldlace olive olivedrab orange orangered orchid palegoldenrod
+palegreen paleturquoise palevioletred papayawhip peachpuff peru pink
+plum powderblue purple red rosybrown royalblue saddlebrown salmon
+sandybrown seagreen seashell sienna silver skyblue slateblue slategray
+slategrey snow springgreen steelblue tan teal thistle tomato turquoise
+violet wheat white whitesmoke yellow yellowgreen
+
+=back
+
+Put colon (:) mark before each color names to use, like:
+
+    :deeppink/:lightyellow
+
+Although these colors are defined in 24bit value, they are mapped to
+6x6x6 216 colors by default.  Set C<$COLOR_RGB24> module variable to
+use 24bit color mode.
 
 =head1 FUNCTION SPEC
 
