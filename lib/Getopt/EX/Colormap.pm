@@ -118,7 +118,8 @@ sub ansi_numbers {
 	     (?:
 	       (?<slash> /)				# /
 	     | (?<h24>  \#?[0-9a-f]{6} )		# 24bit hex
-	     | (?<h12>  \#[0-9a-f]{3} )			# 12bit hex
+	     | (?<h12>  \# [0-9a-f]{3} )		# 12bit hex
+	     | (?<rgb>  \(\d+,\d+,\d+\) )		# 24bit decimal
 	     | (?<c256>   [0-5][0-5][0-5]		# 216 (6x6x6) colors
 		      | L(?:[01][0-9]|[2][0-3]) )	# 24 grey levels
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
@@ -141,6 +142,12 @@ sub ansi_numbers {
 	}
 	elsif ($+{h12}) {
 	    push @numbers, 38 + $xg->offset, rgb12($+{h12});
+	}
+	elsif (my $rgb = $+{rgb}) {
+	    my @rgb = $rgb =~ /(\d+)/g;
+	    die "Unexpected value: $rgb\n" if grep { $_ > 255 } @rgb;
+	    my $hex = sprintf "%02X%02X%02X", @rgb;
+	    push @numbers, 38 + $xg->offset, rgb24($hex);
 	}
 	elsif ($+{c256}) {
 	    push @numbers, 38 + $xg->offset, 5, ansi256_number $+{c256};
@@ -412,8 +419,9 @@ and alternative (usually brighter) colors in lowercase:
 or RGB values and 24 grey levels if using ANSI 256 or full color
 terminal :
 
-    #000000 .. #FFFFFF : 24bit RGB colors
-    #000    .. #FFF    : 12bit RGB 4096 colors
+    (255,255,255)      : 24bit decimal RGB colors
+    #000000 .. #FFFFFF : 24bit hex RGB colors
+    #000    .. #FFF    : 12bit hex RGB 4096 colors
     000 .. 555         : 6x6x6 RGB 216 colors
     L00 .. L23         : 24 grey levels
 

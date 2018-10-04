@@ -27,6 +27,13 @@ rgb24 {
     is(ansi_code("#ABC"),    "\e[38;2;170;187;204m", "hex12 24bit");
 };
 
+is(ansi_code("(171,205,239)"), "\e[38;5;152m", "rgb");
+rgb24 {
+    is(ansi_code("(171,205,239)"), "\e[38;2;171;205;239m", "rgb 24bit");
+    is(ansi_code("(1,2,3)"), "\e[38;2;1;2;3m", "rgb 24bit");
+};
+
+
 is(ansi_code("DK/544"), "\e[1;30;48;5;224m", "256 color");
 is(ansi_code("//DK///544"), "\e[1;30;48;5;224m", "multiple /");
 is(ansi_code("L00/L23"), "\e[38;5;232;48;5;255m", "grey scale");
