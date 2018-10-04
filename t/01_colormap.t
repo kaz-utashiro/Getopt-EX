@@ -52,9 +52,9 @@ like(ansi_end("DK/544E"), qr/^\e\[?K/, "E before RESET");
 like(ansi_end("DK/544{EL}"), qr/^\e\[?K/, "{EL} before RESET");
 
 
-is(ansi_code(":moccasin"), "\e\[38;5;223m", "color name (:moccasin)");
+is(ansi_code("<moccasin>"), "\e\[38;5;223m", "color name (<:moccasin>)");
 rgb24 {
-    is(ansi_code(":moccasin"), "\e[38;2;255;228;181m", ":moccasin 24bit");
+    is(ansi_code("<moccasin>"), "\e[38;2;255;228;181m", "<moccasin> 24bit");
 };
 
 done_testing;

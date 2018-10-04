@@ -130,7 +130,7 @@ sub ansi_numbers {
 			  (?(<P>) \) )			# closing )
 			}
 		      | (?<csi_abbr>[E]) )		# abbreviation
-	     | : (?<name> \w+ )				# :colorname
+	     | < (?<name> \w+ )	>			# <colorname>
 	     | (?<err>  .+ )				# error
 	     )
 	    }xig) {
@@ -412,7 +412,7 @@ representing 8 colors :
     K  Black
     W  White
 
-and alternative (usually brighter) colors in lowercase:
+and alternative (usually brighter) colors in lowercase :
 
     r, g, b, c, m, y, k, w
 
@@ -434,11 +434,11 @@ grey level, otherwise 6x6x6 216 color.
 
 =back
 
-or color names starting with colon:
+or color names enclosed by angle bracket :
 
-    :red :blue :green :cyan :magenta :yellow
-    :aliceblue :honeydue :hotpink :mooccasin
-    :medium_aqua_marine
+    <red> <blue> <green> <cyan> <magenta> <yellow>
+    <aliceblue> <honeydue> <hotpink> <mooccasin>
+    <medium_aqua_marine>
 
 with other special effects :
 
@@ -469,20 +469,20 @@ effect, you can use them to improve readability, like C<SxD;K/544>.
 
 Samples:
 
-    RGB  6x6x6    24bit           color
-    ===  =======  =============   ==================
-    B    005      0000FF        : blue foreground
-     /M     /505        /FF00FF : magenta background
-    K/W  000/555  000000/FFFFFF : black on white
-    R/G  500/050  FF0000/00FF00 : red on green
-    W/w  L03/L20  303030/c6c6c6 : grey on grey
+    RGB  6x6x6    12bit      24bit           color name
+    ===  =======  =========  =============  ==================
+    B    005      #00F       (0,0,255)      <blue>
+     /M     /505      /#F0F   /(255,0,255)  /<magenta>
+    K/W  000/555  #000/#FFF  000000/FFFFFF  <black>/<white>
+    R/G  500/050  #F00/#0F0  FF0000/00FF00  <red>/<green>
+    W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
 24-bit RGB color sequence is supported but disabled by default.  Set
 C<$COLOR_RGB24> module variable to enable it.
 
-Character "E" is abbreviation for "{EL}", and it clears the line from
-cursor to the end of the line.  At this time, background color is set
-to the area.  When this code is found in the start sequence, it is
+Character "E" is an abbreviation for "{EL}", and it clears the line
+from cursor to the end of the line.  At this time, background color is
+set to the area.  When this code is found in the start sequence, it is
 copied to just before ending reset sequence, with preceding sequence
 if necessary, to keep the effect even when the text is wrapped to
 multiple lines.
