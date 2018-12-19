@@ -192,9 +192,9 @@ or even simpler non-oo interface:
 
 =head2 L<Getopt::EX::Numbers>
 
-Parse number parameter description and parse it, then produces number
-range list or number sequence.  Number format is composed by for
-elements: C<start>, C<end>, C<step> and C<length>, like this:
+Parse number parameter description and produces number range list or
+number sequence.  Number format is composed by four elements: C<start>,
+C<end>, C<step> and C<length>, like this:
 
     1		1
     1:3		1,2,3
@@ -211,7 +211,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2018 Kazumasa Utashiro
+Copyright (C) 2015-2018 Kazumasa Utashiro
 
 =head1 LICENSE
 
