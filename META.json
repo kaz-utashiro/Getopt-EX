@@ -43,6 +43,7 @@
       "runtime" : {
          "requires" : {
             "Graphics::ColorNames" : "0",
+            "Graphics::ColorNames::HTML" : "0",
             "Graphics::ColorNames::WWW" : "0",
             "List::Util" : "1.45",
             "Moo" : "1.001",
@@ -67,7 +68,7 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "v1.13.0",
+   "version" : "v1.13.1",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kaz Utashiro <utashiro@cpan.org>"

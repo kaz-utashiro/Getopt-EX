@@ -3,6 +3,7 @@ requires 'perl' => 5.014;
 requires 'List::Util' => 1.45;
 
 requires 'Graphics::ColorNames';
+requires 'Graphics::ColorNames::HTML'; # ::WWW install fails w/o ::HTML
 requires 'Graphics::ColorNames::WWW';
 requires 'Moo' => 1.001000;
 
