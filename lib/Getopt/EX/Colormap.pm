@@ -6,8 +6,8 @@ use warnings;
 
 use Exporter 'import';
 our @EXPORT      = qw();
-our %EXPORT_TAGS = ();
-our @EXPORT_OK   = qw(colorize ansi_code csi_code);
+our @EXPORT_OK   = qw(colorize colorize24 ansi_code ansi_pair csi_code);
+our %EXPORT_TAGS = (all => [ @EXPORT_OK ]);
 our @ISA         = qw(Getopt::EX::LabeledParam);
 
 use Carp;
@@ -63,7 +63,7 @@ my %numbers = (
     ';' => undef,	# ; : NOP
     X => undef,		# X : NOP
     N => undef,		# N : None (NOP)
-    E => 'EL',		# E : Erace Line
+    E => 'EL',		# E : Erase Line
     Z => 0,		# Z : Zero (Reset)
     D => 1,		# D : Double-Struck (Bold)
     P => 2,		# P : Pale (Dark)
@@ -222,6 +222,9 @@ sub csi_code {
 	warn "$name: Unknown ANSI name.\n";
 	return '';
     };
+    if ($name eq 'SGR' and @_ == 1 and $_[0] == 0) {
+	@_ = ();
+    }
     CSI . join(';', @_) . $c;
 }
 
@@ -271,6 +274,11 @@ sub colorize {
     cached_colorize(\%colorcache, @_);
 }
 
+sub colorize24 {
+    local $COLOR_RGB24 = 1;
+    cached_colorize(\%colorcache, @_);
+}
+
 sub cached_colorize {
     my $cache = shift;
     my @result;
@@ -291,8 +299,7 @@ sub apply_color {
 	return $color->call for $text;
     }
     else {
-	$cache->{$color} //= [ ansi_pair($color) ];
-	my($s, $e) = @{$cache->{$color}};
+	my($s, $e) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
 	$text =~ s/(^|$reset_re)([^\e\r\n]*)/${1}${s}${2}${e}/mg;
 	return $text;
     }
@@ -756,7 +763,7 @@ see what happens.
         --cm 555/012,555/102,555/120
 
 
-=head1 METHODS
+=head1 METHOD
 
 =over 4
 
@@ -812,6 +819,37 @@ behaviour.
 =back
 
 
+=head1 FUNCTION
+
+=over 4
+
+=item B<colorize>(I<color_spec>, I<text>)
+
+=item B<colorize24>(I<color_spec>, I<text>)
+
+Return colorized version of given text.  B<colorize> produces 256
+colors, and B<colorize24> produces 24bit colors.
+
+=item B<ansi_code>(I<color_spec>)
+
+Produces introducer sequence for given spec.  Reset code can be taken
+by B<ansi_code("Z")>.
+
+=item B<ansi_pair>(I<color_spec>)
+
+Produces introducer and recover sequences for given spec. Recover
+sequence includes I<Erace Line> related control with simple SGR reset
+code.
+
+=item B<csi_code>(I<name>, I<params>)
+
+Produce CSI (Control Sequence Introducer) sequence by name with
+numeric parameters.  I<name> is one of CUU, CUD, CUF, CUB, CNL, CPL,
+CHA, CUP, ED, EL, SU, SD, HVP, SGR, SCP, RCP.
+
+=back
+
+
 =head1 SEE ALSO
 
 L<Getopt::EX>,
@@ -822,3 +860,5 @@ L<https://en.wikipedia.org/wiki/ANSI_escape_code>
 L<Graphics::ColorNames::X>
 
 L<https://en.wikipedia.org/wiki/X11_color_names>
+
+=cut
