@@ -171,7 +171,7 @@ sub range {
 	for (my $from = $start; $from <= $end; $from += $step) {
 	    my $to = $from + $length - 1;
 	    $to = List::Util::min($max, $to) if defined $max;
-	    push @l, [$from, $to ];
+	    push @l, [$from, $to];
 	}
     }
 

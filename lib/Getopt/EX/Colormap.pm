@@ -18,7 +18,28 @@ use Getopt::EX::LabeledParam;
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
-our $COLOR_RGB24 = 0;
+our $RGB24     = $ENV{GETOPTEX_RGB24};
+our $LINEAR256 = $ENV{GETOPTEX_LINEAR256};
+
+my @nonlinear = do {
+    map { ( $_->[0] ) x $_->[1] } (
+	[ 0, 95 ], #   0 ..  94
+	[ 1, 40 ], #  95 .. 134
+	[ 2, 40 ], # 135 .. 174
+	[ 3, 40 ], # 175 .. 224
+	[ 4, 40 ], # 225 .. 254
+	[ 5,  1 ], # 255
+    );
+};
+
+sub map_256_to_6 {
+    my $i = shift;
+    if ($LINEAR256) {
+	int ( 5 * $i / 255 );
+    } else {
+	$nonlinear[$i];
+    }
+}
 
 sub ansi256_number {
     my $code = shift;
@@ -48,9 +69,7 @@ sub ansi256_number {
 		$grey = undef;
 	    }
 	} else {
-	    $r = int ( 5 * $rx / 255 );
-	    $g = int ( 5 * $gx / 255 );
-	    $b = int ( 5 * $bx / 255 );
+	    ($r, $g, $b) = map { map_256_to_6 $_ } $rx, $gx, $bx;
 	}
     }
     else {
@@ -86,7 +105,7 @@ my %numbers = (
 
 sub rgb24 {
     my $rgb = shift;
-    if ($COLOR_RGB24) {
+    if ($RGB24) {
 	return (2,
 		map { hex }
 		$rgb =~ /^\#?([\da-f]{2})([\da-f]{2})([\da-f]{2})/i);
@@ -97,7 +116,7 @@ sub rgb24 {
 
 sub rgb12 {
     my $rgb = shift;
-    if ($COLOR_RGB24) {
+    if ($RGB24) {
 	return (2,
 		map { 0x11 * hex }
 		$rgb =~ /^#([\da-f])([\da-f])([\da-f])/i);
@@ -275,7 +294,7 @@ sub colorize {
 }
 
 sub colorize24 {
-    local $COLOR_RGB24 = 1;
+    local $RGB24 = 1;
     cached_colorize(\%colorcache, @_);
 }
 
@@ -539,7 +558,7 @@ Samples:
     W/w  L03/L20  #333/#ccc  303030/c6c6c6  <dimgrey>/<lightgrey>
 
 24-bit RGB color sequence is supported but disabled by default.  Set
-C<$COLOR_RGB24> module variable to enable it.
+C<$RGB24> module variable to enable it.
 
 Character "E" is an abbreviation for "{EL}", and it clears the line
 from cursor to the end of the line.  At this time, background color is
@@ -663,8 +682,8 @@ Enclose them by angle bracket to use, like:
     <deeppink>/<lightyellow>
 
 Although these colors are defined in 24bit value, they are mapped to
-6x6x6 216 colors by default.  Set C<$COLOR_RGB24> module variable to
-use 24bit color mode.
+6x6x6 216 colors by default.  Set C<$RGB24> module variable to use
+24bit color mode.
 
 =head1 FUNCTION SPEC
 
@@ -827,8 +846,14 @@ behaviour.
 
 =item B<colorize24>(I<color_spec>, I<text>)
 
-Return colorized version of given text.  B<colorize> produces 256
-colors, and B<colorize24> produces 24bit colors.
+Return colorized version of given text.
+
+B<colorize> produces 256 or 24bit colors depending on the value of
+C<Getopt::EX::Colormap::RGB24> variable and environment
+C<GETOPTEX_RGB24>.
+
+B<colorize24> always produces 24bit color sequence for 24bit/12bit
+color spec.
 
 =item B<ansi_code>(I<color_spec>)
 
