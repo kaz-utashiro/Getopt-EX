@@ -277,7 +277,7 @@ sub ansi_pair {
 		EL . RESET;
 	    }
 	} else {
-	    RESET . EL;
+	    RESET;
 	}
     };
     ($start, $end);
