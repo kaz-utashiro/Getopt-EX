@@ -65,7 +65,7 @@ sub configure {
 	    my $mod = $base ? "${base}::${module}" : $module;
 	    eval "package $pkg; use $mod;";
 	    if ($@) {
-		next if @base;
+		next if @base and $@ =~ /need to install the ${mod}/;
 		croak "$mod: $@";
 	    }
 	    $obj->module($mod);
