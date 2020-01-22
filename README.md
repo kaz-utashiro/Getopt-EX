@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/kaz-utashiro/Getopt-EX.svg?branch=master)](https://travis-ci.com/kaz-utashiro/Getopt-EX) [![MetaCPAN Release](https://badge.fury.io/pl/Getopt-EX.svg)](https://metacpan.org/release/Getopt-EX)
 # NAME
 
 Getopt::EX - Getopt Extender
