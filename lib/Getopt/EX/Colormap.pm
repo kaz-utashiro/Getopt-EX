@@ -18,8 +18,9 @@ use Getopt::EX::LabeledParam;
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
-our $RGB24     = $ENV{GETOPTEX_RGB24};
-our $LINEAR256 = $ENV{GETOPTEX_LINEAR256};
+our $RGB24       = $ENV{GETOPTEX_RGB24};
+our $LINEAR256   = $ENV{GETOPTEX_LINEAR256};
+our $NO_RESET_EL = $ENV{GETOPTEX_NO_RESET_EL};
 
 my @nonlinear = do {
     map { ( $_->[0] ) x $_->[1] } (
@@ -277,7 +278,11 @@ sub ansi_pair {
 		EL . RESET;
 	    }
 	} else {
-	    RESET;
+	    if ($NO_RESET_EL) {
+		RESET;
+	    } else {
+		RESET . EL;
+	    }
 	}
     };
     ($start, $end);
