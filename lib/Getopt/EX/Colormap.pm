@@ -868,7 +868,7 @@ by B<ansi_code("Z")>.
 =item B<ansi_pair>(I<color_spec>)
 
 Produces introducer and recover sequences for given spec. Recover
-sequence includes I<Erace Line> related control with simple SGR reset
+sequence includes I<Erase Line> related control with simple SGR reset
 code.
 
 =item B<csi_code>(I<name>, I<params>)
@@ -878,6 +878,20 @@ numeric parameters.  I<name> is one of CUU, CUD, CUF, CUB, CNL, CPL,
 CHA, CUP, ED, EL, SU, SD, HVP, SGR, SCP, RCP.
 
 =back
+
+
+=head1 RESET SEQUENCE
+
+This module produces I<RESET> and I<Erase Line> sequence to recover
+from colored text.  This is preferable to clear background color set
+by scrolling in the middle of colored text at the bottom line of the
+terminal.
+
+However, some terminal, including Apple_Terminal, clear the text on
+the terminal when I<Erase Line> sequence is received at the rightmost
+column of the screen.  If you do not want this behavior, set module
+variable C<Getopt::EX::Colormap::NO_RESET_EL> or
+C<GETOPTEX_NO_RESET_EL> environment.
 
 
 =head1 SEE ALSO
