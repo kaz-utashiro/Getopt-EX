@@ -548,7 +548,9 @@ the same spec, all indicators are produced in the order of their
 presence.  Consequently, the last one takes effect.
 
 If the character is preceded by tilde (C<~>), it means negation of
-following effect; C<~D> reset the effect of C<D>.
+following effect; C<~S> reset the effect of C<S>.  There is a
+discussion about negation of C<D> (Track Wikipedia link in SEE ALSO),
+and Apple_Terminal (v2.10 433) does not reset at least.
 
 If the spec start with plus (C<+>) or minus (C<->) character,
 following characters are appneded/deleted from previous value. Reset
