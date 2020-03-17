@@ -500,7 +500,7 @@ terminal :
 
 =over 4
 
-Begining # can be omitted in 24bit RGB notation.
+Beginning # can be omitted in 24bit RGB notation.
 
 When values are all same in 24bit or 12bit RGB, it is converted to 24
 grey level, otherwise 6x6x6 216 color.
@@ -548,8 +548,8 @@ discussion about negation of C<D> (Track Wikipedia link in SEE ALSO),
 and Apple_Terminal (v2.10 433) does not reset at least.
 
 If the spec start with plus (C<+>) or minus (C<->) character,
-following characters are appneded/deleted from previous value. Reset
-mark (C<^>) is inserted before appended string.
+following characters are appended/deleted to/from previous
+value. Reset mark (C<^>) is inserted before appended string.
 
 Effect characters are case insensitive, and can be found anywhere and
 in any order in color spec string.  Because C<X> and C<;> takes no
@@ -602,7 +602,7 @@ C<{SGR1;30;48;5;224}> or more readable C<{SGR(1,30,48,5,224)}>.
 
 =head1 COLOR NAMES
 
-Color names are experimentaly supported in this version.  Currently
+Color names are experimentally supported in this version.  Currently
 names are listed in L<Graphics::ColorNames::X> module.  Following
 colors are available.
 
@@ -839,7 +839,7 @@ C<alphabet> to sort them alphabetically.
 
 Colormap label is aligned so that `=' marks are lined vertically.
 Give true value to B<noalign> parameter, if you don't like this
-behaviour.
+behavior.
 
 =back
 
@@ -909,3 +909,6 @@ L<Graphics::ColorNames::X>
 L<https://en.wikipedia.org/wiki/X11_color_names>
 
 =cut
+
+#  LocalWords:  colormap colorize Cyan RGB cyan Wikipedia CSI ansi
+#  LocalWords:  SGR
