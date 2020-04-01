@@ -66,10 +66,10 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "v1.15.5",
+   "version" : "v1.15.6",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
-      "Kaz Utashiro <utashiro@cpan.org>"
+      "Kazumasa Utashiro <utashiro@cpan.org>"
    ],
    "x_static_install" : 1
 }
