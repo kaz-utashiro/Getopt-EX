@@ -190,6 +190,31 @@ or even simpler non-oo interface:
     print colorize("G", "LINE in Blue\n");
     print colorize("B", "TEXT in Green\n");
 
+=head2 L<Getopt::EX::LabeledParam>
+
+This is super-class of L<Getopt::EX::Colormap>.  L<Getopt::Long>
+support parameter handling within hash,
+
+    my %defines;
+    GetOptions ("define=s" => \%defines);
+
+and the parameter can be given in C<key=value> format.
+
+    --define os=linux --define vendor=redhat
+
+Using L<Getopt::EX::LabeledParam>, this can be written as:
+
+    my @defines;
+    my %defines;
+    GetOptions ("defines=s" => \@defines);
+    Getopt::EX::LabeledParam
+        ->new(HASH => \%defines)
+        ->load_params (@defines);
+
+and the parameter can be given mixed together.
+
+    --define os=linux,vendor=redhat
+
 =head2 L<Getopt::EX::Numbers>
 
 Parse number parameter description and produces number range list or

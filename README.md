@@ -181,6 +181,31 @@ or even simpler non-oo interface:
     print colorize("G", "LINE in Blue\n");
     print colorize("B", "TEXT in Green\n");
 
+## [Getopt::EX::LabeledParam](https://metacpan.org/pod/Getopt::EX::LabeledParam)
+
+This is super-class of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt::EX::Colormap).  [Getopt::Long](https://metacpan.org/pod/Getopt::Long)
+support parameter handling within hash,
+
+    my %defines;
+    GetOptions ("define=s" => \%defines);
+
+and the parameter can be given in `key=value` format.
+
+    --define os=linux --define vendor=redhat
+
+Using [Getopt::EX::LabeledParam](https://metacpan.org/pod/Getopt::EX::LabeledParam), this can be written as:
+
+    my @defines;
+    my %defines;
+    GetOptions ("defines=s" => \@defines);
+    Getopt::EX::LabeledParam
+        ->new(HASH => \%defines)
+        ->load_params (@defines);
+
+and the parameter can be given mixed together.
+
+    --define os=linux,vendor=redhat
+
 ## [Getopt::EX::Numbers](https://metacpan.org/pod/Getopt::EX::Numbers)
 
 Parse number parameter description and produces number range list or
