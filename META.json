@@ -4,13 +4,13 @@
       "Kazumasa Utashiro"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.9, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v3.1.10, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Getopt-EX",
    "no_index" : {
@@ -66,10 +66,11 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "v1.16.0",
+   "version" : "v1.17.0",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <utashiro@cpan.org>"
    ],
+   "x_serialization_backend" : "JSON::PP version 4.04",
    "x_static_install" : 1
 }
