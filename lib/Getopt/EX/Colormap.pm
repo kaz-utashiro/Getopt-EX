@@ -143,7 +143,7 @@ sub ansi_numbers {
 	     | (?<c256>   [0-5][0-5][0-5]		# 216 (6x6x6) colors
 		      | L(?:[01][0-9]|[2][0-5]) )	# 24 grey levels + B/W
 	     | (?<c16>  [KRGYBMCW] )			# 16 colors
-	     | (?<efct> ~?[;XNZDPIUFQSVJ] )		# effects
+	     | (?<efct> ~?[;NZDPIUFQSVX] )		# effects
 	     | (?<csi>  { (?<csi_name>[A-Z]+)		# other CSI
 			  (?<P> \( )?			# optional (
 			  (?<csi_param>[\d,;]*)		# 0;1;2
