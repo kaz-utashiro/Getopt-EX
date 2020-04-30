@@ -5,24 +5,31 @@ use Test::More;
 
 use Getopt::EX::Colormap qw(colorize colorize24 ansi_code);
 
+use constant {
+    RESET => "\e[m\e[K",
+};
+
 sub rgb24(&) {
     my $sub = shift;
     local $Getopt::EX::Colormap::RGB24 = 1;
     $sub->();
 }
 
-is(colorize("R", "text"), "\e[31m"."text"."\e[m\e[K", "colorize");
+is(colorize("N", "text"), "text", "N - NOP");
+is(colorize(";", "text"), "text", "; - NOP");
 
-is(colorize("ABCDEF", "text"), "\e[38;5;110m"."text"."\e[m\e[K", "colorize24");
+is(colorize("R", "text"), "\e[31m"."text".RESET, "colorize");
 
-is(colorize24("ABCDEF", "text"), "\e[38;2;171;205;239m"."text"."\e[m\e[K", "colorize24");
+is(colorize("ABCDEF", "text"), "\e[38;5;110m"."text".RESET, "colorize24");
+
+is(colorize24("ABCDEF", "text"), "\e[38;2;171;205;239m"."text".RESET, "colorize24");
 
 TODO: {
 
 local $TODO = "\$RGB24 does not update cached data.";
 
 local $Getopt::EX::Colormap::RGB24 = 1;
-is(colorize("ABCDEF", "text"), "\e[38;2;171;205;239m"."text"."\e[m\e[K", "colorize (RGB24=1)");
+is(colorize("ABCDEF", "text"), "\e[38;2;171;205;239m"."text".RESET, "colorize (RGB24=1)");
 
 }
 
