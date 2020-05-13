@@ -69,6 +69,9 @@ is(ansi_code("#AABBCC"), "\e[38;5;109m", "hex24 with #");
 is(ansi_code("#ABC"),    "\e[38;5;109m", "hex12");
 is(ansi_code("(171,205,239)"), "\e[38;5;110m", "rgb");
 
+is(ansi_code("#AAABBBCCC"), "\e[38;5;109m", "hex36 with #");
+is(ansi_code("#AAAABBBBCCCC"), "\e[38;5;109m", "hex48 with #");
+
 
 is(ansi_code("DK/544"), "\e[1;30;48;5;224m", "256 color");
 is(ansi_code("//DK///544"), "\e[1;30;48;5;224m", "multiple /");
