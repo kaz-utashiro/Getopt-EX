@@ -264,18 +264,19 @@ sub expand {
 	    debug_argv({color=>'R'}, $argv, undef, \@s, \@follow);
 
 	    ##
-	    ## $<shift>, $<move>, $<remove>, $<copy>
+	    ## $<shift>, $<move>, $<remove>, $<copy>, $<ignore>
 	    ##
 	    my $modified;
 	    @s = map sub {
 		$modified += s/\$<shift>/@follow ? shift @follow : ''/ge;
 		m{\A \$ <				# $<
-		  (?<cmd> move | remove | copy )	# move | remove | copy
+		  (?<cmd> move|remove|copy|ignore )	# command
 		  (?: \(      (?<off> -?\d+ ) ?		# (off
 			 (?: ,(?<len> -?\d+ ))? \) )?	#     ,len)
 		  > \z					# >
 		}x or return $_;
 		$modified++;
+		return () if $+{cmd} eq 'ignore';
 		my $p = ($+{cmd} eq 'copy')
 		    ? do { my @new = @follow; \@new }
 		    : \@follow;
