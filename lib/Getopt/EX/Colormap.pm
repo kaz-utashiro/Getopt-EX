@@ -890,7 +890,7 @@ behavior.
 Return colorized version of given text.
 
 B<colorize> produces 256 or 24bit colors depending on the value of
-C<Getopt::EX::Colormap::RGB24> variable and environment
+C<$Getopt::EX::Colormap::RGB24> variable and environment
 C<GETOPTEX_RGB24>.
 
 B<colorize24> always produces 24bit color sequence for 24bit/12bit
