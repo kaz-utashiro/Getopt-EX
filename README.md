@@ -5,7 +5,7 @@ Getopt::EX - Getopt Extender
 
 # VERSION
 
-Version v1.18.0
+Version v1.19.0
 
 # DESCRIPTION
 
@@ -103,10 +103,13 @@ to option parser.
 Actually, this is what [Getopt::EX::Long](https://metacpan.org/pod/Getopt::EX::Long) module is doing
 internally.
 
-To communicate with user-defined subroutines, use [Getopt::EX::Func](https://metacpan.org/pod/Getopt::EX::Func)
-module, which provide `parse_func` interface.  If your script has
-**--begin** option which tells the script to call specific function at
-the beginning of execution.  Write something like:
+## [Getopt::EX::Func](https://metacpan.org/pod/Getopt::EX::Func)
+
+To make your script to communicate with user-defined subroutines, use
+[Getopt::EX::Func](https://metacpan.org/pod/Getopt::EX::Func) module, which provide `parse_func` interface.  If
+your script has **--begin** option which tells the script to call
+specific function at the beginning of execution.  Write something
+like:
 
     use Getopt::EX::Func qw(parse_func);
     GetOptions("begin:s" => $opt_begin);

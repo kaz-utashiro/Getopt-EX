@@ -1,6 +1,6 @@
 package Getopt::EX;
 use 5.014;
-use version; our $VERSION = version->declare("v1.18.0");
+use version; our $VERSION = version->declare("v1.19.0");
 
 
 1;
@@ -12,7 +12,7 @@ Getopt::EX - Getopt Extender
 
 =head1 VERSION
 
-Version v1.18.0
+Version v1.19.0
 
 
 =head1 DESCRIPTION
@@ -111,10 +111,13 @@ to option parser.
 Actually, this is what L<Getopt::EX::Long> module is doing
 internally.
 
-To communicate with user-defined subroutines, use L<Getopt::EX::Func>
-module, which provide C<parse_func> interface.  If your script has
-B<--begin> option which tells the script to call specific function at
-the beginning of execution.  Write something like:
+=head2 L<Getopt::EX::Func>
+
+To make your script to communicate with user-defined subroutines, use
+L<Getopt::EX::Func> module, which provide C<parse_func> interface.  If
+your script has B<--begin> option which tells the script to call
+specific function at the beginning of execution.  Write something
+like:
 
     use Getopt::EX::Func qw(parse_func);
     GetOptions("begin:s" => $opt_begin);
@@ -126,7 +129,6 @@ Then the script can be invoked like this:
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
 
 See L<Getopt::EX::Func> for more detail.
-
 
 =head2 L<Getopt::EX::Colormap>
 

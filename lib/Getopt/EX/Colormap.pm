@@ -27,12 +27,12 @@ our $NO_RESET_EL = $ENV{GETOPTEX_NO_RESET_EL};
 
 my @nonlinear = do {
     map { ( $_->[0] ) x $_->[1] } (
-	[ 0, 95 ], #   0 ..  94
-	[ 1, 40 ], #  95 .. 134
-	[ 2, 40 ], # 135 .. 174
-	[ 3, 40 ], # 175 .. 224
-	[ 4, 40 ], # 225 .. 254
-	[ 5,  1 ], # 255
+	[ 0, 75 ], #   0 ..  74
+	[ 1, 40 ], #  75 .. 114
+	[ 2, 40 ], # 115 .. 154
+	[ 3, 40 ], # 155 .. 194
+	[ 4, 40 ], # 195 .. 234
+	[ 5, 21 ], # 235 .. 255
     );
 };
 
@@ -533,7 +533,7 @@ terminal :
 
 =over 4
 
-Beginning # can be omitted in 24bit RGB notation.
+Beginning C<#> can be omitted in 24bit hex RGB notation.
 
 When values are all same in 24bit or 12bit RGB, it is converted to 24
 grey level, otherwise 6x6x6 216 color.
