@@ -82,7 +82,7 @@ Return number sequence:
 
 package Getopt::EX::Numbers;
 
-use strict;
+use v5.14;
 use warnings;
 
 use Carp;

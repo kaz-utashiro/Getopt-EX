@@ -1,7 +1,6 @@
 package Getopt::EX::Colormap;
 
-use v5.014;
-use strict;
+use v5.14;
 use warnings;
 
 use Exporter 'import';
@@ -124,7 +123,7 @@ my %numbers = (
 sub ansi_numbers {
     local $_ = shift // '';
     my @numbers;
-    my $toggle = new Getopt::EX::ToggleValue value => 10;
+    my $toggle = Getopt::EX::ToggleValue->new(value => 10);
 
     while (m{\G
 	     (?:
@@ -187,7 +186,7 @@ sub ansi_numbers {
 	elsif ($+{name}) {
 	    state $colornames = do {
 		require Graphics::ColorNames;
-		new     Graphics::ColorNames;
+		Graphics::ColorNames->new;
 	    };
 	    if (my $rgb = $colornames->hex($+{name})) {
 		push @numbers, 38 + $toggle->value, rgbhex($rgb);
@@ -321,7 +320,7 @@ sub apply_color {
 
 sub new {
     my $class = shift;
-    my $obj = SUPER::new $class;
+    my $obj = $class->SUPER::new;
     my %opt = @_;
 
     $obj->{CACHE} = {};
@@ -441,8 +440,9 @@ Getopt::EX::Colormap - ANSI terminal color and option support
   GetOptions('colormap|cm:s' => @opt_colormap);
 
   require Getopt::EX::Colormap;
-  my $cm = new Getopt::EX::Colormap;
-  $cm->load_params(@opt_colormap);  
+  my $cm = Getopt::EX::Colormap
+      ->new
+      ->load_params(@opt_colormap);  
 
   print $cm->color('FILE', 'FILE labeled text');
 
@@ -798,9 +798,10 @@ at the module for detail.
     my @colors;
     
     require Getopt::EX::Colormap;
-    my $handler = new Getopt::EX::Colormap
+    my $handler = Getopt::EX::Colormap->new(
         HASH => \%colormap,
-        LIST => \@colors;
+        LIST => \@colors,
+        );
     
     $handler->load_params(@opt_colormap);
 

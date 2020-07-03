@@ -45,7 +45,7 @@
             "Graphics::ColorNames" : "0",
             "List::Util" : "1.45",
             "Moo" : "1.001",
-            "perl" : "5.014"
+            "perl" : "v5.14.0"
          }
       },
       "test" : {
