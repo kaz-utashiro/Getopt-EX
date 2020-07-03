@@ -460,10 +460,10 @@ Getopt::EX::Colormap - ANSI terminal color and option support
 =head1 DESCRIPTION
 
 Coloring text capability is not strongly bound to option processing,
-but it may be useful to give simple uniform way to specify complicated
-color setting from command line.
+but it may be useful to give a simple uniform way to specify
+complicated color setting from command line.
 
-This module assumes the color information is given in two ways: one in
+This module assumes color information is given in two ways: one in
 labeled list, and one in indexed list.
 
 This is an example of labeled list:
@@ -472,7 +472,7 @@ This is an example of labeled list:
     --cm 'OTEXT=C,NTEXT=M,*CHANGE=BD/445,DELETE=APPEND=RD/544' \
     --cm 'CMARK=GS,MMARK=YS,CTEXT=G,MTEXT=Y'
 
-Each color definitions are separated by comma (C<,>) and label is
+Each color definitions are separated by comma (C<,>) and labels are
 specified by I<LABEL=> style precedence.  Multiple labels can be set
 for same value by connecting them together.  Label name can be
 specified with C<*> and C<?> wildcard characters.
@@ -964,7 +964,7 @@ terminal.
 However, some terminal, including Apple_Terminal, clear the text on
 the cursor when I<Erase Line> sequence is received at the rightmost
 column of the screen.  If you do not want this behavior, set module
-variable C<Getopt::EX::Colormap::NO_RESET_EL> or
+variable C<$Getopt::EX::Colormap::NO_RESET_EL> or
 C<GETOPTEX_NO_RESET_EL> environment.
 
 
