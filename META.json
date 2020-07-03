@@ -45,7 +45,7 @@
             "Graphics::ColorNames" : "0",
             "List::Util" : "1.45",
             "Moo" : "1.001",
-            "perl" : "v5.14.0"
+            "perl" : "5.014"
          }
       },
       "test" : {
@@ -66,7 +66,7 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "v1.19.0",
+   "version" : "v1.19.1",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <utashiro@cpan.org>"
