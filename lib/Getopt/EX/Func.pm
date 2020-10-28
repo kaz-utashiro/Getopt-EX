@@ -73,10 +73,10 @@ sub parse_func {
     elsif (m{
 	^ &?
 	  (?<name>[\w:]+)
-	  (?:
-	    (?: (?<P>[(]) | = )  ## start with '(' or '='
-	    (?<arg> [^)]* )      ## optional arg list
-	    (?(<P>) [)] | )      ## close ')' or none
+	  (?|
+	    \( (?<arg> [^()]* ) \)	# (...)
+	    |
+	    =  (?<arg> [^()]* )		# =...
 	  )?
 	$
     }x) {
