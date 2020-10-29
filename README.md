@@ -5,7 +5,7 @@ Getopt::EX - Getopt Extender
 
 # VERSION
 
-Version 1.020\_001
+Version v1.20\_2
 
 # DESCRIPTION
 
