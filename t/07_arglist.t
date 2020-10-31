@@ -26,9 +26,9 @@ is_deeply([ arg2kvlist("arg1,arg2=2,arg3=sub(),arg4") ],
 	  [ arg1 => 1, arg2 => 2,
 	    arg3 => "sub()", arg4 => 1 ], "paren");
 
-is_deeply([ arg2kvlist("arg1,arg2=2,arg3=sub(x,y(z(a,b))),arg4") ],
+is_deeply([ arg2kvlist("arg1,arg2=2,arg3=sub(x=1,y=sub(z(a,b))),arg4") ],
 	  [ arg1 => 1, arg2 => 2,
-	    arg3 => "sub(x,y(z(a,b)))", arg4 => 1 ], "nested paren");
+	    arg3 => "sub(x=1,y=sub(z(a,b)))", arg4 => 1 ], "nested paren");
 
 done_testing;
 
