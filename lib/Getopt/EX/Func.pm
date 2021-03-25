@@ -95,8 +95,8 @@ sub parse_func {
 sub arg2kvlist {
     my @kv;
     for (@_) {
-	while (/\G
-	       (?<k> [\w:]+ )
+	while (/\G \s*
+	       (?<k> [^,=]+ )
 	       (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )?
 	       ,*/xgc
 	    ) {
