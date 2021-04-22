@@ -1,5 +1,5 @@
 package Getopt::EX::Colormap;
-use version; our $VERSION = version->declare("v1.22.1");
+use version; our $VERSION = version->declare("v1.23.0");
 
 use v5.14;
 use warnings;
@@ -241,8 +241,17 @@ my %csi_terminator = (
     RCP => 'u',		# Restore Cursor Position
     );
 
+my %other_sequence = (
+    RIS   => "\ec",	# Reset to Initial State
+    DECSC => "\e7",	# DEC Save Cursor
+    DECRC => "\e8",	# DEC Restore Cursor
+    );
+
 sub csi_code {
     my $name = shift;
+    if (my $seq = $other_sequence{$name}) {
+	return $seq;
+    }
     my $c = $csi_terminator{$name} or do {
 	warn "$name: Unknown ANSI name.\n";
 	return '';
@@ -620,7 +629,7 @@ copied to just before ending reset sequence, with preceding sequence
 if necessary, to keep the effect even when the text is wrapped to
 multiple lines.
 
-Other ANSI CSI sequences are also available in the form of "{NAME}",
+Other ANSI CSI sequences are also available in the form of C<{NAME}>,
 despite there are few reasons to use them.
 
     CUU n   Cursor up
@@ -644,6 +653,13 @@ These name accept following optional numerical parameters, using comma
 (',') or semicolon (';') to separate multiple ones, with optional
 braces.  For example, color spec C<DK/544> can be described as
 C<{SGR1;30;48;5;224}> or more readable C<{SGR(1,30,48,5,224)}>.
+
+Some other escape sequences are supported in the form of C<{NAME}>.
+These sequences do not start with CSI, and take no parameters.
+
+    RIS     Reset to Initial State
+    DECSC   DEC Save Cursor
+    DECRC   DEC Restore Cursor
 
 =head1 COLOR NAMES
 
