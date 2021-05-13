@@ -548,7 +548,7 @@ lowercase :
     C  c  Cyan
     M  m  Magenta
     Y  y  Yellow
-    K  b  Black
+    K  k  Black
     W  w  White
 
 or RGB values and 24 grey levels if using ANSI 256 or full color
