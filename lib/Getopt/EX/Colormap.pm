@@ -3,12 +3,13 @@ use version; our $VERSION = version->declare("v1.23.0");
 
 use v5.14;
 use warnings;
+use utf8;
 
 use Exporter 'import';
 our @EXPORT      = qw();
 our @EXPORT_OK   = qw(
     colorize colorize24 ansi_code ansi_pair csi_code
-    colortable
+    colortable colortable6 colortable12 colortable24
     );
 our %EXPORT_TAGS = (all => [ @EXPORT_OK ]);
 our @ISA         = qw(Getopt::EX::LabeledParam);
@@ -40,12 +41,19 @@ my @nonlinear = do {
 };
 
 sub map_256_to_6 {
+    use integer;
     my $i = shift;
     if ($LINEAR256) {
-	int ( 5 * $i / 255 );
+	5 * $i / 255;
     } else {
+	# ( $i - 35 ) / 40;
 	$nonlinear[$i];
     }
+}
+
+sub map_6_to_256 {
+    my $i = shift;
+    $i == 0 ? 0 : $i * 40 + 55;
 }
 
 sub ansi256_number {
@@ -403,6 +411,90 @@ sub colormap {
 	},
 	"\t\$<move(0,0)>\n",
 	);
+}
+
+sub map_12_to_256 {
+    my $i = shift;
+    $i == 0 ? 0 : $i * 20 + 35;
+}
+
+sub colortable6 {
+    my $width = shift || 144;
+    my $step = 6;
+    my $max = 5;
+    for my $sub (
+	sub { @_[0,1,2] },
+	sub { @_[1,2,0] },
+	sub { @_[2,0,1] },
+	) {
+	my $rgb = sub {
+	    join '', map { sprintf "%02x", map_6_to_256($_) } $sub->(@_)
+	};
+	for (my $b = 0; $b <= $max; $b += 1) {
+	    my @s;
+	    for (my $c = 0; $c <= $max; $c += 1) {
+		for (my $a = 0; $a <= $max; $a += 1) {
+		    my $rgb = $rgb->($a, $b, $c);
+		    push @s, colorize "$rgb/$rgb", "    ";
+		}
+	    }
+	    print @s, "\n";
+	    print @s, "\n";
+	}
+    }
+}
+
+sub colortable12 {
+    my $width = shift || 144;
+    my $step = 24;
+    my $max = 11;
+    for my $sub (
+	sub { @_[0,1,2] },
+	sub { @_[1,2,0] },
+	sub { @_[2,0,1] },
+	) {
+	my $rgb = sub {
+	    join '', map { sprintf "%02x", map_12_to_256($_) } $sub->(@_)
+	};
+	for (my $b = 0; $b <= $max; $b += 1) {
+	    for (my $c = 0; $c <= $max; $c += 2) {
+		for (my $a = 0; $a <= $max; $a += 1) {
+		    my $rgb = $rgb->($a, $b, $c);
+		    print colorize "$rgb/$rgb", "  ";
+		}
+	    }
+	    print "\n";
+	}
+    }
+}
+
+sub map_24_to_256 {
+    my $i = shift;
+    $i == 0 ? 0 : $i * 10 + 25;
+}
+
+sub colortable24 {
+    my $step = 24;
+    binmode STDOUT, ":utf8";
+    for my $order (
+	sub { @_[0,1,2] },
+	sub { @_[1,2,0] },
+	sub { @_[2,0,1] },
+	) {
+	my $rgb = sub {
+	    sprintf "#%02x%02x%02x", map { map_24_to_256($_) } $order->(@_);
+	};
+	for (my $y = 0; $y < $step; $y += 2) {
+	    for (my $z = 0; $z < $step; $z += 4) {
+		for (my $x = 0; $x < $step; $x += 1) {
+		    my $fg = $rgb->($x, $y,   $z);
+		    my $bg = $rgb->($x, $y+1, $z);
+		    print colorize "$fg/$bg", "\N{UPPER HALF BLOCK}";
+		}
+	    }
+	    print "\n";
+	}
+    }
 }
 
 sub colortable {
