@@ -26,6 +26,7 @@ use Getopt::EX::Func qw(callable);
 
 our $RGB24       = $ENV{GETOPTEX_RGB24};
 our $LINEAR256   = $ENV{GETOPTEX_LINEAR256};
+our $LINEAR_GREY = $ENV{GETOPTEX_LINEARGREY};
 our $NO_RESET_EL = $ENV{GETOPTEX_NO_RESET_EL};
 our $SPLIT_ANSI  = $ENV{GETOPTEX_SPLIT_ANSI};
 
@@ -77,16 +78,22 @@ sub ansi256_number {
 }
 
 sub rgb24_number {
+    use integer;
     my($rx, $gx, $bx) = @_;
     my($r, $g, $b, $grey);
-    if ($rx != 255 and $rx == $gx and $rx == $bx) {
-	##
-	## Divide area into 25 segments, and map to BLACK and 24 GREYS
-	##
-	$grey = int ( $rx * 25 / 255 ) - 1;
-	if ($grey < 0) {
-	    $r = $g = $b = 0;
-	    $grey = undef;
+    if ($rx != 0 and $rx != 255 and $rx == $gx and $rx == $bx) {
+	if ($LINEAR_GREY) {
+	    ##
+	    ## Divide area into 25 segments, and map to BLACK and 24 GREYS
+	    ##
+	    $grey = $rx * 25 / 255 - 1;
+	    if ($grey < 0) {
+		$r = $g = $b = 0;
+		$grey = undef;
+	    }
+	} else {
+	    ## map to 8, 18, 28, ... 238
+	    $grey = min(23, ($rx - 3) / 10);
 	}
     } else {
 	($r, $g, $b) = map { map_256_to_6 $_ } $rx, $gx, $bx;
