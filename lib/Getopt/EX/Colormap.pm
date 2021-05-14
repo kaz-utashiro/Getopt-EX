@@ -52,9 +52,13 @@ sub map_256_to_6 {
     }
 }
 
-sub map_6_to_256 {
-    my $i = shift;
-    $i == 0 ? 0 : $i * 40 + 55;
+sub map_to_256 {
+    my($base, $i) = @_;
+    if    ($i == 0)     { 0 }
+    elsif ($base ==  6) { $i * 40 + 55 }
+    elsif ($base == 12) { $i * 20 + 35 }
+    elsif ($base == 24) { $i * 10 + 25 }
+    else  { die }
 }
 
 sub ansi256_number {
@@ -416,90 +420,73 @@ sub colormap {
 		sprintf $format, $opt{option}, $_, $hash->{$_} // "";
 	    } sort $compare keys %{$hash};
 	},
-	"\t\$<move(0,0)>\n",
+	"\t\$<ignore>\n",
 	);
 }
 
-sub map_12_to_256 {
-    my $i = shift;
-    $i == 0 ? 0 : $i * 20 + 35;
-}
-
 sub colortable6 {
-    my $width = shift || 144;
-    my $step = 6;
-    my $max = 5;
-    for my $sub (
-	sub { @_[0,1,2] },
-	sub { @_[1,2,0] },
-	sub { @_[2,0,1] },
-	) {
-	my $rgb = sub {
-	    join '', map { sprintf "%02x", map_6_to_256($_) } $sub->(@_)
-	};
-	for (my $b = 0; $b <= $max; $b += 1) {
-	    my @s;
-	    for (my $c = 0; $c <= $max; $c += 1) {
-		for (my $a = 0; $a <= $max; $a += 1) {
-		    my $rgb = $rgb->($a, $b, $c);
-		    push @s, colorize "$rgb/$rgb", "    ";
-		}
-	    }
-	    print @s, "\n";
-	    print @s, "\n";
-	}
-    }
+    colortableN(
+	step   => 6,
+	string => "    ",
+	line   => 2,
+	x => 1, y => 1, z => 1,
+	@_
+	);
 }
 
 sub colortable12 {
-    my $width = shift || 144;
-    my $step = 24;
-    my $max = 11;
-    for my $sub (
-	sub { @_[0,1,2] },
-	sub { @_[1,2,0] },
-	sub { @_[2,0,1] },
-	) {
-	my $rgb = sub {
-	    join '', map { sprintf "%02x", map_12_to_256($_) } $sub->(@_)
-	};
-	for (my $b = 0; $b <= $max; $b += 1) {
-	    for (my $c = 0; $c <= $max; $c += 2) {
-		for (my $a = 0; $a <= $max; $a += 1) {
-		    my $rgb = $rgb->($a, $b, $c);
-		    print colorize "$rgb/$rgb", "  ";
-		}
-	    }
-	    print "\n";
-	}
-    }
-}
-
-sub map_24_to_256 {
-    my $i = shift;
-    $i == 0 ? 0 : $i * 10 + 25;
+    colortableN(
+	step   => 12,
+	string => "  ",
+	x => 1, y => 1, z => 2,
+	@_
+	);
 }
 
 sub colortable24 {
-    my $step = 24;
+    colortableN(
+	step   => 24,
+	string => "\N{UPPER HALF BLOCK}",
+	shift  => 1,
+	x => 1, y => 2, z => 4,
+	@_
+	);
+}
+
+sub colortableN {
+    my %arg = (
+	shift => 0,
+	line  => 1,
+	row   => 3,
+	@_);
+    my @combi = do {
+	my @default = qw( XYZ YZX ZXY  YXZ XZY ZYX );
+	if (my @s = $arg{row} =~ /[xyz]{3}/ig) {
+	    @s;
+	} else {
+	    @default[0 .. $arg{row} - 1];
+	}
+    };
+    my @order = map {
+	my @ord = map { { X=>0, Y=>1, Z=>2 }->{$_} } /[XYZ]/g;
+	sub { @_[@ord] }
+    } map { uc } @combi;
     binmode STDOUT, ":utf8";
-    for my $order (
-	sub { @_[0,1,2] },
-	sub { @_[1,2,0] },
-	sub { @_[2,0,1] },
-	) {
+    for my $order (@order) {
 	my $rgb = sub {
-	    sprintf "#%02x%02x%02x", map { map_24_to_256($_) } $order->(@_);
+	    sprintf "#%02x%02x%02x",
+		map { map_to_256($arg{step}, $_) } $order->(@_);
 	};
-	for (my $y = 0; $y < $step; $y += 2) {
-	    for (my $z = 0; $z < $step; $z += 4) {
-		for (my $x = 0; $x < $step; $x += 1) {
-		    my $fg = $rgb->($x, $y,   $z);
-		    my $bg = $rgb->($x, $y+1, $z);
-		    print colorize "$fg/$bg", "\N{UPPER HALF BLOCK}";
+	for (my $y = 0; $y < $arg{step}; $y += $arg{y}) {
+	    my @out;
+	    for (my $z = 0; $z < $arg{step}; $z += $arg{z}) {
+		for (my $x = 0; $x < $arg{step}; $x += $arg{x}) {
+		    my $fg = $rgb->($x, $y, $z);
+		    my $bg = $rgb->($x, $y + $arg{shift}, $z);
+		    push @out, colorize "$fg/$bg", $arg{string};
 		}
 	    }
-	    print "\n";
+	    print((@out, "\n") x $arg{line});
 	}
     }
 }
