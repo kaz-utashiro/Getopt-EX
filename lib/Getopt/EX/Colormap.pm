@@ -443,6 +443,8 @@ sub colortable12 {
 	);
 }
 
+use charnames ':full';
+
 sub colortable24 {
     colortableN(
 	step   => 24,
