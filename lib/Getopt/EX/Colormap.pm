@@ -443,12 +443,13 @@ sub colortable12 {
 	);
 }
 
-use charnames ':full';
+# use charnames ':full';
 
 sub colortable24 {
     colortableN(
 	step   => 24,
-	string => "\N{UPPER HALF BLOCK}",
+#	string => "\N{UPPER HALF BLOCK}",
+	string => "\N{U+2580}",
 	shift  => 1,
 	x => 1, y => 2, z => 4,
 	@_
