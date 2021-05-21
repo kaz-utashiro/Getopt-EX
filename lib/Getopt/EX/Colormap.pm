@@ -352,7 +352,7 @@ sub apply_color {
     else {
 	my($s, $e) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
 	state $reset = qr{ \e\[[0;]*m (?: \e\[[0;]*[Km] )* }x;
-	$text =~ s/(^|$reset)([^\e\r\n]*)/${1}${s}${2}${e}/mg;
+	$text =~ s/(^|$reset)([^\e\r\n]+)/${1}${s}${2}${e}/mg;
 	return $text;
     }
 }
