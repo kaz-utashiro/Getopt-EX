@@ -43,8 +43,8 @@
       "runtime" : {
          "requires" : {
             "Graphics::ColorNames" : "0",
-            "List::Util" : "1.45",
-            "Moo" : "1.001",
+            "Hash::Util" : "0",
+            "List::Util" : "1.29",
             "perl" : "5.014"
          }
       },
