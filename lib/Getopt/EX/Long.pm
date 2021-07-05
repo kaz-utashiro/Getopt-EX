@@ -200,6 +200,9 @@ same as rc file.  So you can define arbitrary option there.  Combined
 with startup function call described above, it is possible to control
 module behavior by user defined option.
 
+As for start-up file and Module specification, read
+L<Getopt::EX::Module> document for detail.
+
 =head1 CONFIG OPTIONS
 
 Config options are set by B<Getopt::ExConfigure> or B<exconfig>
@@ -227,4 +230,5 @@ be exported.
 
 =head1 SEE ALSO
 
-L<Getopt::EX>
+L<Getopt::EX>,
+L<Getopt::EX::Module>
