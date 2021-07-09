@@ -24,7 +24,7 @@ sub new {
 	LIST => [],
     }, $class;
 
-    configure $obj @_;
+    $obj->configure(@_) if @_;
 
     $obj;
 }

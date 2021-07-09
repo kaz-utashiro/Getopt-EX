@@ -364,7 +364,7 @@ sub new {
 
     $obj->{CACHE} = {};
     $opt{CONCAT} //= "^"; # Reset character for LabeledParam object
-    configure $obj %opt;
+    $obj->configure(%opt);
 
     $obj;
 }
