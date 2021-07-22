@@ -109,10 +109,26 @@ sub load_params {
 		}
 	    }
 	    map {
-		if (!/\W/ and $obj->{NEWLABEL}) {
-		    $_;
-		} else {
-		    match_glob($_, keys %{$obj->{HASH}})
+		# plain label
+		if (not /\W/) {
+		    if (exists $obj->{HASH}->{$_}) {
+			$_;
+		    } else {
+			if ($obj->{NEWLABEL}) {
+			    $_;
+			} else {
+			    warn "$_: Unknown label\n";
+			    ();
+			}
+		    }
+		}
+		# wild card
+		else {
+		    my @labels = match_glob($_, keys %{$obj->{HASH}});
+		    if (@labels == 0) {
+			warn "$_: Unmatched label\n";
+		    }
+		    @labels;
 		}
 	    }
 	    @$_;
