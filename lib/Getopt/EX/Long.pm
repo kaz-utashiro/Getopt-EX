@@ -119,7 +119,7 @@ sub new {
     while (defined (my $i = first { $_[$_] eq 'exconfig' } 0 .. $#_)) {
 	push @exconfig, @{ (splice @_, $i, 2)[1] };
     }
-    if (@exconfig == 0 and $Getopt::EX::Long::AUTO_DEFAULT) {
+    if (@exconfig == 0 and $ConfigOption{AUTO_DEFAULT}) {
 	@exconfig = Getopt::EX::Long::get_default();
     }
 
