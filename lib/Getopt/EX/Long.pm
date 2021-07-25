@@ -44,7 +44,14 @@ sub GetOptionsFromArray {
 
     $loader->deal_with($argv);
 
-    push @_, $loader->builtins;
+    my @builtins = do {
+	if (ref $_[1] eq 'HASH') {
+	    $loader->hashed_builtins($_[1]);
+	} else {
+	    $loader->builtins;
+	}
+    };
+    push @_, @builtins;
 
     goto &Getopt::Long::GetOptionsFromArray;
 }
@@ -137,7 +144,14 @@ sub getoptionsfromarray {
 
     $loader->deal_with($argv);
 
-    push @_, $loader->builtins;
+    my @builtins = do {
+	if (ref $_[1] eq 'HASH') {
+	    $loader->hashed_builtins($_[1]);
+	} else {
+	    $loader->builtins;
+	}
+    };
+    push @_, @builtins;
 
     $obj->SUPER::getoptionsfromarray(@_);
 }
