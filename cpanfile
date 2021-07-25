@@ -1,6 +1,6 @@
 requires 'perl' => v5.14;
 
-requires 'Getopt::Long';
+requires 'Getopt::Long', '2.39';
 
 requires 'List::Util' => 1.29;
 requires 'Hash::Util';
