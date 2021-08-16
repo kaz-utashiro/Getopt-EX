@@ -90,7 +90,7 @@ sub load_params {
 	    push @spec, parse_func({ PACKAGE => 'main' }, $1);
 	}
 	if ($spec =~ s/\b(sub\s*{.*)//) { # sub { ... }
-	    push @spec, parse_func($1);
+	    push @spec, parse_func({ PACKAGE => 'main' }, $1);
 	}
 	push @spec, $spec if $spec ne '';
 	my $c = @spec > 1 ? [ @spec ] : @spec == 1 ? $spec[0] : "";
