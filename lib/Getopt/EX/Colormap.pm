@@ -143,32 +143,31 @@ my %numbers = (
     W => 37, w => 97,	# W : White
     );
 
+my $colorspec_re = qr{
+      (?<toggle> /)			 # /
+    | (?<reset> \^)			 # ^
+    | (?<hex>	 [0-9a-f]{6}		 # 24bit hex
+	     | \#[0-9a-f]{3,} )		 # generic hex
+    | (?<rgb>  \(\d+,\d+,\d+\) )	 # 24bit decimal
+    | (?<c256>	 [0-5][0-5][0-5]	 # 216 (6x6x6) colors
+	     | L(?:[01][0-9]|[2][0-5]) ) # 24 grey levels + B/W
+    | (?<c16>  [KRGYBMCW] )		 # 16 colors
+    | (?<efct> ~?[;NZDPIUFQSVX] )	 # effects
+    | (?<csi>  { (?<csi_name>[A-Z]+)	 # other CSI
+		 (?<P> \( )?		 # optional (
+		 (?<csi_param>[\d,;]*)	 # 0;1;2
+		 (?(<P>) \) )		 # closing )
+	       }
+	     | (?<csi_abbr>[E]) )	 # abbreviation
+    | < (?<name> \w+ ) >		 # <colorname>
+}xi;
+
 sub ansi_numbers {
     local $_ = shift // '';
     my @numbers;
     my $toggle = Getopt::EX::ToggleValue->new(value => 10);
 
-    while (m{\G
-	     (?:
-	       (?<toggle> /)				# /
-	     | (?<reset> \^)				# ^
-	     | (?<hex>    [0-9a-f]{6}			# 24bit hex
-	              | \#[0-9a-f]{3,} )		# generic hex
-	     | (?<rgb>  \(\d+,\d+,\d+\) )		# 24bit decimal
-	     | (?<c256>   [0-5][0-5][0-5]		# 216 (6x6x6) colors
-		      | L(?:[01][0-9]|[2][0-5]) )	# 24 grey levels + B/W
-	     | (?<c16>  [KRGYBMCW] )			# 16 colors
-	     | (?<efct> ~?[;NZDPIUFQSVX] )		# effects
-	     | (?<csi>  { (?<csi_name>[A-Z]+)		# other CSI
-			  (?<P> \( )?			# optional (
-			  (?<csi_param>[\d,;]*)		# 0;1;2
-			  (?(<P>) \) )			# closing )
-			}
-		      | (?<csi_abbr>[E]) )		# abbreviation
-	     | < (?<name> \w+ ) >			# <colorname>
-	     | (?<err>  .+ )				# error
-	     )
-	    }xig) {
+    while (m{\G (?: $colorspec_re | (?<err> .+ ) ) }xig) {
 	if ($+{toggle}) {
 	    $toggle->toggle;
 	}
