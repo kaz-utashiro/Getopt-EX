@@ -5,16 +5,20 @@ use v5.14;
 use warnings;
 use Carp;
 
+*REQUIRE_ORDER   = \$Getopt::Long::REQUIRE_ORDER;
+*PERMUTE         = \$Getopt::Long::PERMUTE;
+*RETURN_IN_ORDER = \$Getopt::Long::RETURN_IN_ORDER;
+
 use Exporter 'import';
-our @EXPORT      = ( 'GetOptions' );
-our @EXPORT_OK   = ( 'GetOptionsFromArray',
-		   # 'GetOptionsFromString',
-		     'Configure',
-		     'HelpMessage',
-		     'VersionMessage',
-		     'ExConfigure',
+our @EXPORT    = qw(&GetOptions $REQUIRE_ORDER $PERMUTE $RETURN_IN_ORDER);
+our @EXPORT_OK = ( 'GetOptionsFromArray',
+		 # 'GetOptionsFromString',
+		   'Configure',
+		   'HelpMessage',
+		   'VersionMessage',
+		   'ExConfigure',
     );
-our @ISA         = qw(Getopt::Long);
+our @ISA       = qw(Getopt::Long);
 
 use Data::Dumper;
 use Getopt::Long();
@@ -238,9 +242,6 @@ B<Getopt::EX::Loader>.  Read its document for detail.
 =head1 INCOMPATIBILITY
 
 Subroutine B<GetOptionsFromString> is not supported.
-
-Variables C<$REQUIRE_ORDER>, C<$PERMUTE>, C<$RETURN_IN_ORDER> can not
-be exported.
 
 =head1 SEE ALSO
 
