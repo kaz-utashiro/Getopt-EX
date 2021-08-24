@@ -161,7 +161,7 @@ Getopt::EX::Long - Getopt::Long compatible glue module
 =head1 SYNOPSIS
 
   use Getopt::EX::Long;
-  ExConfigure(...)
+  GetOptions(...);
 
   or
 
@@ -175,7 +175,7 @@ Getopt::EX::Long - Getopt::Long compatible glue module
 
 L<Getopt::EX::Long> is almost compatible to L<Getopt::Long> and you
 can just replace module declaration and it should work just same as
-before.
+before (See L<INCOMPATIBILITY> section).
 
 Besides working same, user can define their own option aliases and
 write dynamically loaded extension module.  If the command name is
