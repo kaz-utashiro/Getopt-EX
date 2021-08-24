@@ -9,14 +9,18 @@ use Carp;
 *PERMUTE         = \$Getopt::Long::PERMUTE;
 *RETURN_IN_ORDER = \$Getopt::Long::RETURN_IN_ORDER;
 
+*Configure       = \&Getopt::Long::Configure;
+*HelpMessage     = \&Getopt::Long::HelpMessage;
+*VersionMessage  = \&Getopt::Long::VersionMessage;
+
 use Exporter 'import';
 our @EXPORT    = qw(&GetOptions $REQUIRE_ORDER $PERMUTE $RETURN_IN_ORDER);
-our @EXPORT_OK = ( 'GetOptionsFromArray',
-		 # 'GetOptionsFromString',
-		   'Configure',
-		   'HelpMessage',
-		   'VersionMessage',
-		   'ExConfigure',
+our @EXPORT_OK = ( '&GetOptionsFromArray',
+		 # '&GetOptionsFromString',
+		   '&Configure',
+		   '&HelpMessage',
+		   '&VersionMessage',
+		   '&ExConfigure',
     );
 our @ISA       = qw(Getopt::Long);
 
@@ -72,18 +76,6 @@ sub ExConfigure {
 	}
     }
     warn "Unknown option: ", Dumper \%opt if %opt;
-}
-
-sub Configure {
-    goto &Getopt::Long::Configure;
-}
-
-sub HelpMessage {
-    goto &Getopt::Long::HelpMessage;
-}
-
-sub VersionMessage {
-    goto &Getopt::Long::VersionMessage;
 }
 
 sub set_default {
