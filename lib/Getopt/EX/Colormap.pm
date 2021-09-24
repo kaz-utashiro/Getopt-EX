@@ -24,7 +24,7 @@ use Getopt::EX::LabeledParam;
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
-our $RGB24       = $ENV{GETOPTEX_RGB24};
+our $RGB24       = $ENV{COLORTERM}//'' eq 'truecolor' || $ENV{GETOPTEX_RGB24};
 our $LINEAR256   = $ENV{GETOPTEX_LINEAR256};
 our $LINEAR_GREY = $ENV{GETOPTEX_LINEARGREY};
 our $NO_RESET_EL = $ENV{GETOPTEX_NO_RESET_EL};
@@ -1013,8 +1013,8 @@ behavior.
 Return colorized version of given text.
 
 B<colorize> produces 256 or 24bit colors depending on the value of
-C<$Getopt::EX::Colormap::RGB24> variable and environment
-C<GETOPTEX_RGB24>.
+C<$Getopt::EX::Colormap::RGB24> variable.  Also 24bit mode is enabled
+when environment C<GETOPTEX_RGB24> is set or C<COLORTERM> is C<truecolor>.
 
 B<colorize24> always produces 24bit color sequence for 24bit/12bit
 color spec.

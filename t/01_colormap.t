@@ -4,7 +4,7 @@ use utf8;
 use Test::More;
 
 BEGIN {
-    for (grep /^GETOPTEX/, keys %ENV) {
+    for (grep /^GETOPTEX|^COLORTERM$/, keys %ENV) {
 	delete $ENV{$_};
     }
 }
