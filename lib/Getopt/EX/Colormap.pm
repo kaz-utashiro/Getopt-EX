@@ -301,9 +301,11 @@ sub ansi_code {
 
 sub ansi_pair {
     my $spec = shift;
+    my $el = 0;
     my $start = ansi_code $spec // '';
     my $end = $start eq '' ? '' : do {
 	if ($start =~ /(.*)(\e\[[0;]*K)(.*)/) {
+	    $el = 1;
 	    if ($3) {
 		$1 . EL . RESET;
 	    } else {
@@ -317,7 +319,7 @@ sub ansi_pair {
 	    }
 	}
     };
-    ($start, $end);
+    ($start, $end, $el);
 }
 
 sub colorize {
@@ -349,9 +351,13 @@ sub apply_color {
 	return $color->call for $text;
     }
     else {
-	my($s, $e) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
+	my($s, $e, $el) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
 	state $reset = qr{ \e\[[0;]*m (?: \e\[[0;]*[Km] )* }x;
-	$text =~ s/(^|$reset)([^\e\r\n]+)/${1}${s}${2}${e}/mg;
+	if ($el) {
+	    $text =~ s/(^|$reset)([^\e\r\n]*)/${1}${s}${2}${e}/mg;
+	} else {
+	    $text =~ s/(^|$reset)([^\e\r\n]+)/${1}${s}${2}${e}/mg;
+	}
 	return $text;
     }
 }
