@@ -24,11 +24,12 @@ use Getopt::EX::LabeledParam;
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
-our $RGB24       = $ENV{COLORTERM}//'' eq 'truecolor' || $ENV{GETOPTEX_RGB24};
-our $LINEAR256   = $ENV{GETOPTEX_LINEAR256};
-our $LINEAR_GREY = $ENV{GETOPTEX_LINEARGREY};
-our $NO_RESET_EL = $ENV{GETOPTEX_NO_RESET_EL};
-our $SPLIT_ANSI  = $ENV{GETOPTEX_SPLIT_ANSI};
+our $NO_COLOR    //= $ENV{NO_COLOR};
+our $RGB24       //= $ENV{COLORTERM}//'' eq 'truecolor' || $ENV{GETOPTEX_RGB24};
+our $LINEAR256   //= $ENV{GETOPTEX_LINEAR256};
+our $LINEAR_GREY //= $ENV{GETOPTEX_LINEARGREY};
+our $NO_RESET_EL //= $ENV{GETOPTEX_NO_RESET_EL};
+our $SPLIT_ANSI  //= $ENV{GETOPTEX_SPLIT_ANSI};
 
 my @nonlinear = do {
     map { ( $_->[0] ) x $_->[1] } (
@@ -350,6 +351,9 @@ sub apply_color {
     if (callable $color) {
 	return $color->call for $text;
     }
+    elsif ($NO_COLOR) {
+        return $text;
+    }
     else {
 	my($s, $e, $el) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
 	state $reset = qr{ \e\[[0;]*m (?: \e\[[0;]*[Km] )* }x;
@@ -453,8 +457,7 @@ sub colortable12 {
 sub colortable24 {
     colortableN(
 	step   => 24,
-#	string => "\N{UPPER HALF BLOCK}",
-	string => "\N{U+2580}",
+	string => "\N{U+2580}", # "\N{UPPER HALF BLOCK}",
 	shift  => 1,
 	x => 1, y => 2, z => 4,
 	@_
@@ -1012,12 +1015,9 @@ behavior.
 
 Return colorized version of given text.
 
-B<colorize> produces 256 or 24bit colors depending on the value of
-C<$Getopt::EX::Colormap::RGB24> variable.  Also 24bit mode is enabled
-when environment C<GETOPTEX_RGB24> is set or C<COLORTERM> is C<truecolor>.
-
-B<colorize24> always produces 24bit color sequence for 24bit/12bit
-color spec.
+B<colorize> produces 256 or 24bit colors depending on the setting,
+while B<colorize24> always produces 24bit color sequence for
+24bit/12bit color spec.  See L<ENVIRONMENT>.
 
 =item B<ansi_code>(I<color_spec>)
 
@@ -1087,8 +1087,23 @@ terminal.
 However, some terminal, including Apple_Terminal, clear the text on
 the cursor when I<Erase Line> sequence is received at the rightmost
 column of the screen.  If you do not want this behavior, set module
-variable C<$Getopt::EX::Colormap::NO_RESET_EL> or
-C<GETOPTEX_NO_RESET_EL> environment.
+variable C<$NO_RESET_EL> or C<GETOPTEX_NO_RESET_EL> environment.
+
+
+=head1 ENVIRONMENT
+
+If the environment variable C<NO_COLOR> is set, colorizing interface
+in this module never produce color sequence.  Primitive function such
+as C<ansi_code> is not the case.  See L<https://no-color.org/>.
+
+B<color> method and B<colorize> function produces 256 or 24bit colors
+depending on the value of C<$RGB24> module variable.  Also 24bit mode
+is enabled when environment C<GETOPTEX_RGB24> is set or C<COLORTERM>
+is C<truecolor>.
+
+If the module variable C<$NO_RESET_EL> set, or C<GETOPTEX_NO_RESET_EL>
+environment, I<Erace Line> sequence is not produced after RESET code.
+See L<RESET SEQUENCE>.
 
 
 =head1 SEE ALSO
@@ -1101,6 +1116,25 @@ L<https://en.wikipedia.org/wiki/ANSI_escape_code>
 L<Graphics::ColorNames::X>
 
 L<https://en.wikipedia.org/wiki/X11_color_names>
+
+L<https://no-color.org/>
+
+=head1 AUTHOR
+
+Kazumasa Utashiro
+
+=head1 COPYRIGHT
+
+The following copyright notice applies to all the files provided in
+this distribution, including binary files, unless explicitly noted
+otherwise.
+
+Copyright 2015-2021 Kazumasa Utashiro
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 
