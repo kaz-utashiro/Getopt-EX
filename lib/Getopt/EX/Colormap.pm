@@ -24,7 +24,7 @@ use Getopt::EX::LabeledParam;
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
-our $NO_COLOR    //= $ENV{NO_COLOR};
+our $NO_COLOR    //= defined $ENV{NO_COLOR};
 our $RGB24       //= $ENV{COLORTERM}//'' eq 'truecolor' || $ENV{GETOPTEX_RGB24};
 our $LINEAR256   //= $ENV{GETOPTEX_LINEAR256};
 our $LINEAR_GREY //= $ENV{GETOPTEX_LINEARGREY};
@@ -1092,9 +1092,10 @@ variable C<$NO_RESET_EL> or C<GETOPTEX_NO_RESET_EL> environment.
 
 =head1 ENVIRONMENT
 
-If the environment variable C<NO_COLOR> is set, colorizing interface
-in this module never produce color sequence.  Primitive function such
-as C<ansi_code> is not the case.  See L<https://no-color.org/>.
+If the environment variable C<NO_COLOR> is set, regardless of its
+value, colorizing interface in this module never produce color
+sequence.  Primitive function such as C<ansi_code> is not the case.
+See L<https://no-color.org/>.
 
 B<color> method and B<colorize> function produces 256 or 24bit colors
 depending on the value of C<$RGB24> module variable.  Also 24bit mode
