@@ -1085,10 +1085,12 @@ from colored text.  This is preferable to clear background color set
 by scrolling in the middle of colored text at the bottom line of the
 terminal.
 
-However, some terminal, including Apple_Terminal, clear the text on
-the cursor when I<Erase Line> sequence is received at the rightmost
-column of the screen.  If you do not want this behavior, set module
-variable C<$NO_RESET_EL> or C<GETOPTEX_NO_RESET_EL> environment.
+However, on some terminal, including Apple_Terminal, I<Erase Line>
+sequence clear the text on the cursor position when it is at the
+rightmost column of the screen.  In other words, rightmost character
+sometimes mysteriously disappear when it is the last character in the
+colored region.  If you do not like this behavior, set module variable
+C<$NO_RESET_EL> or C<GETOPTEX_NO_RESET_EL> environment.
 
 
 =head1 ENVIRONMENT
