@@ -541,8 +541,8 @@ example exchange following two arguments.
     option --exch $<move(1,1)>
 
 You can use recently introduced C<< $<ignore> >> to ignore the
-argument.  Because C<< $<move(0,0)> >> does nothing, it effectively
-equivalent and existing module sometimes use it.
+argument.  Some existing module uses C<< $<move(0,0)> >> for the same
+purpose, because it effectively do nothing.
 
     option --deprecated $<ignore>
     option --deprecated $<move(0,0)>

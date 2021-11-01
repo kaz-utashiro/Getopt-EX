@@ -9,9 +9,9 @@ Version v1.26.0
 
 # DESCRIPTION
 
-[Getopt::EX](https://metacpan.org/pod/Getopt::EX) extends the basic function of [Getopt](https://metacpan.org/pod/Getopt) family to
-support user-definable option aliases, and dynamic module which works
-together with the script through option interface.
+[Getopt::EX](https://metacpan.org/pod/Getopt::EX) extends basic function of [Getopt](https://metacpan.org/pod/Getopt) family to support
+user-definable option aliases, and dynamic module which works together
+with a script through option interface.
 
 # INTERFACES
 
@@ -222,6 +222,24 @@ number sequence.  Number format is composed by four elements: `start`,
     1:3         1,2,3
     1:20:5      1,     6,     11,       16
     1:20:5:3    1,2,3, 6,7,8, 11,12,13, 16,17,18
+
+# SEE ALSO
+
+## [Getopt::EX::Hashed](https://metacpan.org/pod/Getopt::EX::Hashed)
+
+**Getopt::EX::Hashed** is a module to automate a hash object to store
+command line option values for **Getopt::Long** and compatible modules
+including **Getopt::EX::Long**.
+
+## [Getopt::EX::i18n](https://metacpan.org/pod/Getopt::EX::i18n)
+
+[Getopt::EX::i18n](https://metacpan.org/pod/Getopt::EX::i18n) provides an easy way to set locale environment
+before executing command.
+
+## [Getopt::EX::termcolor](https://metacpan.org/pod/Getopt::EX::termcolor)
+
+[Getopt::EX::termcolor](https://metacpan.org/pod/Getopt::EX::termcolor) is a common module to manipulate system
+dependent terminal color.
 
 # AUTHOR
 
