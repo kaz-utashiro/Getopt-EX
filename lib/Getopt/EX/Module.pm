@@ -355,14 +355,15 @@ sub parseline {
     }
     elsif ($arg[0] eq "builtin") {
 	$obj->setopt($optname, BUILTIN);
-	if ($arg[2] =~ /^\\?(?<mark>[\$\@\%])(?<name>[\w:]+)/) {
+	if ($arg[2] =~ /^\\?(?<mark>[\$\@\%\&])(?<name>[\w:]+)/) {
 	    my($mark, $name) = @+{"mark", "name"};
 	    my $mod = $obj->module;
 	    /:/ or s/^/$mod\::/ for $name;
 	    no strict 'refs';
 	    $obj->builtin($arg[1] => {'$' => \${$name},
 				      '@' => \@{$name},
-				      '%' => \%{$name}}->{$mark});
+				      '%' => \%{$name},
+				      '&' => \&{$name}}->{$mark});
 	}
     }
     elsif ($arg[0] eq "autoload") {
