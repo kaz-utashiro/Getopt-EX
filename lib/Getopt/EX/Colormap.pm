@@ -1,5 +1,5 @@
 package Getopt::EX::Colormap;
-use version; our $VERSION = version->declare("v1.26.0");
+use version; our $VERSION = version->declare("v1.27.0");
 
 use v5.14;
 use warnings;
@@ -1144,7 +1144,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2021 Kazumasa Utashiro
+Copyright 2015-2022 Kazumasa Utashiro
 
 =head1 LICENSE
 
