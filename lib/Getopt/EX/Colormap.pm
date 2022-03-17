@@ -360,9 +360,9 @@ sub apply_color {
 	my($s, $e, $el) = @{ $cache->{$color} //= [ ansi_pair($color) ] };
 	state $reset = qr{ \e\[[0;]*m (?: \e\[[0;]*[Km] )* }x;
 	if ($el) {
-	    $text =~ s/(\A|\n|$reset)([^\e\r\n]*)/${1}${s}${2}${e}/g;
+	    $text =~ s/(^|$reset)([^\e\r\n]*)/${1}${s}${2}${e}/mg;
 	} else {
-	    $text =~ s/(\A|\n|$reset)([^\e\r\n]+)/${1}${s}${2}${e}/g;
+	    $text =~ s/(^|$reset)([^\e\r\n]+)/${1}${s}${2}${e}/mg;
 	}
 	return $text;
     }
