@@ -73,7 +73,10 @@ sub configure {
 	    $obj->define('__PACKAGE__' => $mod);
 	    local *data = "$mod\::DATA";
 	    if (not eof *data) {
+		my $pos = tell *data;
 		$obj->readrc(*data);
+		# recover position in case called multiple times
+		seek *data, $pos, 0 or die "seek: $!" if $pos >= 0;
 	    }
 	    last;
 	}
