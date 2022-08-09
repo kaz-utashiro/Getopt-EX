@@ -1,5 +1,7 @@
 name = "Getopt-EX"
 authority = "cpan:UTASHIRO"
-badges = ['github-actions/test', 'metacpan']
-module_maker="ModuleBuildTiny"
+badges = [ 'github-actions/test', 'metacpan' ]
+module_maker = "ModuleBuildTiny"
 
+[release]
+branch = "master"
