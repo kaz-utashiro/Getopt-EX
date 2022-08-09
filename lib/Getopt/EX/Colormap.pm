@@ -595,12 +595,12 @@ This is an example of labeled list:
     --cm 'OTEXT=C,NTEXT=M,*CHANGE=BD/445,DELETE=APPEND=RD/544' \
     --cm 'CMARK=GS,MMARK=YS,CTEXT=G,MTEXT=Y'
 
-Each color definitions are separated by comma (C<,>) and labels are
+Color definitions are separated by comma (C<,>) and the label is
 specified by I<LABEL=> style precedence.  Multiple labels can be set
 for same value by connecting them together.  Label name can be
 specified with C<*> and C<?> wildcard characters.
 
-If the color spec start with plus (C<+>) mark with labeled list
+If the color spec start with plus (C<+>) mark with the labeled list
 format, it is appended to the current value with reset mark (C<^>).
 Next example uses wildcard to set all labels end with `CHANGE' to `R'
 and set `R^S' to `OCHANGE' label.
