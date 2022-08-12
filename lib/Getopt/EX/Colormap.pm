@@ -1117,7 +1117,7 @@ is enabled when environment C<GETOPTEX_RGB24> is set or C<COLORTERM>
 is C<truecolor>.
 
 If the module variable C<$NO_RESET_EL> set, or C<GETOPTEX_NO_RESET_EL>
-environment, I<Erace Line> sequence is not produced after RESET code.
+environment, I<Erase Line> sequence is not produced after RESET code.
 See L<RESET SEQUENCE>.
 
 
