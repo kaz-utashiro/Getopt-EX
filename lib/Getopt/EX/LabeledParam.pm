@@ -99,12 +99,14 @@ sub load_params {
 	}
 	else {
 	    map {
-		if ($c =~ /^\++(.*)/) {
+		if ($c =~ /^\++(.*)/) { # LABEL=+ATTR
 		    $obj->{HASH}->{$_} .= $obj->{CONCAT} . "$1";
-		} elsif ($c =~ /^\-+(.*)$/i) {
+		}
+		elsif ($c =~ /^\-+(.*)$/i) { # LABEL=-ATTR
 		    my $chars = $1 =~ s/(?=\W)/\\/gr;
 		    $obj->{HASH}->{$_} =~ s/[$chars]+//g;
-		} else {
+		}
+		else {
 		    $obj->{HASH}->{$_} = $c;
 		}
 	    }
@@ -171,16 +173,17 @@ Getopt::EX::LabeledParam - Labeled parameter handling
 =head1 SYNOPSIS
 
   GetOptions('colormap|cm:s' => @opt_colormap);
-  my %colormap;
-  my @colors;
+
+  # default values
+  my %colormap = ( FILE => 'DR', LINE => 'Y', TEXT => '' );
+  my @colors = qw( /544 /545 /445 /455 /545 /554 );
 
   require Getopt::EX::LabeledParam;
-  my $cmap = Getopt::EX::LabeledParam->new(
-      NEWLABEL => 0,
-      HASH => \%colormap,
-      LIST => \@colors,
-      );
-  $cmap->append(@opt_colormap);
+  my $cmap = Getopt::EX::LabeledParam
+      ->new( NEWLABEL => 0,
+             HASH => \%colormap,
+             LIST => \@colors )
+      ->load_params(@opt_colormap);
 
 
 =head1 DESCRIPTION
@@ -189,6 +192,16 @@ This module implements super class of L<Getopt::EX::Colormap>.
 
 Parameters can be given in two ways: one in labeled table, and one in
 indexed list.
+
+Handler maintains hash and list objects, and labeled values are stored
+in hash, non-label values are in list automatically.  User can mix
+both specifications.
+
+When the value field has a special form of function call,
+L<Getopt::EX::Func> object is created and stored for that entry.  See
+L<FUNCTION SPEC> section in L<Getopt::EX::Colormap> for more detail.
+
+=head2 HASH
 
 Basically, labeled parameter is defined by B<LABEL>=I<VALUE> notation:
 
@@ -220,6 +233,8 @@ additional string.  Default C<CONCAT> strings is empty, so use
 configure method to set.  If B<VALUE> part start with minus (C<->)
 character, following characters are deleted from the current value.
 
+=head2 LIST
+
 If B<LABEL>= part is omitted, values are treated anonymous list and
 stored in list object.  For example,
 
@@ -228,19 +243,11 @@ stored in list object.  For example,
 makes six entries in the list.  The list object is accessed by index,
 rather than label.
 
-Handler maintains hash and list objects, and labeled values are stored
-in hash, non-label values are in list automatically.  User can mix
-both specifications.
-
-When the value field has a special form of function call,
-L<Getopt::EX::Func> object is created and stored for that entry.  See
-L<FUNCTION SPEC> section in L<Getopt::EX::Colormap> for more detail.
-Module should have switch to enable this capability, but not now.
-
-
 =head1 METHODS
 
 =over 4
+
+=item B<new>
 
 =item B<configure>
 
@@ -257,20 +264,30 @@ class methods.
 
 =item B<NEWLABEL> =E<gt> 0/1
 
-By default, B<load_params> does not create new entry in colormap
-table, and absent label is ignored.  Setting <NEWLABEL> parameter true
-makes it possible create a new hash entry.
+By default, B<load_params> does not create new entry in hash table,
+and absent label is ignored.  Setting <NEWLABEL> parameter true makes
+it possible create a new hash entry.
 
 =item B<CONCAT> =E<gt> I<string>
 
-Set concatination string inserted before appending string.
+Set concatenation string inserted before appending string.
 
 =back
+
+=item B<load_params> I<option>
+
+Load option list into the object.
 
 =item B<append> HASHREF or LIST
 
-Append colormap hash or color list.  If a hash reference is given, all
-entry of the hash is appended to the colormap.  Otherwise, they are
-appended anonymous color list.
+Provide simple interface to append colormap hash or color list.  If a
+hash reference is given, all entry of the hash is appended to the
+colormap.  Otherwise, they are appended anonymous color list.
 
 =back
+
+=head1 SEE ALSO
+
+L<Getopt::EX::Colormap>
+
+#  LocalWords:  CONCAT hashref listref NEWLABEL HASHREF colormap
