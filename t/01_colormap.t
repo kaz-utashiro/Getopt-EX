@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
+use Data::Dumper;
 
 BEGIN {
     for (grep /^GETOPTEX|^(COLORTERM|NO_COLOR)$/, keys %ENV) {
@@ -47,18 +48,9 @@ is(colorize24("ABCDEF", "text"), "\e[38;2;171;205;239m"."text".RESET, "colorize2
     is(colorize("B", $text), $text, "nested/unchange");
 }
 
-TODO: {
-
-local $TODO = "\$RGB24 does not update cached data.";
-
-local $Getopt::EX::Colormap::RGB24 = 1;
-is(colorize("ABCDEF", "text"), "\e[38;2;171;205;239m"."text".RESET, "colorize (RGB24=1)");
-
-}
-
 {
 
-local $Getopt::EX::Colormap::LINEAR256 = 1;
+local $Getopt::EX::Colormap::LINEAR_256 = 1;
 
 is(ansi_code("R"), "\e[31m", "color name");
 is(ansi_code("W/R"), "\e[37;41m", "background");
@@ -105,7 +97,7 @@ is(ansi_code("DK/544"), "\e[1;30;48;5;224m", "256 color");
 is(ansi_code("//DK///544"), "\e[1;30;48;5;224m", "multiple /");
 is(ansi_code("L25/L00"), "\e[38;5;231;48;5;16m", "L25/L00 == 555/000");
 is(ansi_code("L01/L24"), "\e[38;5;232;48;5;255m", "grey scale");
-if ($Getopt::EX::Colormap::LINEAR_GREY) {
+if ($Getopt::EX::Colormap::LINEAR_GRAY) {
     is(ansi_code("CCCCCC"), "\e[38;5;251m", "hex to grey scale map");
 } else {
     is(ansi_code("CCCCCC"), "\e[38;5;252m", "hex to grey scale map");
@@ -144,13 +136,6 @@ SKIP: {
 SKIP: {
     eval {
 	is(ansi_code("<fuchsia>"), "\e\[38;5;201m", "color name (<fuchsia>)");
-    };
-    skip $@ =~ s/\)\K.*//r, 1 if $@;
-}
-
-SKIP: {
-    eval {
-	is(ansi_code("<fuscia>"), "\e\[38;5;201m", "color name (<fuscia>)");
     };
     skip $@ =~ s/\)\K.*//r, 1 if $@;
 }
