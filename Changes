@@ -2,6 +2,10 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+v1.28.0_01 2022-08-20T17:33:31Z
+
+    - use Term::ANSIColor::Concise
+
 v1.28.0 2022-07-01T03:06:38Z
 
     - Recover __DATA__ position in case called multiple times from different object.
