@@ -2,6 +2,11 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+v1.28.0_02 2022-08-24T06:57:17Z
+
+    - document update
+    - load Term::ANSIColor::Concise::Tables module on demand
+
 v1.28.0_01 2022-08-20T17:33:31Z
 
     - use Term::ANSIColor::Concise
