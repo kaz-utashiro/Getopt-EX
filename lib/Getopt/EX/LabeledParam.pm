@@ -1,5 +1,5 @@
 package Getopt::EX::LabeledParam;
-use version; our $VERSION = version->declare("v1.28.0_02");
+use version; our $VERSION = version->declare("2.1.1");
 
 use v5.14;
 use warnings;
