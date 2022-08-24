@@ -2,17 +2,14 @@ package Getopt::EX::Colormap;
 use version; our $VERSION = version->declare("v1.28.0_01");
 
 use v5.14;
-use warnings;
 use utf8;
 
 use Exporter 'import';
-our @EXPORT      = qw();
 our @EXPORT_OK   = qw(
     colorize colorize24 ansi_code ansi_pair csi_code
     colortable colortable6 colortable12 colortable24
     );
 our %EXPORT_TAGS = (all => [ @EXPORT_OK ]);
-our @ISA         = qw(Getopt::EX::LabeledParam);
 
 use Carp;
 use Data::Dumper;
@@ -20,7 +17,7 @@ $Data::Dumper::Sortkeys = 1;
 
 use List::Util qw(min max first);
 
-use Getopt::EX::LabeledParam;
+use parent 'Getopt::EX::LabeledParam';
 use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
@@ -257,7 +254,7 @@ at the module for detail.
     
     use strict;
     use warnings;
-
+    
     my @opt_colormap;
     use Getopt::EX::Long;
     GetOptions("colormap|cm=s" => \@opt_colormap);
@@ -276,7 +273,7 @@ at the module for detail.
         );
     
     $handler->load_params(@opt_colormap);
-
+    
     for (0 .. $#colors) {
         print $handler->index_color($_, "COLOR $_"), "\n";
     }
@@ -429,8 +426,6 @@ L<Getopt::EX::LabeledParam>
 L<Term::ANSIColor::Concise>
 
 L<https://en.wikipedia.org/wiki/ANSI_escape_code>
-
-L<Graphics::ColorNames::X>
 
 L<https://en.wikipedia.org/wiki/X11_color_names>
 

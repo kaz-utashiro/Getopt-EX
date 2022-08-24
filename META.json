@@ -43,10 +43,9 @@
       "runtime" : {
          "requires" : {
             "Getopt::Long" : "2.39",
-            "Graphics::ColorNames" : "0",
             "Hash::Util" : "0",
             "List::Util" : "1.29",
-            "Term::ANSIColor::Concise" : "== 2.00_03",
+            "Term::ANSIColor::Concise" : "== 2.00_05",
             "perl" : "5.014"
          }
       },

@@ -35,13 +35,13 @@ with original command through command option interface.
 
 Another module L<Getopt::EX::Colormap> is made to produce colored text
 on ANSI terminal, and to provide easy way to maintain labeled colormap
-table and option handling.  It can be used just like
-L<Term::ANSIColor> but you'd better use standard module in that case.
+table and option handling.
 
 =head2 L<Getopt::EX::Long>
 
 This is the easiest way to get started with L<Getopt::EX>.  This
-module is almost compatible with L<Getopt::Long> and replaceable.
+module is almost compatible with L<Getopt::Long> and drop-in
+replaceable.
 
 In addition, if the command name is I<example>,
 
@@ -134,11 +134,11 @@ See L<Getopt::EX::Func> for more detail.
 =head2 L<Getopt::EX::Colormap>
 
 This module is not so tightly coupled with other modules in
-L<Getopt::EX>.  It provides concise way to specify ANSI terminal 256
+L<Getopt::EX>.  It provides concise way to specify ANSI terminal
 colors with various effects, and produce terminal sequences by color
 specification or label parameter.
 
-You can use this with normal L<Getopt::Long>:
+You can use this module with normal L<Getopt::Long>:
 
     my @opt_colormap;
     use Getopt::Long;
@@ -177,22 +177,8 @@ or call arbitrary perl function like:
 Above example produces uppercase version of provided string instead of
 ANSI color sequence.
 
-If you only use coloring function, it's more simple:
-
-    require Getopt::EX::Colormap;
-    my $handler = Getopt::EX::Colormap->new;
-
-    print $handler->color("R", "FILE in Red\n");
-    print $handler->color("G", "LINE in Blue\n");
-    print $handler->color("B", "TEXT in Green\n");
-
-or even simpler non-oo interface:
-
-    use Getopt::EX::Colormap qw(colorize);
-
-    print colorize("R", "FILE in Red\n");
-    print colorize("G", "LINE in Blue\n");
-    print colorize("B", "TEXT in Green\n");
+If you want to use just coloring function, use backend module
+L<Term::ANSIColor::Concise>.
 
 =head2 L<Getopt::EX::LabeledParam>
 
@@ -231,6 +217,11 @@ C<end>, C<step> and C<length>, like this:
     1:20:5:3	1,2,3, 6,7,8, 11,12,13, 16,17,18
 
 =head1 SEE ALSO
+
+=head2 L<Term::ANSIColor::Concise>
+
+Coloring capability of L<Getopt::EX::Colormap> is now implemented in
+this module.
 
 =head2 L<Getopt::EX::Hashed>
 

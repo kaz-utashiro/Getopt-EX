@@ -28,13 +28,13 @@ with original command through command option interface.
 
 Another module [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is made to produce colored text
 on ANSI terminal, and to provide easy way to maintain labeled colormap
-table and option handling.  It can be used just like
-[Term::ANSIColor](https://metacpan.org/pod/Term%3A%3AANSIColor) but you'd better use standard module in that case.
+table and option handling.
 
 ## [Getopt::EX::Long](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALong)
 
 This is the easiest way to get started with [Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX).  This
-module is almost compatible with [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) and replaceable.
+module is almost compatible with [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) and drop-in
+replaceable.
 
 In addition, if the command name is _example_,
 
@@ -127,11 +127,11 @@ See [Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc) for mo
 ## [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap)
 
 This module is not so tightly coupled with other modules in
-[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX).  It provides concise way to specify ANSI terminal 256
+[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX).  It provides concise way to specify ANSI terminal
 colors with various effects, and produce terminal sequences by color
 specification or label parameter.
 
-You can use this with normal [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong):
+You can use this module with normal [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong):
 
     my @opt_colormap;
     use Getopt::Long;
@@ -170,22 +170,8 @@ or call arbitrary perl function like:
 Above example produces uppercase version of provided string instead of
 ANSI color sequence.
 
-If you only use coloring function, it's more simple:
-
-    require Getopt::EX::Colormap;
-    my $handler = Getopt::EX::Colormap->new;
-
-    print $handler->color("R", "FILE in Red\n");
-    print $handler->color("G", "LINE in Blue\n");
-    print $handler->color("B", "TEXT in Green\n");
-
-or even simpler non-oo interface:
-
-    use Getopt::EX::Colormap qw(colorize);
-
-    print colorize("R", "FILE in Red\n");
-    print colorize("G", "LINE in Blue\n");
-    print colorize("B", "TEXT in Green\n");
+If you want to use just coloring function, use backend module
+[Term::ANSIColor::Concise](https://metacpan.org/pod/Term%3A%3AANSIColor%3A%3AConcise).
 
 ## [Getopt::EX::LabeledParam](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALabeledParam)
 
@@ -224,6 +210,11 @@ number sequence.  Number format is composed by four elements: `start`,
     1:20:5:3    1,2,3, 6,7,8, 11,12,13, 16,17,18
 
 # SEE ALSO
+
+## [Term::ANSIColor::Concise](https://metacpan.org/pod/Term%3A%3AANSIColor%3A%3AConcise)
+
+Coloring capability of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is now implemented in
+this module.
 
 ## [Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed)
 
