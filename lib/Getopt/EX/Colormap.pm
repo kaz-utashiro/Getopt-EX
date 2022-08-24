@@ -5,11 +5,11 @@ use v5.14;
 use utf8;
 
 use Exporter 'import';
-our @EXPORT_OK   = qw(
-    colorize colorize24 ansi_code ansi_pair csi_code
-    colortable colortable6 colortable12 colortable24
+our @EXPORT_OK = (
+    qw( colorize colorize24 ansi_code ansi_pair csi_code ),
+    qw( colortable colortable6 colortable12 colortable24 ),
     );
-our %EXPORT_TAGS = (all => [ @EXPORT_OK ]);
+our %EXPORT_TAGS = ( all => [ @EXPORT_OK ] );
 
 use Carp;
 use Data::Dumper;
@@ -22,7 +22,6 @@ use Getopt::EX::Util;
 use Getopt::EX::Func qw(callable);
 
 use Term::ANSIColor::Concise qw(:all);
-use Term::ANSIColor::Concise::Table qw(:all);
 {
     no strict 'refs';
     *colorize   = \&ansi_color;
@@ -38,6 +37,18 @@ use Term::ANSIColor::Concise::Table qw(:all);
 	)) {
 	*{$name} = *{"Term::ANSIColor::Concise::$name"};
     }
+}
+
+#use Term::ANSIColor::Concise::Table qw(:all);
+sub AUTOLOAD {
+    my $sub = our $AUTOLOAD =~ s/.*:://r;
+    return if $sub eq 'DESTROY';
+    if ($sub =~ /^colortable(?:|6|12|24)$/) {
+	require Term::ANSIColor::Concise::Table
+	    and Term::ANSIColor::Concise::Table->import(':all');
+	goto &$sub;
+    }
+    die "Invalid call for $sub().\n";
 }
 
 our $NO_NO_COLOR //= $ENV{GETOPTEX_NO_NO_COLOR};
