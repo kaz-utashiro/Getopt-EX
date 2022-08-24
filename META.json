@@ -45,7 +45,7 @@
             "Getopt::Long" : "2.39",
             "Hash::Util" : "0",
             "List::Util" : "1.29",
-            "Term::ANSIColor::Concise" : "== 2.00_05",
+            "Term::ANSIColor::Concise" : "2.01",
             "perl" : "5.014"
          }
       },
