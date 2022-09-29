@@ -232,6 +232,12 @@ before executing command.
 [Getopt::EX::termcolor](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Atermcolor) is a common module to manipulate system
 dependent terminal color.
 
+## [Getopt::EX::RPN](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ARPN)
+
+[Getopt::EX::RPN](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ARPN) provides a RPN (Reverse Polish Notation)
+calculation interface for command line arguments.  This is convenient
+when you want to define parameter based on terminal height or width.
+
 # AUTHOR
 
 Kazumasa Utashiro

@@ -239,6 +239,12 @@ before executing command.
 L<Getopt::EX::termcolor> is a common module to manipulate system
 dependent terminal color.
 
+=head2 L<Getopt::EX::RPN>
+
+L<Getopt::EX::RPN> provides a RPN (Reverse Polish Notation)
+calculation interface for command line arguments.  This is convenient
+when you want to define parameter based on terminal height or width.
+
 =head1 AUTHOR
 
 Kazumasa Utashiro
@@ -260,4 +266,4 @@ it under the same terms as Perl itself.
 
 #  LocalWords:  Getopt colormap perl foo bar buz colorize BASECLASS
 #  LocalWords:  rc examplerc ENV ARGV getoptions builtins func linux
-#  LocalWords:  GetOptions redhat Kazumasa Utashiro
+#  LocalWords:  GetOptions redhat Kazumasa Utashiro RPN
