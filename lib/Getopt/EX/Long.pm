@@ -238,4 +238,5 @@ Subroutine B<GetOptionsFromString> is not supported.
 =head1 SEE ALSO
 
 L<Getopt::EX>,
-L<Getopt::EX::Module>
+L<Getopt::EX::Module>,
+L<Getopt::EX::Loader>

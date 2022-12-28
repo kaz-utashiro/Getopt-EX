@@ -432,11 +432,11 @@ specify multiple base classes; they are tried to be loaded in order.
 
 =item MODULE_OPT
 
-Define the module option string.  String B<-M> is set by default.
+Define the module option string.  String C<-M> is set by default.
 
 =item DEFAULT
 
-Define default module name.  String B<default> is set by default.  Set
+Define default module name.  String C<default> is set by default.  Set
 C<undef> if you don't want load any default module.
 
 =item PARSE_MODULE_OPT

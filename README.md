@@ -114,7 +114,7 @@ specific function at the beginning of execution.  Write something
 like:
 
     use Getopt::EX::Func qw(parse_func);
-    GetOptions("begin:s" => $opt_begin);
+    GetOptions("begin:s" => \my $opt_begin);
     my $func = parse_func($opt_begin);
     $func->call;
 
