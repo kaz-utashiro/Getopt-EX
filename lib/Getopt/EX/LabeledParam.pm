@@ -86,7 +86,7 @@ sub load_params {
     map {
 	my $spec = pop @$_;
 	my @spec;
-	while ($spec =~ s/\&(\w+ (?: \( [^)]* \) )? ) ;?//x) { # &func
+	while ($spec =~ s/\&([:\w]+ (?: \( [^)]* \) )? ) ;?//x) { # &func
 	    push @spec, parse_func({ PACKAGE => 'main' }, $1);
 	}
 	if ($spec =~ s/\b(sub\s*{.*)//) { # sub { ... }
