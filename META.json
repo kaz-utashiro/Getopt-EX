@@ -4,7 +4,7 @@
       "Kazumasa Utashiro"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.20, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.21, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -45,7 +45,7 @@
             "Getopt::Long" : "2.39",
             "Hash::Util" : "0",
             "List::Util" : "1.29",
-            "Term::ANSIColor::Concise" : "2.01",
+            "Term::ANSIColor::Concise" : "2.04",
             "perl" : "5.014"
          }
       },
