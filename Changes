@@ -2,6 +2,10 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+2.1.3 2023-06-16T11:35:49Z
+
+    - requires Term::ANSIColor::Concise@2.04
+
 2.1.2 2023-01-27T03:31:35Z
 
     - allow : in --colormap &func::tion name
