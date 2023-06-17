@@ -10,7 +10,8 @@ BEGIN {
     }
 }
 
-use Getopt::EX::Colormap qw(colorize colorize24 ansi_code);
+use Getopt::EX::Colormap qw(colorize colorize24);
+use Term::ANSIColor::Concise qw(ansi_color ansi_color_24 ansi_code);
 
 use constant {
     RESET => "\e[m\e[K",
@@ -32,20 +33,21 @@ is(colorize("ABCDEF", "text"), "\e[38;5;153m"."text".RESET, "colorize24");
 is(colorize24("ABCDEF", "text"), "\e[38;2;171;205;239m"."text".RESET, "colorize24");
 
 {
-    my $text = colorize("R", "AB") . "CD" . colorize("R", "EF");
-    my $rslt = colorize("R", "AB") . colorize("B", "CD") . colorize("R", "EF");
-    is(colorize("B", $text), $rslt, "nested");
+    my $text = ansi_color("R", "AB") . "CD" . ansi_color("R", "EF");
+    my $rslt = ansi_code("U") . ansi_color("R", "AB") . ansi_code("U") . "CD" . ansi_color("R", "EF");
+    is(ansi_color("U", $text), $rslt, "nested");
 }
 
 {
-    my $text = "AB" . colorize("B", "CD") . "EF";
-    my $rslt = colorize("R", "AB") . colorize("B", "CD") . colorize("R", "EF");
-    is(colorize("R", $text), $rslt, "nested 2");
+    my $text = "AB" . ansi_color("B", "CD") . "EF";
+    my $rslt = ansi_code("U") . "AB" . ansi_color("B", "CD") . ansi_code("U") . "EF" . RESET;
+    is(ansi_color("U", $text), $rslt, "nested 2");
 }
 
 {
-    my $text = colorize("R", "ABCDEF");
-    is(colorize("B", $text), $text, "nested/unchange");
+    my $text = ansi_color("R", "ABCDEF");
+    my $rslt = ansi_code("U") . $text;
+    is(ansi_color("U", $text), $rslt, "nested 3");
 }
 
 {
