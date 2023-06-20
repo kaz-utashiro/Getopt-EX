@@ -1,5 +1,5 @@
 package Getopt::EX::Module;
-use version; our $VERSION = version->declare("2.1.3");
+use version; our $VERSION = version->declare("2.1.4");
 
 use v5.14;
 use warnings;
