@@ -285,7 +285,7 @@ at the module for detail.
     
     $handler->load_params(@opt_colormap);
     
-    for (0 .. $#colors) {
+    for (keys @colors) {
         print $handler->index_color($_, "COLOR $_"), "\n";
     }
     

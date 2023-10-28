@@ -119,7 +119,7 @@ sub new {
     my $class = shift;
 
     my @exconfig;
-    while (defined (my $i = first { $_[$_] eq 'exconfig' } 0 .. $#_)) {
+    while (defined (my $i = first { $_[$_] eq 'exconfig' } keys @_)) {
 	push @exconfig, @{ (splice @_, $i, 2)[1] };
     }
     if (@exconfig == 0 and $ConfigOption{AUTO_DEFAULT}) {
