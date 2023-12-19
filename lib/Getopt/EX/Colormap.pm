@@ -98,10 +98,12 @@ sub color {
 
 sub colormap {
     my $obj = shift;
-    my %opt = @_;
-    $opt{name}    //= "--newopt";
-    $opt{option}  //= "--colormap";
-    $opt{sort}    //= "length";
+    my %opt = (
+	name   => "--newopt",
+	option => "--colormap",
+	sort   => "length",
+	@_
+    );
 
     my $hash = $obj->{HASH};
     join "\n", (
@@ -143,7 +145,7 @@ Getopt::EX::Colormap - ANSI terminal color and option support
   require Getopt::EX::Colormap;
   my $cm = Getopt::EX::Colormap
       ->new
-      ->load_params(@opt_colormap);  
+      ->load_params(@opt_colormap);
 
   print $cm->color('FILE', 'FILE labeled text');
 
