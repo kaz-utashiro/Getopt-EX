@@ -115,7 +115,7 @@ sub readrc {
 sub module {
     my $obj = shift;
     @_  ? $obj->{Module} = shift
-	: $obj->{Module};
+	: $obj->{Module} // '';
 }
 
 sub title {
