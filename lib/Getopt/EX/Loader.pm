@@ -100,7 +100,27 @@ sub load_file {
 
 sub load_module {
     my $obj = shift;
-    $obj->load(MODULE => shift);
+    my $name = shift;
+    if (my $mod = $obj->find_module($name)) {
+	return $mod;
+    }
+    $obj->load(MODULE => $name);
+}
+
+sub find_module {
+    my $obj = shift;
+    my $name = shift;
+    my $base = $obj->baseclass;
+    my @class = ref $base ? @$base : $base;
+    for my $class (@class) {
+	my $module = "$class\::$name";
+	for ($obj->buckets) {
+	    if ($_->module eq $module) {
+		return $_;
+	    }
+	}
+    }
+    undef;
 }
 
 sub defaults {

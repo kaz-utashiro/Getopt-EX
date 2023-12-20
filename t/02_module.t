@@ -22,7 +22,7 @@ unshift @INC, $app_lib;
     local %INC = %INC;
     my $rcloader = Getopt::EX::Loader->new(
 	BASECLASS => "App::example",
-	);
+    );
     my @argv = qw(-Mexample_test
 		  --drink-me
 		  --shift-here howdy
@@ -39,6 +39,20 @@ unshift @INC, $app_lib;
 		1st 2nd)
 	      ],
 	      "deal_with");
+}
+
+##
+## call twice
+##
+{
+    local %INC = %INC;
+    my $rcloader = Getopt::EX::Loader->new(
+	BASECLASS => "App::example",
+    );
+    my @argv = qw(-Mexample_test -Mexample_test dont panic);
+    $rcloader->deal_with(\@argv);
+    is_deeply(\@argv, [ qw(--default dont panic) ],
+	      "call twice");
 }
 
 ##

@@ -56,16 +56,16 @@ sub configure {
 	my @base = do {
 	    if (ref $obj->{Base} eq 'ARRAY') {
 		@{$obj->{Base}};
-	    } else { 
+	    } else {
 		($obj->{Base} // '');
 	    }
 	};
 	while (@base) {
 	    my $base = shift @base;
 	    my $mod = $base ? "$base\::$module" : $module;
+	    my $path = $mod =~ s{::}{/}gr . ".pm";
 	    eval "package $pkg; use $mod;";
 	    if ($@) {
-		my $path = $mod =~ s{::}{/}gr . ".pm";
 		next if @base and $@ =~ /Can't locate \Q$path\E/;
 		croak "$mod: $@";
 	    }
