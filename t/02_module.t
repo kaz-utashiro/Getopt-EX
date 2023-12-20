@@ -31,6 +31,7 @@ unshift @INC, $app_lib;
 		  --double-next double-me
 		  --exch 2nd 1st
 	);
+    $rcloader->load_file("$ENV{HOME}/testrc");
     $rcloader->deal_with(\@argv);
     is_deeply(\@argv,
 	      [ qw(--default poison
