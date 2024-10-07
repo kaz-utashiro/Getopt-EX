@@ -22,6 +22,7 @@ sub new {
 	CONCAT => "",
 	HASH => {},
 	LIST => [],
+	RESET => undef,
     }, $class;
 
     $obj->configure(@_) if @_;
@@ -52,7 +53,13 @@ sub list { @{ shift->{LIST} } }
 
 sub push_list {
     my $obj = shift;
-    push @{ $obj->{LIST} }, @_;
+    for (@_) {
+	if (defined $obj->{RESET} and $_ eq $obj->{RESET}) {
+	    @{ $obj->{LIST} } = ();
+	} else {
+	    push @{ $obj->{LIST} }, $_;
+	}
+    }
     $obj;
 }
 
@@ -271,6 +278,11 @@ it possible create a new hash entry.
 =item B<CONCAT> =E<gt> I<string>
 
 Set concatenation string inserted before appending string.
+
+=item B<RESET> =E<gt> I<string>
+
+Set B<reset> mark.  Undefined by default.  If this reset string is
+found in a list-type argument, the list is reset to empty.
 
 =back
 

@@ -66,6 +66,7 @@ sub new {
 
     $obj->{CACHE} = {};
     $opt{CONCAT} //= "^"; # Reset character for LabeledParam object
+    $opt{RESET} = '@';
     $obj->configure(%opt);
 
     $obj;
@@ -201,6 +202,9 @@ Indexed list example is like this:
 This is an example of RGB 6x6x6 216 colors specification.  Left side
 of slash is foreground, and right side is for background color.  This
 color list is accessed by index.
+
+If the special reset symbol C<@> is encountered, the index list is
+reset to empty at that point.
 
 =head2 CALLING FUNCTIONS
 
@@ -454,7 +458,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2023 Kazumasa Utashiro
+Copyright 2015-2024 Kazumasa Utashiro
 
 =head1 LICENSE
 
