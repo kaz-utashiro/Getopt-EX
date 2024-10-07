@@ -2,6 +2,10 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+2.2.1 2024-10-07T16:38:01Z
+
+    - introduce colormap list reset symbol
+
 2.1.6 2023-12-20T12:44:32Z
 
     - fix undefined value reference bug
