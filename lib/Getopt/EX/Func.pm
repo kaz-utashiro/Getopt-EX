@@ -7,7 +7,7 @@ use Carp;
 
 use Exporter 'import';
 our @EXPORT      = qw();
-our @EXPORT_OK   = qw(parse_func callable);
+our @EXPORT_OK   = qw(parse_func callable arg2kvlist);
 our %EXPORT_TAGS = ( all => [ @EXPORT_OK ] );
 
 use Data::Dumper;
