@@ -218,9 +218,16 @@ this module.
 
 ## [Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed)
 
-**Getopt::EX::Hashed** is a module to automate a hash object to store
-command line option values for **Getopt::Long** and compatible modules
+[Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed) is a module to automate a hash object to store
+command line option values for [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) and compatible modules
 including **Getopt::EX::Long**.
+
+## [Getopt::EX::Config](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AConfig)
+
+[Getopt::EX::Config](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AConfig) provides an interface to define configuration
+information for `Getopt::EX` modules.  Using this module, it is
+possible to define configuration information only for the module and
+to define module-specific command options.
 
 ## [Getopt::EX::i18n](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Ai18n)
 
@@ -248,7 +255,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2024 Kazumasa Utashiro
+Copyright 2015-2025 Kazumasa Utashiro
 
 # LICENSE
 

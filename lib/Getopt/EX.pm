@@ -225,9 +225,16 @@ this module.
 
 =head2 L<Getopt::EX::Hashed>
 
-B<Getopt::EX::Hashed> is a module to automate a hash object to store
-command line option values for B<Getopt::Long> and compatible modules
+L<Getopt::EX::Hashed> is a module to automate a hash object to store
+command line option values for L<Getopt::Long> and compatible modules
 including B<Getopt::EX::Long>.
+
+=head2 L<Getopt::EX::Config>
+
+L<Getopt::EX::Config> provides an interface to define configuration
+information for C<Getopt::EX> modules.  Using this module, it is
+possible to define configuration information only for the module and
+to define module-specific command options.
 
 =head2 L<Getopt::EX::i18n>
 
@@ -255,7 +262,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2024 Kazumasa Utashiro
+Copyright 2015-2025 Kazumasa Utashiro
 
 =head1 LICENSE
 
