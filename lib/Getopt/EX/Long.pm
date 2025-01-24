@@ -1,5 +1,6 @@
 package Getopt::EX::Long;
-use version; our $VERSION = version->declare("2.2.1");
+
+our $VERSION = "2.2.1";
 
 use v5.14;
 use warnings;
