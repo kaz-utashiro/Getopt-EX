@@ -1,6 +1,6 @@
 package Getopt::EX::Colormap;
 
-our $VERSION = "2.2.1";
+our $VERSION = "2.2.2";
 
 use v5.14;
 use utf8;
@@ -459,7 +459,7 @@ The following copyright notice applies to all the files provided in
 this distribution, including binary files, unless explicitly noted
 otherwise.
 
-Copyright 2015-2024 Kazumasa Utashiro
+Copyright 2015-2025 Kazumasa Utashiro
 
 =head1 LICENSE
 

@@ -67,12 +67,12 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "2.2.1",
+   "version" : "2.2.2",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <kaz@utashiro.com>",
       "Kazumasa Utashiro <utashiro@cpan.org>"
    ],
-   "x_serialization_backend" : "JSON::PP version 4.12",
+   "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 1
 }
