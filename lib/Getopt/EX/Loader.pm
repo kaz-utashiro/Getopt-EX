@@ -294,7 +294,7 @@ sub expand {
 
 	    shift @follow;
 
-	    debug_argv({color=>'R'}, $argv, undef, \@s, \@follow);
+	    debug_argv({color=>'<red3>'}, $argv, undef, \@s, \@follow);
 
 	    ##
 	    ## $<shift>, $<move>, $<remove>, $<copy>, $<ignore>
@@ -320,12 +320,12 @@ sub expand {
 	    }->(), @s;
 
 	    @s = $bucket->expand_args(@s);
-	    debug_argv({color=>'B'}, $argv, undef, \@s, \@follow) if $modified;
+	    debug_argv({color=>'<blue4>'}, $argv, undef, \@s, \@follow) if $modified;
 
 	    my(@module, @default);
 	    if (@module = $obj->modopt(\@s)) {
 		@default = grep { @$_ } map { [ $_->default ] } @module;
-		debug_argv({color=>'Y'}, $argv, \@default, \@s, \@follow);
+		debug_argv({color=>'<green4>'}, $argv, \@default, \@s, \@follow);
 	    }
 	    push @$argv, @default, @s, @follow;
 
@@ -338,20 +338,29 @@ sub debug_argv {
     $debug or return;
     my $opt = ref $_[0] eq 'HASH' ? shift : {};
     my($before, $default, $working, $follow) = @_;
-    my $color = $opt->{color} // 'R';
+    my $color = $opt->{color} // '<red3>';
     printf STDERR
 	"\@ARGV = %s\n",
-	array_to_str(pairmap { $a ? colorize($b, array_to_str(@$a)) : () }
-		     $before, "L10",
-		     $default, "$color;DI",
-		     $working, "$color;D",
-		     $follow, "M");
+	array_to_str(
+	    pairmap {
+		if (@$a > 0) {
+		    colorize($b, array_to_str(@$a));
+		} else {
+		    ();
+		}
+	    }
+	    $before  // [],  "L20",
+	    $default // [], "$color;U",
+	    $working // [], "$color;",
+	    $follow  // [],  "N");
 }
 
 sub array_to_str {
     join ' ', map {
 	if (ref eq 'ARRAY') {
 	    join ' ', '[', array_to_str(@$_), ']';
+	} elsif (length == 0) {
+	    "''";
 	} else {
 	    $_;
 	}
