@@ -578,7 +578,7 @@ use in command line,
     option --kanalist --nocolor -o --join --re '(#kana)+(\n(#kana)+)*'
     help   --kanalist List up Katakana string
 
-Here-document can be used to define string inluding newlines.
+Here-document can be used to define string including newlines.
 
     define __script__ <<EOS
     {
