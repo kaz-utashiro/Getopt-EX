@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/kaz-utashiro/Getopt-EX/workflows/test/badge.svg)](https://github.com/kaz-utashiro/Getopt-EX/actions) [![MetaCPAN Release](https://badge.fury.io/pl/Getopt-EX.svg)](https://metacpan.org/release/Getopt-EX)
+[![Actions Status](https://github.com/kaz-utashiro/Getopt-EX/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/kaz-utashiro/Getopt-EX/actions?workflow=test) [![MetaCPAN Release](https://badge.fury.io/pl/Getopt-EX.svg)](https://metacpan.org/release/Getopt-EX)
 # NAME
 
 Getopt::EX - Getopt Extender
@@ -9,26 +9,26 @@ Version 2.2.2
 
 # DESCRIPTION
 
-[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX) extends basic function of [Getopt](https://metacpan.org/pod/Getopt) family to support
-user-definable option aliases, and dynamic module which works together
-with a script through option interface.
+[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX) extends the basic functionality of the [Getopt](https://metacpan.org/pod/Getopt) family to support
+user-definable option aliases, and dynamic modules which work together
+with a script through the option interface.
 
 # INTERFACES
 
 There are two major interfaces to use [Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX) modules.
 
-Easy one is [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) compatible module, [Getopt::EX::Long](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALong).
-You can simply replace module declaration and get the benefit of this
-module to some extent.  It allows user to make start up _rc_ file in
-their home directory, which provide user-defined option aliases.
+The easier one is [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) compatible module, [Getopt::EX::Long](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALong).
+You can simply replace the module declaration and get the benefits of this
+module to some extent.  It allows users to create a startup _rc_ file in
+their home directory, which provides user-defined option aliases.
 
-Use [Getopt::EX::Loader](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALoader) to get full capabilities.  Then the user of
-your script can make their own extension module which work together
-with original command through command option interface.
+Use [Getopt::EX::Loader](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALoader) to get full capabilities.  Then the users of
+your script can create their own extension modules which work together
+with the original command through the command option interface.
 
-Another module [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is made to produce colored text
-on ANSI terminal, and to provide easy way to maintain labeled colormap
-table and option handling.
+Another module [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is designed to produce colored text
+on ANSI terminals, and to provide an easy way to maintain labeled colormap
+tables and option handling.
 
 ## [Getopt::EX::Long](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALong)
 
@@ -40,31 +40,31 @@ In addition, if the command name is _example_,
 
     ~/.examplerc
 
-file is loaded by default.  In this rc file, user can define their own
-option with macro processing.  This is useful when the command takes
-complicated arguments.  User can also define default option which is
-used always.  For example,
+file is loaded by default.  In this rc file, users can define their own
+options with macro processing.  This is useful when the command takes
+complicated arguments.  Users can also define default options which are
+always used.  For example,
 
     option default -n
 
-gives option _-n_ always when the script executed.  See
-[Getopt::EX::Module](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AModule) document what you can do in this file.
+always gives the _-n_ option when the script is executed.  See the
+[Getopt::EX::Module](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AModule) documentation for what you can do in this file.
 
-If the rc file includes a section start with `__PERL__`, it is
-evaluated as a perl program.  User can define any kind of functions
-there, which can be invoked from command line option if the script is
-aware of them.  At this time, module object is assigned to variable
-`$MODULE`, and you can access module API through it.
+If the rc file includes a section starting with `__PERL__` or `__PERL5__`,
+it is evaluated as a Perl program.  Users can define any kind of functions
+there, which can be invoked from command line options if the script is
+aware of them.  At this time, the module object is assigned to the variable
+`$MODULE`, and you can access the module API through it.
 
-Also, special command option preceded by **-M** is taken and
-corresponding perl module is loaded.  For example,
+Also, special command options preceded by **-M** are recognized and the
+corresponding Perl module is loaded.  For example,
 
     % example -Mfoo
 
 will load `App::example::foo` module.
 
-This module is normal perl module, so user can write anything they
-want.  If the module option come with initial function call, it is
+This module is a normal Perl module, so users can write anything they
+want.  If the module option comes with an initial function call, it is
 called at the beginning of command execution.  Suppose that the module
 _foo_ is specified like this:
 
@@ -73,10 +73,10 @@ _foo_ is specified like this:
 Then, after the module **foo** is loaded, function _bar_ is called
 with the parameter _buz_ with value 100.
 
-If the module includes `__DATA__` section, it is interpreted just
-same as rc file.  So you can define arbitrary option there.  Combined
-with startup function call described above, it is possible to control
-module behavior by user defined option.
+If the module includes a `__DATA__` section, it is interpreted just the
+same as an rc file.  So you can define arbitrary options there.  Combined
+with the startup function call described above, it is possible to control
+module behavior by user-defined options.
 
 ## [Getopt::EX::Loader](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALoader)
 
@@ -92,12 +92,12 @@ Then load rc file:
 
     $loader->load_file("$ENV{HOME}/.examplerc");
 
-And process command line options:
+Then process command line options:
 
     $loader->deal_with(\@ARGV);
 
-Finally gives built-in function declared in dynamically loaded modules
-to option parser.
+Finally, pass the built-in functions declared in dynamically loaded modules
+to the option parser.
 
     my $parser = Getopt::Long::Parser->new;
     $parser->getoptions( ... , $loader->builtins )
@@ -107,10 +107,10 @@ internally.
 
 ## [Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc)
 
-To make your script to communicate with user-defined subroutines, use
-[Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc) module, which provide `parse_func` interface.  If
-your script has **--begin** option which tells the script to call
-specific function at the beginning of execution.  Write something
+To make your script communicate with user-defined subroutines, use the
+[Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc) module, which provides the `parse_func` interface.  If
+your script has a **--begin** option which tells the script to call a
+specific function at the beginning of execution, write something
 like:
 
     use Getopt::EX::Func qw(parse_func);
@@ -126,10 +126,10 @@ See [Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc) for mo
 
 ## [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap)
 
-This module is not so tightly coupled with other modules in
-[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX).  It provides concise way to specify ANSI terminal
-colors with various effects, and produce terminal sequences by color
-specification or label parameter.
+This module is not tightly coupled with other modules in
+[Getopt::EX](https://metacpan.org/pod/Getopt%3A%3AEX).  It provides a concise way to specify ANSI terminal
+colors with various effects, and produces terminal sequences by color
+specification or label parameters.
 
 You can use this module with normal [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong):
 
@@ -158,7 +158,7 @@ and then get colored string as follows.
     print $handler->color("LINE", "LINE in Blue\n");
     print $handler->color("TEXT", "TEXT in Green\n");
 
-In this example, user can change these colors from command line option
+In this example, users can change these colors from the command line option
 like this:
 
     % example --colormap FILE=C,LINE=M,TEXT=Y
@@ -167,16 +167,16 @@ or call arbitrary perl function like:
 
     % example --colormap FILE='sub{uc}'
 
-Above example produces uppercase version of provided string instead of
-ANSI color sequence.
+The above example produces an uppercase version of the provided string instead of
+an ANSI color sequence.
 
 If you want to use just coloring function, use backend module
 [Term::ANSIColor::Concise](https://metacpan.org/pod/Term%3A%3AANSIColor%3A%3AConcise).
 
 ## [Getopt::EX::LabeledParam](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALabeledParam)
 
-This is super-class of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap).  [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong)
-support parameter handling within hash,
+This is the super-class of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap).  [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong)
+supports parameter handling within a hash,
 
     my %defines;
     GetOptions ("define=s" => \%defines);
@@ -200,8 +200,8 @@ and the parameter can be given mixed together.
 
 ## [Getopt::EX::Numbers](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ANumbers)
 
-Parse number parameter description and produces number range list or
-number sequence.  Number format is composed by four elements: `start`,
+Parses number parameter descriptions and produces number range lists or
+number sequences.  Number format is composed of four elements: `start`,
 `end`, `step` and `length`, like this:
 
     1           1
@@ -213,12 +213,12 @@ number sequence.  Number format is composed by four elements: `start`,
 
 ## [Term::ANSIColor::Concise](https://metacpan.org/pod/Term%3A%3AANSIColor%3A%3AConcise)
 
-Coloring capability of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is now implemented in
+The coloring capability of [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap) is now implemented in
 this module.
 
 ## [Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed)
 
-[Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed) is a module to automate a hash object to store
+[Getopt::EX::Hashed](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AHashed) is a module that automates a hash object to store
 command line option values for [Getopt::Long](https://metacpan.org/pod/Getopt%3A%3ALong) and compatible modules
 including **Getopt::EX::Long**.
 
@@ -226,24 +226,24 @@ including **Getopt::EX::Long**.
 
 [Getopt::EX::Config](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AConfig) provides an interface to define configuration
 information for `Getopt::EX` modules.  Using this module, it is
-possible to define configuration information only for the module and
+possible to define configuration information specific to the module and
 to define module-specific command options.
 
 ## [Getopt::EX::i18n](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Ai18n)
 
-[Getopt::EX::i18n](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Ai18n) provides an easy way to set locale environment
-before executing command.
+[Getopt::EX::i18n](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Ai18n) provides an easy way to set the locale environment
+before executing a command.
 
 ## [Getopt::EX::termcolor](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Atermcolor)
 
-[Getopt::EX::termcolor](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Atermcolor) is a common module to manipulate system
-dependent terminal color.
+[Getopt::EX::termcolor](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3Atermcolor) is a common module to manipulate system-dependent
+terminal colors.
 
 ## [Getopt::EX::RPN](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ARPN)
 
-[Getopt::EX::RPN](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ARPN) provides a RPN (Reverse Polish Notation)
+[Getopt::EX::RPN](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ARPN) provides an RPN (Reverse Polish Notation)
 calculation interface for command line arguments.  This is convenient
-when you want to define parameter based on terminal height or width.
+when you want to define parameters based on terminal height or width.
 
 # AUTHOR
 

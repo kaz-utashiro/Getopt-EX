@@ -464,26 +464,26 @@ Getopt::EX::Module - RC/Module data container
 =head1 DESCRIPTION
 
 This module is usually used from L<Getopt::EX::Loader>, and keeps
-all data about loaded rc file or module.
+all data about the loaded rc file or module.
 
 =head2 MODULE
 
-After user defined module was loaded, subroutine C<initialize> is
-called if it exists in the module.  At this time, container object is
-passed to the function as the first argument and following command
-argument pointer as the second.  So you can use it to directly touch
-the object contents through class interface.
+After a user-defined module is loaded, the subroutine C<initialize> is
+called if it exists in the module.  At this time, the container object is
+passed to the function as the first argument and the following command
+argument pointer as the second.  So you can use it to directly access
+the object contents through the class interface.
 
-Following C<initialize>, function defined with module option is called.
+Following C<initialize>, the function defined with the module option is called.
 
-Finally subroutine C<finalize> is called if defined, to finalize start
-up process of the module.
+Finally, the subroutine C<finalize> is called if defined, to finalize the startup
+process of the module.
 
 =head2 FILE
 
-As for rc file, section after C<__PERL__> or C<__PERL5__> mark is
-executed as Perl program.  At this time, module object is assigned to
-variable C<$MODULE>, and you can access module API through it.
+For rc files, the section after the C<__PERL__> or C<__PERL5__> mark is
+executed as a Perl program.  At this time, the module object is assigned to the
+variable C<$MODULE>, and you can access the module API through it.
 
     if (our $MODULE) {
         $MODULE->setopt('default', '--number');
@@ -495,11 +495,11 @@ variable C<$MODULE>, and you can access module API through it.
 
 =item B<option> I<name> I<string>
 
-Define option I<name>.  Argument I<string> is processed by
-I<shellwords> routine defined in L<Text::ParseWords> module.  Be sure
-that this module sometimes requires escape backslashes.
+Define option I<name>.  Argument I<string> is processed by the
+I<shellwords> routine defined in the L<Text::ParseWords> module.  Be aware
+that this module sometimes requires escaped backslashes.
 
-Any kind of string can be used for option name but it is not combined
+Any kind of string can be used for an option name but it is not combined
 with other options.
 
     option --fromcode --outside='(?s)\/\*.*?\*\/'
@@ -508,77 +508,77 @@ with other options.
 If the option named B<default> is defined, it will be used as a
 default option.
 
-For the purpose to include following arguments within replaced
-strings, two special notations can be used in option definition.
+For the purpose of including following arguments within replaced
+strings, two special notations can be used in option definitions.
 
-String C<< $<n> >> is replaced by the I<n>th argument after the
-substituted option, where I<n> is number start from one.  Because C<<
-$<0> >> is replaced by the defined option itself, you have to care
-about infinite loop.
+The string C<< $<n> >> is replaced by the I<n>th argument after the
+substituted option, where I<n> is a number starting from one.  Because C<<
+$<0> >> is replaced by the defined option itself, you have to be careful
+about infinite loops.
 
-String C<< $<shift> >> is replaced by following command line argument
-and the argument is removed from list.
+The string C<< $<shift> >> is replaced by the following command line argument
+and the argument is removed from the list.
 
 For example, when
 
     option --line --le &line=$<shift>
 
-is defined, command
+is defined, the command
 
     greple --line 10,20-30,40
 
-will be evaluated as this:
+will be evaluated as:
 
     greple --le &line=10,20-30,40
 
 There are special arguments to manipulate option behavior and the rest
-of arguments.  Argument C<< $<move> >> moves all following arguments
+of the arguments.  Argument C<< $<move> >> moves all following arguments
 there, C<< $<remove> >> just removes them, and C<< $<copy> >> copies
-them.  These does not work when included as a part of string.
+them.  These do not work when included as part of a string.
 
-They take optional one or two parameters, those are passed to Perl
-C<splice> function as I<offset> and I<length>.  C<< $<move(0,1)> >> is
-same as C<< $<shift> >>; C<< $<copy(0,1)> >> is same as C<< $<1> >>;
-C<< $<move> >> is same as C<< $<move(0)> >>; C<< $<move(-1)> >> moves
-the last argument; C<< $move(1,1) >> moves second argument.  Next
-example exchange following two arguments.
+They take one or two optional parameters, which are passed to the Perl
+C<splice> function as I<offset> and I<length>.  C<< $<move(0,1)> >> is the
+same as C<< $<shift> >>; C<< $<copy(0,1)> >> is the same as C<< $<1> >>;
+C<< $<move> >> is the same as C<< $<move(0)> >>; C<< $<move(-1)> >> moves
+the last argument; C<< $move(1,1) >> moves the second argument.  The next
+example exchanges the following two arguments.
 
     option --exch $<move(1,1)>
 
-You can use recently introduced C<< $<ignore> >> to ignore the
-argument.  Some existing module uses C<< $<move(0,0)> >> for the same
-purpose, because it effectively do nothing.
+You can use the recently introduced C<< $<ignore> >> to ignore the
+argument.  Some existing modules use C<< $<move(0,0)> >> for the same
+purpose, because it effectively does nothing.
 
     option --deprecated $<ignore>
     option --deprecated $<move(0,0)>
 
 =item B<expand> I<name> I<string>
 
-Define local option I<name>.  Command B<expand> is almost same as
-command B<option> in terms of its function.  However, option defined
-by this command is expanded in, and only in, the process of
-definition, while option definition is expanded when command arguments
+Define local option I<name>.  The B<expand> command is almost the same as the
+B<option> command in terms of its function.  However, options defined
+by this command are expanded in, and only in, the process of
+definition, while option definitions are expanded when command arguments
 are processed.
 
-This is similar to string macro defined by following B<define>
-command.  But macro expantion is done by simple string replacement, so
-you have to use B<expand> to define option composed by multiple
+This is similar to a string macro defined by the following B<define>
+command.  But macro expansion is done by simple string replacement, so
+you have to use B<expand> to define options composed of multiple
 arguments.
 
 =item B<define> I<name> I<string>
 
-Define string macro.  This is similar to B<option>, but argument is
-not processed by I<shellwords> and treated just a simple text, so
-meta-characters can be included without escape.  Macro expansion is
-done for option definition and other macro definition.  Macro is not
-evaluated in command line option.  Use option directive if you want to
-use in command line,
+Define a string macro.  This is similar to B<option>, but the argument is
+not processed by I<shellwords> and is treated as simple text, so
+meta-characters can be included without escaping.  Macro expansion is
+performed for option definitions and other macro definitions.  Macros are not
+evaluated in command line options.  Use the option directive if you want to
+use it in the command line,
 
     define (#kana) \p{InKatakana}
     option --kanalist --nocolor -o --join --re '(#kana)+(\n(#kana)+)*'
     help   --kanalist List up Katakana string
 
-Here-document can be used to define string including newlines.
+A here-document can be used to define strings including newlines.
 
     define __script__ <<EOS
     {
@@ -586,40 +586,40 @@ Here-document can be used to define string including newlines.
     }  
     EOS
 
-Special macro C<__PACKAGE__> is pre-defined to module name.
+The special macro C<__PACKAGE__> is pre-defined to the module name.
 
 =item B<help> I<name>
 
-Define help message for option I<name>.
+Define a help message for option I<name>.
 
 =item B<builtin> I<spec> I<variable>
 
-Define built-in option which should be processed by option parser.
-Defined option spec can be taken by B<builtin> method, and script is
-responsible to give them to parser.
+Define a built-in option which should be processed by the option parser.
+The defined option spec can be retrieved by the B<builtin> method, and the script is
+responsible for passing them to the parser.
 
-Arguments are assumed to be L<Getopt::Long> style spec, and
-I<variable> is string start with C<$>, C<@> or C<%>.  They will be
-replaced by a reference to the object which the string represent.
+Arguments are assumed to be L<Getopt::Long> style specs, and
+I<variable> is a string starting with C<$>, C<@> or C<%>.  They will be
+replaced by a reference to the object which the string represents.
 
 =item B<autoload> I<module> I<options>
 
-Define module which should be loaded automatically when specified
+Define a module which should be loaded automatically when the specified
 option is found in the command arguments.
 
 For example,
 
     autoload -Mdig --dig
 
-replaces option "I<--dig>" to "I<-Mdig --dig>", and I<dig> module is
-loaded before processing I<--dig> option.
+replaces the option "I<--dig>" with "I<-Mdig --dig>", and the I<dig> module is
+loaded before processing the I<--dig> option.
 
 =item B<mode> [I<no>]I<name>
 
-Set or unset mode I<name>.  Currently, B<funciton> and B<wildcard> can
-be used as a name.  See METHODS section.
+Set or unset mode I<name>.  Currently, B<function> and B<wildcard> can
+be used as a name.  See the METHODS section.
 
-Next is an example used in L<App::Greple::subst::dyncmap> module to
+The next example is used in the L<App::Greple::subst::dyncmap> module to
 produce parameters on the fly.
 
     mode function
@@ -633,11 +633,11 @@ produce parameters on the fly.
 
 =item B<new> I<configure option>
 
-Create object.  Parameters are just passed to C<configure> method.
+Create an object.  Parameters are passed to the C<configure> method.
 
 =item B<configure>
 
-Configure object.  Parameter is passed in hash name and value style.
+Configure the object.  Parameters are passed in hash name and value style.
 
 =over 4
 
@@ -669,13 +669,13 @@ Set option which is effective only in the module.
 
 =item B<getopt> I<name>
 
-Get option.  Takes option name and return it's definition if
-available.  It doesn't return I<default> option, get it by I<default>
+Get an option.  Takes an option name and returns its definition if
+available.  It doesn't return the I<default> option; get it by the I<default>
 method.
 
 =item B<default>
 
-Get default option.  Use C<setopt(default =E<gt> ...)> to set.
+Get the default option.  Use C<setopt(default =E<gt> ...)> to set it.
 
 =item B<builtin>
 
@@ -687,20 +687,20 @@ Set autoload module.
 
 =item B<mode>
 
-Set argument treatment mode.  Arguments produced by option expansion
-will be the subject of post-process.  This method define the behavior
+Set the argument treatment mode.  Arguments produced by option expansion
+will be the subject of post-processing.  This method defines the behavior
 of it.
 
 =over 4
 
 =item B<mode>(B<function> => 1)
 
-Interpret the argument start with '&' as a function, and replace it by
+Interpret arguments starting with '&' as a function, and replace them with
 the result of the function call.
 
 =item B<mode>(B<wildcard> => 1)
 
-Replace wildcard argument by matched file names.
+Replace wildcard arguments with matched file names.
 
 =back
 

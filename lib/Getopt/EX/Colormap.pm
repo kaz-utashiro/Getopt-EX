@@ -156,19 +156,19 @@ Getopt::EX::Colormap - ANSI terminal color and option support
 
 =head1 DESCRIPTION
 
-Text coloring capability is not strongly bound to option processing,
-but it may be useful to give a simple uniform way to specify
-complicated color setting from command line.
+Text coloring capability is not tightly bound to option processing,
+but it may be useful to provide a simple uniform way to specify
+complicated color settings from the command line.
 
-Coloring function is now implemented in different module
-L<Term::ANSIColor::Concise>.  Detail about color spec is described in
-its document.
+The coloring function is now implemented in a different module
+L<Term::ANSIColor::Concise>.  Details about color specifications are described in
+its documentation.
 
-This module assumes color information is given in two ways: one in
-labeled list, and one in indexed list.
+This module assumes color information is given in two ways: one as a
+labeled list, and one as an indexed list.
 
-Handler maintains hash and list objects, and labeled colors are stored
-in hash, index colors are in list automatically.  User can mix both
+The handler maintains hash and list objects, and labeled colors are stored
+in the hash, while indexed colors are in the list automatically.  Users can mix both
 specifications.
 
 =head2 LABELED COLOR
@@ -179,29 +179,29 @@ This is an example of labeled list:
     --cm 'OTEXT=C,NTEXT=M,*CHANGE=BD/445,DELETE=APPEND=RD/544' \
     --cm 'CMARK=GS,MMARK=YS,CTEXT=G,MTEXT=Y'
 
-Color definitions are separated by comma (C<,>) and the label is
-specified by I<LABEL=> style precedence.  Multiple labels can be set
-for same value by connecting them together.  Label name can be
+Color definitions are separated by commas (C<,>) and the label is
+specified by I<LABEL=> style prefix.  Multiple labels can be set
+for the same value by connecting them together.  Label names can be
 specified with C<*> and C<?> wildcard characters.
 
-If the color spec start with plus (C<+>) mark with the labeled list
-format, it is appended to the current value with reset mark (C<^>).
-Next example uses wildcard to set all labels end with `CHANGE' to `R'
-and set `R^S' to `OCHANGE' label.
+If the color spec starts with a plus (C<+>) mark in the labeled list
+format, it is appended to the current value with a reset mark (C<^>).
+The next example uses a wildcard to set all labels ending with `CHANGE' to `R'
+and sets `R^S' to the `OCHANGE' label.
 
     --cm '*CHANGE=R,OCHANGE=+S'
 
 =head2 INDEX COLOR
 
-Indexed list example is like this:
+An indexed list example is like this:
 
     --cm 555/100,555/010,555/001 \
     --cm 555/011,555/101,555/110 \
     --cm 555/021,555/201,555/210 \
     --cm 555/012,555/102,555/120
 
-This is an example of RGB 6x6x6 216 colors specification.  Left side
-of slash is foreground, and right side is for background color.  This
+This is an example of an RGB 6x6x6 216 colors specification.  The left side
+of the slash is for foreground, and the right side is for background color.  This
 color list is accessed by index.
 
 If the special reset symbol C<@> is encountered, the index list is
@@ -215,22 +215,22 @@ for more detail.
 
 =head1 FUNCTION SPEC
 
-It is also possible to set arbitrary function which is called to
-handle string in place of color, and that is not necessarily concerned
+It is also possible to set an arbitrary function which is called to
+handle a string in place of color, and that is not necessarily concerned
 with color.  This scheme is quite powerful and the module name itself
-may be somewhat misleading.  Spec string which start with C<sub{> is
-considered as a function definition.  So
+may be somewhat misleading.  A spec string which starts with C<sub{> is
+considered a function definition.  So
 
     % example --cm 'sub{uc}'
 
-set the function object in the color entry.  And when C<color> method
-is called with that object, specified function is called instead of
-producing ANSI color sequence.  Function is supposed to get the target
+sets the function object in the color entry.  And when the C<color> method
+is called with that object, the specified function is called instead of
+producing an ANSI color sequence.  The function is supposed to get the target
 text as a global variable C<$_>, and return the result as a string.
-Function C<sub{uc}> in the above example returns uppercase version of
+The function C<sub{uc}> in the above example returns an uppercase version of
 C<$_>.
 
-If your script prints file name according to the color spec labeled by
+If your script prints a file name according to the color spec labeled by
 B<FILE>, then
 
     % example --cm FILE=R
@@ -241,16 +241,16 @@ prints the file name in red, but
 
 will print the name in uppercases.
 
-Spec start with C<&> is considered as a function name.  If the
+A spec starting with C<&> is considered a function name.  If the
 function C<double> is defined like:
 
     sub double { $_ . $_ }
 
-then, command
+then the command
 
     % example --cm '&double'
 
-produces doubled text by C<color> method.  Function can also take
+produces doubled text by the C<color> method.  Functions can also take
 parameters, so the next example
 
     sub repeat {
@@ -262,8 +262,8 @@ parameters, so the next example
 
 produces tripled text.
 
-Function object is created by <Getopt::EX::Func> module.  Take a look
-at the module for detail.
+The function object is created by the L<Getopt::EX::Func> module.  Take a look
+at the module for details.
 
 
 =head1 EXAMPLE CODE
@@ -323,8 +323,8 @@ Return colored text indicated by label or color spec string.
 
 =item B<index_color> I<index>, TEXT
 
-Return colored text indicated by I<index>.  If the index is bigger
-than color list, it rounds up.
+Return colored text indicated by I<index>.  If the index is larger
+than the color list, it wraps around.
 
 =item B<new>
 
@@ -336,7 +336,7 @@ See super class L<Getopt::EX::LabeledParam>.
 
 =item B<colormap>
 
-Return string which can be used for option definition.  Some
+Return a string which can be used for option definition.  Some
 parameters can be specified like:
 
     $obj->colormap(name => "--newopt", option => "--colormap");
@@ -353,13 +353,13 @@ Specify option name for colormap setup.
 
 =item B<sort>
 
-Default value is C<length> and sort options by their length.  Use
+The default value is C<length> and sorts options by their length.  Use
 C<alphabet> to sort them alphabetically.
 
 =item B<noalign>
 
-Colormap label is aligned so that `=' marks are lined vertically.
-Give true value to B<noalign> parameter, if you don't like this
+Colormap labels are aligned so that `=' marks are lined up vertically.
+Give a true value to the B<noalign> parameter if you don't like this
 behavior.
 
 =back
@@ -369,9 +369,9 @@ behavior.
 
 =head1 FUNCTION
 
-These functions are now implemented in L<Term::ANSIColor::Concise>
-module by slightly different names.  Interface is remained for
-compatibility but using them in the new code is strongly discouraged.
+These functions are now implemented in the L<Term::ANSIColor::Concise>
+module with slightly different names.  The interface is retained for
+compatibility but using them in new code is strongly discouraged.
 
 =over 4
 
@@ -381,31 +381,31 @@ compatibility but using them in the new code is strongly discouraged.
 
 Return colorized version of given text.
 
-B<colorize> produces 256 or 24bit colors depending on the setting,
-while B<colorize24> always produces 24bit color sequence for
-24bit/12bit color spec.  See L<ENVIRONMENT>.
+B<colorize> produces 256 or 24-bit colors depending on the setting,
+while B<colorize24> always produces 24-bit color sequences for
+24-bit/12-bit color specs.  See L<ENVIRONMENT>.
 
 =item B<ansi_code>(I<color_spec>)
 
-Produces introducer sequence for given spec.  Reset code can be taken
+Produces an introducer sequence for the given spec.  A reset code can be obtained
 by B<ansi_code("Z")>.
 
 =item B<ansi_pair>(I<color_spec>)
 
-Produces introducer and recover sequences for given spec. Recover
-sequence includes I<Erase Line> related control with simple SGR reset
+Produces introducer and recovery sequences for the given spec. The recovery
+sequence includes I<Erase Line> related controls along with a simple SGR reset
 code.
 
 =item B<csi_code>(I<name>, I<params>)
 
-Produce CSI (Control Sequence Introducer) sequence by name with
+Produces a CSI (Control Sequence Introducer) sequence by name with
 numeric parameters.  I<name> is one of CUU, CUD, CUF, CUB, CNL, CPL,
 CHA, CUP, ED, EL, SU, SD, HVP, SGR, SCP, RCP.
 
 =item B<colortable>([I<width>])
 
-Print visual 256 color matrix table on the screen.  Default I<width>
-is 144.  Use like this:
+Prints a visual 256 color matrix table on the screen.  The default I<width>
+is 144.  Use it like this:
 
     perl -MGetopt::EX::Colormap=colortable -e colortable
 
@@ -413,26 +413,26 @@ is 144.  Use like this:
 
 =head1 ENVIRONMENT
 
-Environment variables are also implemented in slightly different way
+Environment variables are also implemented in a slightly different way in the
 L<Term::ANSIColor::Concise> module.  Use C<ANSICOLOR_NO_NO_COLOR>,
-C<ANSICOLOR_RGB24>, C<ANSICOLOR_NO_RESET_EL> if you are using newer
+C<ANSICOLOR_RGB24>, C<ANSICOLOR_NO_RESET_EL> if you are using a newer
 version.
 
 If the environment variable C<NO_COLOR> is set, regardless of its
-value, colorizing interface in this module never produce color
-sequence.  Primitive function such as C<ansi_code> is not the case.
+value, the colorizing interface in this module never produces color
+sequences.  Primitive functions such as C<ansi_code> are not affected.
 See L<https://no-color.org/>.
 
-If the module variable C<$NO_NO_COLOR> or C<GETOPTEX_NO_NO_COLOR>
-environment is true, C<NO_COLOR> value is ignored.
+If the module variable C<$NO_NO_COLOR> or the C<GETOPTEX_NO_NO_COLOR>
+environment variable is true, the C<NO_COLOR> value is ignored.
 
-B<color> method and B<colorize> function produces 256 or 24bit colors
-depending on the value of C<$RGB24> module variable.  Also 24bit mode
-is enabled when environment C<GETOPTEX_RGB24> is set or C<COLORTERM>
+The B<color> method and B<colorize> function produce 256 or 24-bit colors
+depending on the value of the C<$RGB24> module variable.  Also, 24-bit mode
+is enabled when the C<GETOPTEX_RGB24> environment variable is set or C<COLORTERM>
 is C<truecolor>.
 
-If the module variable C<$NO_RESET_EL> set, or C<GETOPTEX_NO_RESET_EL>
-environment, I<Erase Line> sequence is not produced after RESET code.
+If the module variable C<$NO_RESET_EL> is set, or the C<GETOPTEX_NO_RESET_EL>
+environment variable is set, the I<Erase Line> sequence is not produced after a RESET code.
 See L<RESET SEQUENCE>.
 
 

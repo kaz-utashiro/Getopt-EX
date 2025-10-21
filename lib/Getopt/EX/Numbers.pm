@@ -157,7 +157,7 @@ Getopt::EX::Numbers->new(start=>1,end=>10,step=>2)->sequence;
 
 =head1 FORMAT
 
-Number format is composed by four elements: C<start>, C<end>, C<step>
+Number format is composed of four elements: C<start>, C<end>, C<step>
 and C<length>.  All elements are optional.
 
     1		1
@@ -165,23 +165,23 @@ and C<length>.  All elements are optional.
     1:20:5	1,     6,     11,       16
     1:20:5:3	1,2,3, 6,7,8, 11,12,13, 16,17,18
 
-When C<start> is omitted, minimum value is used, which is zero by
-default.  If the object is initialized with C<max> value, C<end>
+When C<start> is omitted, the minimum value is used, which is zero by
+default.  If the object is initialized with a C<max> value, the C<end>
 element can be omitted.
 
     ::		all
     ::2		even numbers
     1::2	odd numbers
 
-If C<start> and C<end> number is negative, they are subtracted from
-the maximum number.  If the C<end> number is prefixed by plus (`+')
-sign, it is summed to C<start> number.  Next examples produce top and
+If the C<start> and C<end> numbers are negative, they are subtracted from
+the maximum number.  If the C<end> number is prefixed by a plus (`+')
+sign, it is added to the C<start> number.  The next examples produce the top and
 last 10 numbers.
 
     :+9		top 10 numbers
     -9:		last 10 numbers
 
-C<{n}> operator can be used to repeat preceeding expression.  C<3{5}>
+The C<{n}> operator can be used to repeat the preceding expression.  C<3{5}>
 means C<3,3,3,3,3>.  C<2:6:2{3}> means C<2,4,6,2,4,6,2,4,6>.
 
 
@@ -191,20 +191,20 @@ means C<3,3,3,3,3>.  C<2:6:2{3}> means C<2,4,6,2,4,6,2,4,6>.
 
 =item B<new> ( [ B<min> => n ] , [ B<max> => m ] ... )
 
-Create object with optional parameter B<min> and B<max>.
+Create an object with optional parameters B<min> and B<max>.
 
-Other parameters (B<start>, B<end>, B<step>, B<length>) also can be
-specified with B<new> method.  This is equivalent to use B<parse>
+Other parameters (B<start>, B<end>, B<step>, B<length>) can also be
+specified with the B<new> method.  This is equivalent to using the B<parse>
 method.
 
 =item B<parse>(I<spec>)
 
-Accept number description and parse it.
-Return object itself.
+Accept a number description and parse it.
+Returns the object itself.
 
 =item B<range>
 
-Return number range list:
+Returns a number range list:
 
     ( [ n0, m0 ], [ n1, m1 ], ... )
 

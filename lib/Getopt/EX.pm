@@ -17,26 +17,26 @@ Version 2.2.2
 
 =head1 DESCRIPTION
 
-L<Getopt::EX> extends basic function of L<Getopt> family to support
-user-definable option aliases, and dynamic module which works together
-with a script through option interface.
+L<Getopt::EX> extends the basic functionality of the L<Getopt> family to support
+user-definable option aliases, and dynamic modules which work together
+with a script through the option interface.
 
 =head1 INTERFACES
 
 There are two major interfaces to use L<Getopt::EX> modules.
 
-Easy one is L<Getopt::Long> compatible module, L<Getopt::EX::Long>.
-You can simply replace module declaration and get the benefit of this
-module to some extent.  It allows user to make start up I<rc> file in
-their home directory, which provide user-defined option aliases.
+The easier one is L<Getopt::Long> compatible module, L<Getopt::EX::Long>.
+You can simply replace the module declaration and get the benefits of this
+module to some extent.  It allows users to create a startup I<rc> file in
+their home directory, which provides user-defined option aliases.
 
-Use L<Getopt::EX::Loader> to get full capabilities.  Then the user of
-your script can make their own extension module which work together
-with original command through command option interface.
+Use L<Getopt::EX::Loader> to get full capabilities.  Then the users of
+your script can create their own extension modules which work together
+with the original command through the command option interface.
 
-Another module L<Getopt::EX::Colormap> is made to produce colored text
-on ANSI terminal, and to provide easy way to maintain labeled colormap
-table and option handling.
+Another module L<Getopt::EX::Colormap> is designed to produce colored text
+on ANSI terminals, and to provide an easy way to maintain labeled colormap
+tables and option handling.
 
 =head2 L<Getopt::EX::Long>
 
@@ -48,31 +48,31 @@ In addition, if the command name is I<example>,
 
     ~/.examplerc
 
-file is loaded by default.  In this rc file, user can define their own
-option with macro processing.  This is useful when the command takes
-complicated arguments.  User can also define default option which is
-used always.  For example,
+file is loaded by default.  In this rc file, users can define their own
+options with macro processing.  This is useful when the command takes
+complicated arguments.  Users can also define default options which are
+always used.  For example,
 
     option default -n
 
-gives option I<-n> always when the script executed.  See
-L<Getopt::EX::Module> document what you can do in this file.
+always gives the I<-n> option when the script is executed.  See the
+L<Getopt::EX::Module> documentation for what you can do in this file.
 
-If the rc file includes a section start with C<__PERL__>, it is
-evaluated as a perl program.  User can define any kind of functions
-there, which can be invoked from command line option if the script is
-aware of them.  At this time, module object is assigned to variable
-C<$MODULE>, and you can access module API through it.
+If the rc file includes a section starting with C<__PERL__> or C<__PERL5__>,
+it is evaluated as a Perl program.  Users can define any kind of functions
+there, which can be invoked from command line options if the script is
+aware of them.  At this time, the module object is assigned to the variable
+C<$MODULE>, and you can access the module API through it.
 
-Also, special command option preceded by B<-M> is taken and
-corresponding perl module is loaded.  For example,
+Also, special command options preceded by B<-M> are recognized and the
+corresponding Perl module is loaded.  For example,
 
     % example -Mfoo
 
 will load C<App::example::foo> module.
 
-This module is normal perl module, so user can write anything they
-want.  If the module option come with initial function call, it is
+This module is a normal Perl module, so users can write anything they
+want.  If the module option comes with an initial function call, it is
 called at the beginning of command execution.  Suppose that the module
 I<foo> is specified like this:
 
@@ -81,10 +81,10 @@ I<foo> is specified like this:
 Then, after the module B<foo> is loaded, function I<bar> is called
 with the parameter I<buz> with value 100.
 
-If the module includes C<__DATA__> section, it is interpreted just
-same as rc file.  So you can define arbitrary option there.  Combined
-with startup function call described above, it is possible to control
-module behavior by user defined option.
+If the module includes a C<__DATA__> section, it is interpreted just the
+same as an rc file.  So you can define arbitrary options there.  Combined
+with the startup function call described above, it is possible to control
+module behavior by user-defined options.
 
 =head2 L<Getopt::EX::Loader>
 
@@ -100,12 +100,12 @@ Then load rc file:
 
   $loader->load_file("$ENV{HOME}/.examplerc");
 
-And process command line options:
+Then process command line options:
 
   $loader->deal_with(\@ARGV);
 
-Finally gives built-in function declared in dynamically loaded modules
-to option parser.
+Finally, pass the built-in functions declared in dynamically loaded modules
+to the option parser.
 
   my $parser = Getopt::Long::Parser->new;
   $parser->getoptions( ... , $loader->builtins )
@@ -115,10 +115,10 @@ internally.
 
 =head2 L<Getopt::EX::Func>
 
-To make your script to communicate with user-defined subroutines, use
-L<Getopt::EX::Func> module, which provide C<parse_func> interface.  If
-your script has B<--begin> option which tells the script to call
-specific function at the beginning of execution.  Write something
+To make your script communicate with user-defined subroutines, use the
+L<Getopt::EX::Func> module, which provides the C<parse_func> interface.  If
+your script has a B<--begin> option which tells the script to call a
+specific function at the beginning of execution, write something
 like:
 
     use Getopt::EX::Func qw(parse_func);
@@ -134,10 +134,10 @@ See L<Getopt::EX::Func> for more detail.
 
 =head2 L<Getopt::EX::Colormap>
 
-This module is not so tightly coupled with other modules in
-L<Getopt::EX>.  It provides concise way to specify ANSI terminal
-colors with various effects, and produce terminal sequences by color
-specification or label parameter.
+This module is not tightly coupled with other modules in
+L<Getopt::EX>.  It provides a concise way to specify ANSI terminal
+colors with various effects, and produces terminal sequences by color
+specification or label parameters.
 
 You can use this module with normal L<Getopt::Long>:
 
@@ -166,7 +166,7 @@ and then get colored string as follows.
     print $handler->color("LINE", "LINE in Blue\n");
     print $handler->color("TEXT", "TEXT in Green\n");
 
-In this example, user can change these colors from command line option
+In this example, users can change these colors from the command line option
 like this:
 
     % example --colormap FILE=C,LINE=M,TEXT=Y
@@ -175,16 +175,16 @@ or call arbitrary perl function like:
 
     % example --colormap FILE='sub{uc}'
 
-Above example produces uppercase version of provided string instead of
-ANSI color sequence.
+The above example produces an uppercase version of the provided string instead of
+an ANSI color sequence.
 
 If you want to use just coloring function, use backend module
 L<Term::ANSIColor::Concise>.
 
 =head2 L<Getopt::EX::LabeledParam>
 
-This is super-class of L<Getopt::EX::Colormap>.  L<Getopt::Long>
-support parameter handling within hash,
+This is the super-class of L<Getopt::EX::Colormap>.  L<Getopt::Long>
+supports parameter handling within a hash,
 
     my %defines;
     GetOptions ("define=s" => \%defines);
@@ -208,8 +208,8 @@ and the parameter can be given mixed together.
 
 =head2 L<Getopt::EX::Numbers>
 
-Parse number parameter description and produces number range list or
-number sequence.  Number format is composed by four elements: C<start>,
+Parses number parameter descriptions and produces number range lists or
+number sequences.  Number format is composed of four elements: C<start>,
 C<end>, C<step> and C<length>, like this:
 
     1		1
@@ -221,12 +221,12 @@ C<end>, C<step> and C<length>, like this:
 
 =head2 L<Term::ANSIColor::Concise>
 
-Coloring capability of L<Getopt::EX::Colormap> is now implemented in
+The coloring capability of L<Getopt::EX::Colormap> is now implemented in
 this module.
 
 =head2 L<Getopt::EX::Hashed>
 
-L<Getopt::EX::Hashed> is a module to automate a hash object to store
+L<Getopt::EX::Hashed> is a module that automates a hash object to store
 command line option values for L<Getopt::Long> and compatible modules
 including B<Getopt::EX::Long>.
 
@@ -234,24 +234,24 @@ including B<Getopt::EX::Long>.
 
 L<Getopt::EX::Config> provides an interface to define configuration
 information for C<Getopt::EX> modules.  Using this module, it is
-possible to define configuration information only for the module and
+possible to define configuration information specific to the module and
 to define module-specific command options.
 
 =head2 L<Getopt::EX::i18n>
 
-L<Getopt::EX::i18n> provides an easy way to set locale environment
-before executing command.
+L<Getopt::EX::i18n> provides an easy way to set the locale environment
+before executing a command.
 
 =head2 L<Getopt::EX::termcolor>
 
-L<Getopt::EX::termcolor> is a common module to manipulate system
-dependent terminal color.
+L<Getopt::EX::termcolor> is a common module to manipulate system-dependent
+terminal colors.
 
 =head2 L<Getopt::EX::RPN>
 
-L<Getopt::EX::RPN> provides a RPN (Reverse Polish Notation)
+L<Getopt::EX::RPN> provides an RPN (Reverse Polish Notation)
 calculation interface for command line arguments.  This is convenient
-when you want to define parameter based on terminal height or width.
+when you want to define parameters based on terminal height or width.
 
 =head1 AUTHOR
 

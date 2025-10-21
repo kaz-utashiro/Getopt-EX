@@ -128,11 +128,11 @@ Getopt::EX::Func - Function call interface
 
 =head1 DESCRIPTION
 
-This module provides the way to create function call object used in
+This module provides a way to create function call objects used in the
 L<Getopt::EX> module set.
 
-If your script has B<--begin> option which tells the script to call
-specific function at the beginning of execution.  You can do it like
+If your script has a B<--begin> option which tells the script to call a
+specific function at the beginning of execution, you can do it like
 this:
 
     use Getopt::EX::Func qw(parse_func);
@@ -143,19 +143,19 @@ this:
 
     $func->call;
 
-Then script can be invoked like this:
+Then the script can be invoked like this:
 
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
 
-In this example, function C<repeat> should be declared in module
-C<foo> or in start up rc file such as F<~/.examplerc>.  Actual
-function call is done in this way:
+In this example, the function C<repeat> should be declared in module
+C<foo> or in a startup rc file such as F<~/.examplerc>.  The actual
+function call is performed in this way:
 
     repeat ( debug => 1, msg => 'hello', count => '2' );
 
-As you can notice, arguments in the function call string is passed in
-I<name> =E<gt> I<value> style.  Parameter without value (C<debug> in
-this example) is assigned value 1.
+As you can see, arguments in the function call string are passed in
+I<name> =E<gt> I<value> style.  Parameters without a value (C<debug> in
+this example) are assigned the value 1.
 
 Function itself can be implemented like this:
 
@@ -168,9 +168,9 @@ Function itself can be implemented like this:
 	}
     }
 
-It is also possible to declare the function in-line:
+It is also possible to declare the function inline:
 
     % example -Mfoo --begin 'sub{ say "wahoo!!" }'
 
-Function C<say> can be used because the function is executed under
+The function C<say> can be used because the function is executed under a
 C<use v5.14> context.

@@ -411,24 +411,24 @@ Getopt::EX::Loader - RC/Module loader
 =head1 DESCRIPTION
 
 This is the main interface to use L<Getopt::EX> modules.  You can
-create loader object, load user defined rc file, load modules
-specified by command arguments, substitute user defined option and
-insert default options defined in rc file or modules, get module
-defined built-in option definition for option parser.
+create a loader object, load user-defined rc files, load modules
+specified by command arguments, substitute user-defined options and
+insert default options defined in rc files or modules, and get module-defined
+built-in option definitions for the option parser.
 
-Most of work is done in C<deal_with> method.  It parses command
-arguments and load modules specified by B<-M> option by default.  Then
-it scans options and substitute them according to the definitions in
-rc file or modules.  If RC and modules defines default options, they
-are inserted to the arguments.
+Most of the work is done in the C<deal_with> method.  It parses command
+arguments and loads modules specified by the B<-M> option by default.  Then
+it scans options and substitutes them according to the definitions in the
+rc file or modules.  If the RC file and modules define default options, they
+are inserted into the arguments.
 
-Module can define built-in options which should be handled option
-parser.  They can be taken by C<builtins> method, so you should give
-them to option parser.
+Modules can define built-in options which should be handled by the option
+parser.  They can be retrieved by the C<builtins> method, so you should pass
+them to the option parser.
 
 If option values are stored in a hash, use C<hashed_builtins> with the
 hash reference.  Actually, C<builtins> works even for hash storage in
-the current version of B<Getopt::Long> module, but it is not
+the current version of the B<Getopt::Long> module, but it is not
 documented.
 
 If C<App::example> is given as a C<BASECLASS> of the loader object, it
@@ -438,8 +438,8 @@ is prepended to all module names.  So command line
 
 will load C<App::example::foo> module.
 
-In this case, if module C<App::example::default> exists, it is loaded
-automatically without explicit indication.  Default module can be used
+In this case, if the module C<App::example::default> exists, it is loaded
+automatically without explicit indication.  The default module can be used
 just like a startup RC file.
 
 
@@ -457,7 +457,7 @@ Define the name of startup file.
 
 =item BASECLASS
 
-Define the base class for user defined module.  Use array reference to
+Define the base class for user-defined modules.  Use an array reference to
 specify multiple base classes; they are tried to be loaded in order.
 
 =item MODULE_OPT
@@ -466,34 +466,34 @@ Define the module option string.  String C<-M> is set by default.
 
 =item DEFAULT
 
-Define default module name.  String C<default> is set by default.  Set
-C<undef> if you don't want load any default module.
+Define the default module name.  The string C<default> is set by default.  Set to
+C<undef> if you don't want to load any default module.
 
 =item PARSE_MODULE_OPT
 
-Default true, and parse module options given to C<deal_with> method.
-When disabled, module option in command line argument is not
-processed, but module option given in rc or module files are still
+Defaults to true, and parses module options given to the C<deal_with> method.
+When disabled, module options in command line arguments are not
+processed, but module options given in rc or module files are still
 effective.
 
 =item IGNORE_NO_MODULE
 
-Default false, and process dies when given module was not found on the
-system.  When set true, program ignores not-existing module and stop
-parsing at the point leaving the argument untouched.
+Defaults to false, and the process dies when a given module was not found on the
+system.  When set to true, the program ignores non-existing modules and stops
+parsing at that point, leaving the argument untouched.
 
 =back
 
 =item B<buckets>
 
-Return loaded L<Getopt::EX::Module> object list.
+Returns the loaded L<Getopt::EX::Module> object list.
 
 =item B<load_file>
 
-Load specified file.
+Loads the specified file.
 
 =item B<load_module>
 
-Load specified module.
+Loads the specified module.
 
 =back
