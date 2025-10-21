@@ -97,7 +97,7 @@ sub readrc {
     my $fh = shift;
     my $text = do { local $/; <$fh> };
     for ($text) {
-	s/^__(?:CODE|PERL)__\s*\n(.*)//ms and do {
+	s/^__(?:CODE|PERL5?)__\s*\n(.*)//ms and do {
 	    package main;
 	    no warnings 'once';
 	    local $main::MODULE = $obj;
@@ -481,9 +481,9 @@ up process of the module.
 
 =head2 FILE
 
-As for rc file, section after C<__PERL__> mark is executed as Perl
-program.  At this time, module object is assigned to variable
-C<$MODULE>, and you can access module API through it.
+As for rc file, section after C<__PERL__> or C<__PERL5__> mark is
+executed as Perl program.  At this time, module object is assigned to
+variable C<$MODULE>, and you can access module API through it.
 
     if (our $MODULE) {
         $MODULE->setopt('default', '--number');
