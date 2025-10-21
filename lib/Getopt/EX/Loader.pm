@@ -1,6 +1,6 @@
 package Getopt::EX::Loader;
 
-our $VERSION = "2.2.2";
+our $VERSION = "2.3.1";
 
 use v5.14;
 use warnings;
