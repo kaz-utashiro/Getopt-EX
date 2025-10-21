@@ -163,8 +163,8 @@ You can use this module with normal L<Getopt::Long>:
 and then get colored string as follows.
 
     print $handler->color("FILE", "FILE in Red\n");
-    print $handler->color("LINE", "LINE in Blue\n");
-    print $handler->color("TEXT", "TEXT in Green\n");
+    print $handler->color("LINE", "LINE in Green\n");
+    print $handler->color("TEXT", "TEXT in Blue\n");
 
 In this example, users can change these colors from the command line option
 like this:
@@ -197,7 +197,7 @@ Using L<Getopt::EX::LabeledParam>, this can be written as:
 
     my @defines;
     my %defines;
-    GetOptions ("defines=s" => \@defines);
+    GetOptions ("define=s" => \@defines);
     Getopt::EX::LabeledParam
         ->new(HASH => \%defines)
         ->load_params (@defines);

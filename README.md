@@ -155,8 +155,8 @@ You can use this module with normal [Getopt::Long](https://metacpan.org/pod/Geto
 and then get colored string as follows.
 
     print $handler->color("FILE", "FILE in Red\n");
-    print $handler->color("LINE", "LINE in Blue\n");
-    print $handler->color("TEXT", "TEXT in Green\n");
+    print $handler->color("LINE", "LINE in Green\n");
+    print $handler->color("TEXT", "TEXT in Blue\n");
 
 In this example, users can change these colors from the command line option
 like this:
@@ -189,7 +189,7 @@ Using [Getopt::EX::LabeledParam](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3ALa
 
     my @defines;
     my %defines;
-    GetOptions ("defines=s" => \@defines);
+    GetOptions ("define=s" => \@defines);
     Getopt::EX::LabeledParam
         ->new(HASH => \%defines)
         ->load_params (@defines);
