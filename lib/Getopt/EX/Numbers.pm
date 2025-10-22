@@ -113,6 +113,9 @@ sub range {
     $length ||= 1;
     $step ||= $length;
 
+    # Ensure step is positive to avoid infinite loop
+    croak "step must be positive" if $step <= 0;
+
     my @l;
     if ($step == 1) {
 	@l = ( [$start, $end] );

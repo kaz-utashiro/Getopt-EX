@@ -23,7 +23,7 @@ our @EXPORT_OK = ( '&GetOptionsFromArray',
 		   '&VersionMessage',
 		   '&ExConfigure',
     );
-our @ISA       = qw(Getopt::Long);
+use parent qw(Getopt::Long);
 
 use Data::Dumper;
 use Getopt::Long();
