@@ -157,66 +157,65 @@ sub getoptionsfromarray {
 
 =head1 NAME
 
-Getopt::EX::Long - Getopt::Long compatible glue module
+Getopt::EX::Long - Getopt::Long compatible extended module
 
 =head1 SYNOPSIS
 
   use Getopt::EX::Long;
-  GetOptions(...);
+  GetOptions("file=s" => \my $file);
 
-  or
+or using the object-oriented interface:
 
-  require Getopt::EX::Long;
+  use Getopt::EX::Long;
   my $parser = Getopt::EX::Long::Parser->new(
-	config   => [ Getopt::Long option ... ],
-	exconfig => [ Getopt::EX::Long option ...],
+      config   => [ qw(posix_default no_ignore_case) ],
+      exconfig => [ BASECLASS => 'App::example' ],
   );
+  $parser->getoptions("file=s" => \my $file);
 
 =head1 DESCRIPTION
 
-L<Getopt::EX::Long> is almost compatible with L<Getopt::Long> and you
-can just replace the module declaration and it should work the same as
-before (see the L<INCOMPATIBILITY> section).
+L<Getopt::EX::Long> is almost fully compatible with L<Getopt::Long>.
+You can replace the module declaration, and it should work the same as
+before (see L</INCOMPATIBILITY>).
 
-Besides working the same, users can define their own option aliases and
-write dynamically loaded extension modules.  If the command name is
-I<example>,
+In addition to standard L<Getopt::Long> functionality, users can
+define their own option aliases and write dynamically loaded extension
+modules.  If the command name is I<example>, the file
 
     ~/.examplerc
 
-file is loaded by default.  In this rc file, users can define their own
-options with macro processing.  This is useful when the command takes
-complicated arguments.
+is loaded by default.  In this rc file, users can define option
+aliases with macro processing.  This is useful when the command takes
+complex arguments.
 
-Also, special command options preceded by B<-M> are recognized and the
-corresponding Perl module is loaded.  The module is assumed to be under a
-specific base class.  For example,
+Special options starting with B<-M> load the corresponding Perl
+module.  The module is assumed to be under a specific base class.  For
+example:
 
     % example -Mfoo
 
-will load C<App::example::foo> module, by default.
+loads the C<App::example::foo> module by default.
 
-This module is a normal Perl module, so users can write any kind of
-program.  If the module is specified with an initial function call, it is
-called at the beginning of command execution.  Suppose that the
-module I<foo> is specified like this:
+Since extension modules are normal Perl modules, users can write any
+code they need.  If the module is specified with an initial function
+call, that function is called when the module is loaded:
 
-    % example -Mfoo::bar(buz=100) ...
+    % example -Mfoo::bar(buz=100)
 
-Then, after the module B<foo> is loaded, function I<bar> is called
-with the parameter I<baz> which has value 100.
+This loads module B<foo> and calls function I<bar> with the parameter
+I<buz> set to 100.
 
-If the module includes a C<__DATA__> section, it is interpreted just the
-same as an rc file.  So you can define arbitrary options there.  Combined
-with the startup function call described above, it is possible to control
-module behavior by user-defined options.
+If the module includes a C<__DATA__> section, it is interpreted as an
+rc file.  Combined with the startup function call, this allows module
+behavior to be controlled through user-defined options.
 
-For details about startup files and module specification, read the
-L<Getopt::EX::Module> documentation.
+For details about rc files and module specification, see
+L<Getopt::EX::Module>.
 
 =head1 CONFIG OPTIONS
 
-Config options are set by B<Getopt::ExConfigure> or the B<exconfig>
+Config options are set by B<ExConfigure> or the B<exconfig>
 parameter for the B<Getopt::EX::Long::Parser::new> method.
 
 =over 4

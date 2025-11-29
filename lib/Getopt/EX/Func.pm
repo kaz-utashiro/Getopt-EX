@@ -133,7 +133,7 @@ Getopt::EX::Func - Function call interface
 
   use Getopt::EX::Func qw(parse_func);
 
-  my $func = parse_func(...);
+  my $func = parse_func("func_name(key=value,flag)");
 
   $func->call;
 
@@ -142,42 +142,21 @@ Getopt::EX::Func - Function call interface
 This module provides a way to create function call objects used in the
 L<Getopt::EX> module set.
 
-Suppose your script has a B<--begin> option that specifies a function
-to call at the beginning of execution.  You can implement it like
-this:
+For example, suppose your script has a B<--begin> option that
+specifies a function to call at the beginning of execution.  You can
+implement it like this:
 
     use Getopt::EX::Func qw(parse_func);
 
-    GetOptions("begin:s" => $opt_begin);
+    GetOptions("begin:s" => \$opt_begin);
 
     my $func = parse_func($opt_begin);
 
     $func->call;
 
-=head1 FUNCTION SPEC
-
-The C<parse_func> function accepts the following formats.  A function
-name can be followed by parameters in two equivalent forms:
-
-    func(key=value,key2=value2)
-    func=key=value,key2=value2
-
-The following command:
+The user can then invoke the script as:
 
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
-
-or equivalently:
-
-    % example -Mfoo --begin 'repeat=debug,msg=hello,count=2'
-
-will call the function as:
-
-    repeat( debug => 1, msg => 'hello', count => '2' );
-
-Arguments are passed in I<key> =E<gt> I<value> style.  Parameters
-without a value (C<debug> in this example) are assigned the value 1.
-Key names may contain word characters (alphanumeric and underscore),
-hyphens, and dots.
 
 The function C<repeat> should be declared in module C<foo> or in a
 startup rc file such as F<~/.examplerc>.  It can be implemented like
@@ -190,18 +169,63 @@ this:
         say $opt{msg} for 1 .. $opt{count};
     }
 
-Commas normally separate parameters, but if you need a comma within a
-value, use C<~> instead of C<=> to capture the entire remaining string
-as the value:
+=head1 FUNCTION SPEC
 
-    func(key=value,pattern~a,b,c)
+The C<parse_func> function accepts the following string formats.
+
+A function name can optionally be prefixed with C<&>, and parameters
+can be specified in two equivalent forms using parentheses or C<=>:
+
+    func(key=value,key2=value2)
+    func=key=value,key2=value2
+    &func(key=value)
+
+So the following two commands are equivalent:
+
+    % example --begin 'repeat(debug,msg=hello,count=2)'
+    % example --begin 'repeat=debug,msg=hello,count=2'
+
+Both will call the function as:
+
+    repeat( debug => 1, msg => 'hello', count => '2' );
+
+Arguments are passed as I<key> =E<gt> I<value> pairs.  Parameters
+without a value (C<debug> in this example) are assigned the value 1.
+Key names may contain word characters (alphanumeric and underscore),
+hyphens, and dots.
+
+Commas normally separate parameters.  If a value needs to contain
+commas, there are two ways to handle this:
+
+=over 4
+
+=item Parentheses
+
+Commas inside parentheses are preserved:
+
+    func(pattern=(a,b,c),debug)
 
 This calls:
 
-    func( key => 'value', pattern => 'a,b,c' );
+    func( pattern => '(a,b,c)', debug => 1 );
+
+Note that the parentheses are included in the value.
+
+=item Tilde
+
+Use C<~> instead of C<=> to capture the entire remaining string as
+the value:
+
+    func(debug,pattern~a,b,c)
+
+This calls:
+
+    func( debug => 1, pattern => 'a,b,c' );
 
 Since C<~> consumes the rest of the string, no parameters can follow
 it.
+
+=back
 
 An anonymous subroutine can also be specified inline:
 
