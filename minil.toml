@@ -3,5 +3,8 @@ authority = "cpan:UTASHIRO"
 badges = [ 'github-actions/test', 'metacpan' ]
 module_maker = "ModuleBuildTiny"
 
+[FileGatherer]
+exclude_match = [ '^CLAUDE\.md$', '^AGENTS\.md$' ]
+
 [release]
 branch = "master"
