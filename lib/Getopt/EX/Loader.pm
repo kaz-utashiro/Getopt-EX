@@ -31,9 +31,10 @@ sub new {
 	DEFAULT => 'default',
 	PARSE_MODULE_OPT => 1,
 	IGNORE_NO_MODULE => 0,
+	IGNORE_NO_FILE => 1,
     }, $class;
 
-    configure $obj @_ if @_;
+    $obj->configure(@_) if @_;
 
     $obj;
 }
@@ -45,6 +46,7 @@ our @OPTIONS = qw(
     DEFAULT
     PARSE_MODULE_OPT
     IGNORE_NO_MODULE
+    IGNORE_NO_FILE
     );
 
 sub configure {
@@ -88,6 +90,10 @@ sub append {
 
 sub load {
     my $obj = shift;
+    my %arg = @_;
+    if ($obj->{IGNORE_NO_FILE} and my $file = $arg{FILE}) {
+	return undef unless -f $file;
+    }
     my $bucket =
 	Getopt::EX::Module->new(@_, BASECLASS => $obj->baseclass);
     $obj->append($bucket);
@@ -481,6 +487,12 @@ effective.
 Defaults to false, and the process dies when a given module was not found on the
 system.  When set to true, the program ignores non-existing modules and stops
 parsing at that point, leaving the argument untouched.
+
+=item IGNORE_NO_FILE
+
+Defaults to true for historical reasons, and silently ignores when the
+specified RC file does not exist.  When set to false, the process dies
+if the file is not found.
 
 =back
 

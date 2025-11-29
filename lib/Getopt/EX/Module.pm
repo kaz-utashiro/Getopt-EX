@@ -33,7 +33,7 @@ sub new {
 	Help => [],
     }, $class;
 
-    configure $obj @_ if @_;
+    $obj->configure(@_) if @_;
 
     $obj;
 }
