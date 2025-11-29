@@ -111,10 +111,12 @@ package Getopt::EX::Long::Parser;
 
 use strict;
 use warnings;
-use parent qw(Getopt::Long::Parser);
 
 use List::Util qw(first);
 use Data::Dumper;
+
+use Getopt::Long();  # Load first to make Getopt::Long::Parser available
+use parent -norequire, qw(Getopt::Long::Parser);
 
 use Getopt::EX::Loader;
 
