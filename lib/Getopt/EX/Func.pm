@@ -92,16 +92,27 @@ sub parse_func {
 
 ##
 ## convert "key1,key2,key3=val3" to (key1=>1, key2=>1, key3=>"val3")
+## use ~ instead of = to take the rest of the string as a value
+## e.g., "key1,key2~a,b,c" => (key1=>1, key2=>"a,b,c")
 ##
 sub arg2kvlist {
     my @kv;
     for (@_) {
 	while (/\G \s*
-	       (?<k> [^,=]+ )
-	       (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )?
+	       (?<k> [\w\-.]+ )
+	       (?:
+		   ~ (?<rest> .* )
+		 |
+		   (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )?
+	       )
 	       ,*/xgc
 	    ) {
-	    push @kv, ( $+{k}, $+{v} // 1 );
+	    if (defined $+{rest}) {
+		push @kv, ( $+{k}, $+{rest} );
+		last;
+	    } else {
+		push @kv, ( $+{k}, $+{v} // 1 );
+	    }
 	}
 	my $pos = pos() // 0;
 	if ($pos != length) {
@@ -131,8 +142,8 @@ Getopt::EX::Func - Function call interface
 This module provides a way to create function call objects used in the
 L<Getopt::EX> module set.
 
-If your script has a B<--begin> option which tells the script to call a
-specific function at the beginning of execution, you can do it like
+Suppose your script has a B<--begin> option that specifies a function
+to call at the beginning of execution.  You can implement it like
 this:
 
     use Getopt::EX::Func qw(parse_func);
@@ -143,34 +154,58 @@ this:
 
     $func->call;
 
-Then the script can be invoked like this:
+=head1 FUNCTION SPEC
+
+The C<parse_func> function accepts the following formats.  A function
+name can be followed by parameters in two equivalent forms:
+
+    func(key=value,key2=value2)
+    func=key=value,key2=value2
+
+The following command:
 
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
 
-In this example, the function C<repeat> should be declared in module
-C<foo> or in a startup rc file such as F<~/.examplerc>.  The actual
-function call is performed in this way:
+or equivalently:
 
-    repeat ( debug => 1, msg => 'hello', count => '2' );
+    % example -Mfoo --begin 'repeat=debug,msg=hello,count=2'
 
-As you can see, arguments in the function call string are passed in
-I<name> =E<gt> I<value> style.  Parameters without a value (C<debug> in
-this example) are assigned the value 1.
+will call the function as:
 
-Function itself can be implemented like this:
+    repeat( debug => 1, msg => 'hello', count => '2' );
+
+Arguments are passed in I<key> =E<gt> I<value> style.  Parameters
+without a value (C<debug> in this example) are assigned the value 1.
+Key names may contain word characters (alphanumeric and underscore),
+hyphens, and dots.
+
+The function C<repeat> should be declared in module C<foo> or in a
+startup rc file such as F<~/.examplerc>.  It can be implemented like
+this:
 
     our @EXPORT = qw(repeat);
     sub repeat {
-	my %opt = @_;
-	print Dumper \%opt if $opt{debug};
-	for (1 .. $opt{count}) {
-	    say $opt{msg};
-	}
+        my %opt = @_;
+        print Dumper \%opt if $opt{debug};
+        say $opt{msg} for 1 .. $opt{count};
     }
 
-It is also possible to declare the function inline:
+Commas normally separate parameters, but if you need a comma within a
+value, use C<~> instead of C<=> to capture the entire remaining string
+as the value:
 
-    % example -Mfoo --begin 'sub{ say "wahoo!!" }'
+    func(key=value,pattern~a,b,c)
 
-The function C<say> can be used because the function is executed under a
-C<use v5.14> context.
+This calls:
+
+    func( key => 'value', pattern => 'a,b,c' );
+
+Since C<~> consumes the rest of the string, no parameters can follow
+it.
+
+An anonymous subroutine can also be specified inline:
+
+    % example --begin 'sub{ say "wahoo!!" }'
+
+The function is evaluated under C<use v5.14>, so features like C<say>
+are available.
