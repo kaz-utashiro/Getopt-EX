@@ -2,6 +2,17 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.00 2025-11-29T11:37:07Z
+
+    - adopt new versioning scheme (3.00 style instead of 2.3.1)
+    - add ~ syntax for comma-containing values in function parameters
+    - improve error handling in Loader.pm (use $@ instead of $!)
+    - throw exception when RC file cannot be opened in Module.pm
+    - modernize code: use parent instead of @ISA
+    - suppress "used only once" warnings in Long.pm and Colormap.pm
+    - improve documentation and code comments
+    - fix $ENV{HOME} setting in test
+
 2.3.1 2025-10-21T08:31:00Z
 
     - support __PERL5__ marker in addition to __PERL__
