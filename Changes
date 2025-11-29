@@ -2,6 +2,11 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.01 2025-11-29T15:03:02Z
+
+    - add IGNORE_NO_FILE option to Loader to silently skip missing RC files
+      (fix regression in 3.00 where missing RC files caused fatal errors)
+
 3.00 2025-11-29T11:37:07Z
 
     - adopt new versioning scheme (3.00 style instead of 2.3.1)

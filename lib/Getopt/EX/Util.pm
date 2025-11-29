@@ -1,6 +1,6 @@
 package Getopt::EX::Util;
 
-our $VERSION = "3.00";
+our $VERSION = "3.01";
 
 use v5.14;
 use warnings;

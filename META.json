@@ -67,7 +67,7 @@
          "web" : "https://github.com/kaz-utashiro/Getopt-EX"
       }
    },
-   "version" : "3.00",
+   "version" : "3.01",
    "x_authority" : "cpan:UTASHIRO",
    "x_contributors" : [
       "Kazumasa Utashiro <kaz@utashiro.com>",
