@@ -25,6 +25,7 @@ use Getopt::EX::Func qw(callable);
 use Term::ANSIColor::Concise qw(:all);
 {
     no strict 'refs';
+    no warnings 'once';
     *colorize   = \&ansi_color;
     *colorize24 = \&ansi_color_24;
     for my $name (

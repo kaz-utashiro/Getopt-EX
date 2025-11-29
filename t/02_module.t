@@ -10,6 +10,7 @@ my $lib = File::Spec->rel2abs('lib');
 my $t = File::Spec->rel2abs('t');
 my $home = "$t/home";
 my $app_lib = "$home/lib";
+$ENV{HOME} = $home;
 
 use Getopt::EX::Loader;
 

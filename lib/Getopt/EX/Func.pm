@@ -38,11 +38,17 @@ sub call {
     goto &$name;
 }
 
+##
+## Create a closure that calls the named function with preset arguments.
+## Used internally when parse_func is called with the 'pointer' option.
+## The 'package main' may be unnecessary since $name is fully qualified,
+## but is kept for safety in case of future changes.
+##
 sub closure {
     my $name = shift;
     my @argv = @_;
     sub {
-	package main; # XXX
+	package main;
 	no strict 'refs';
 	unshift @_, @argv;
 	goto &$name;
@@ -55,6 +61,11 @@ sub closure {
 ## funcname=arg1,arg2,arg3=val3
 ##
 
+##
+## Regex to match balanced parentheses, including nested ones.
+## Uses recursive subpattern (?-1) to match inner parentheses.
+## Possessive quantifiers (++ and *+) prevent backtracking for efficiency.
+##
 my $paren_re = qr/( \( (?: [^()]++ | (?-1) )*+ \) )/x;
 
 sub parse_func {

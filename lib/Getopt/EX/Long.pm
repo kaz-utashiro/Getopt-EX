@@ -6,13 +6,16 @@ use v5.14;
 use warnings;
 use Carp;
 
-*REQUIRE_ORDER   = \$Getopt::Long::REQUIRE_ORDER;
-*PERMUTE         = \$Getopt::Long::PERMUTE;
-*RETURN_IN_ORDER = \$Getopt::Long::RETURN_IN_ORDER;
+{
+    no warnings 'once';
+    *REQUIRE_ORDER   = \$Getopt::Long::REQUIRE_ORDER;
+    *PERMUTE         = \$Getopt::Long::PERMUTE;
+    *RETURN_IN_ORDER = \$Getopt::Long::RETURN_IN_ORDER;
 
-*Configure       = \&Getopt::Long::Configure;
-*HelpMessage     = \&Getopt::Long::HelpMessage;
-*VersionMessage  = \&Getopt::Long::VersionMessage;
+    *Configure       = \&Getopt::Long::Configure;
+    *HelpMessage     = \&Getopt::Long::HelpMessage;
+    *VersionMessage  = \&Getopt::Long::VersionMessage;
+}
 
 use Exporter 'import';
 our @EXPORT    = qw(&GetOptions $REQUIRE_ORDER $PERMUTE $RETURN_IN_ORDER);
@@ -108,13 +111,12 @@ package Getopt::EX::Long::Parser;
 
 use strict;
 use warnings;
+use parent qw(Getopt::Long::Parser);
 
 use List::Util qw(first);
 use Data::Dumper;
 
 use Getopt::EX::Loader;
-
-our @ISA = qw(Getopt::Long::Parser);
 
 sub new {
     my $class = shift;

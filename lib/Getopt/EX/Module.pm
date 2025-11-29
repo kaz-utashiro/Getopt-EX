@@ -47,10 +47,10 @@ sub configure {
     }
 
     if (my $file = delete $opt{FILE}) {
-	if (open my $fh, "<:encoding(utf8)", $file) {
-	    $obj->module($file);
-	    $obj->readrc($fh);
-	}
+	open my $fh, "<:encoding(utf8)", $file
+	    or croak "Can't open file '$file': $!";
+	$obj->module($file);
+	$obj->readrc($fh);
     }
     elsif (my $module = delete $opt{MODULE}) {
 	my $pkg = $opt{PACKAGE} || 'main';

@@ -156,8 +156,8 @@ sub deal_with {
     if (my $default = $obj->{DEFAULT}) {
 	if (my $bucket = eval { $obj->load_module($default) }) {
 	    $bucket->run_inits($argv);
-	} else {
-	    $!{ENOENT} or die $@;
+	} elsif ($@ !~ /Can't locate|need to install/) {
+	    die $@;
 	}
     }
     $obj->modopt($argv) if $obj->{PARSE_MODULE_OPT};
@@ -213,8 +213,8 @@ sub parseopt {
     }
 
     my $bucket = eval { $obj->load_module($mod) } or do {
-	if ($!{ENOENT}) {
-	    if ($obj->{IGNORE_NO_MODULE} and $@ =~ /need to install the (\w+::)*$mod/) {
+	if ($@ =~ /Can't locate|need to install/) {
+	    if ($obj->{IGNORE_NO_MODULE}) {
 		return undef;
 	    } else {
 		die "Can't load module \"$mod\".\n";
