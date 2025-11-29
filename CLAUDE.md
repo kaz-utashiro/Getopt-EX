@@ -102,3 +102,17 @@ Requires Perl 5.14+. Uses `v5.14` features (say, state, unicode_strings).
 - Tests are in `t/` directory
 - Test files should set `$ENV{HOME}` to `$t/home` for RC file tests
 - Test RC files and modules are in `t/home/`
+
+## Release Process
+
+This project uses [Minilla](https://metacpan.org/pod/Minilla) for release management.
+
+```bash
+# Update Changes file with new entries under {{$NEXT}}
+# (version number and date are automatically inserted by minil)
+
+# Release to CPAN
+minil release
+```
+
+Do not manually update version numbers in .pm files - minil handles this automatically.
