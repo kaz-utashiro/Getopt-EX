@@ -127,6 +127,17 @@ The user can then invoke the script like this:
 
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
 
+To include commas in parameter values, use C<*=> to take the rest of
+the string, or C</=> with a delimiter:
+
+    func(pattern*=a,b,c)
+    func(pattern/=|a,b,c|)
+
+Both pass C<a,b,c> as the value of C<pattern>.  The C</=> form allows
+multiple parameters with commas:
+
+    func(pat1/=|a,b|,pat2/=|c,d|)
+
 See L<Getopt::EX::Func> for more details.
 
 =head2 L<Getopt::EX::Colormap>

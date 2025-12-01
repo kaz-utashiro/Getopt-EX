@@ -103,24 +103,32 @@ sub parse_func {
 
 ##
 ## convert "key1,key2,key3=val3" to (key1=>1, key2=>1, key3=>"val3")
-## use ~ instead of = to take the rest of the string as a value
-## e.g., "key1,key2~a,b,c" => (key1=>1, key2=>"a,b,c")
+##
+## *= takes the rest of the string as a value
+## e.g., "key1,key2*=a,b,c" => (key1=>1, key2=>"a,b,c")
+##
+## /= uses the next character as a delimiter
+## e.g., "key1,key2/=/a,b,c/,next" => (key1=>1, key2=>"a,b,c", next=>1)
 ##
 sub arg2kvlist {
     my @kv;
     for (@_) {
 	while (/\G \s*
-	       (?<k> [\w\-.]+ )
+	       (?<k> \w+ )
 	       (?:
-		   ~ (?<rest> .* )
+		   \*= (?<rest> .* )
 		 |
-		   (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )?
+		   \/= (?<delim> . ) (?<quoted> .*? ) \g{delim} (?=,|\z) ,*
+		 |
+		   (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )? ,*
 	       )
-	       ,*/xgc
+	       /xgc
 	    ) {
 	    if (defined $+{rest}) {
 		push @kv, ( $+{k}, $+{rest} );
 		last;
+	    } elsif (defined $+{quoted}) {
+		push @kv, ( $+{k}, $+{quoted} );
 	    } else {
 		push @kv, ( $+{k}, $+{v} // 1 );
 	    }
@@ -222,19 +230,46 @@ This calls:
 
 Note that the parentheses are included in the value.
 
-=item Tilde
+=item Asterisk-Equals
 
-Use C<~> instead of C<=> to capture the entire remaining string as
+Use C<*=> instead of C<=> to capture the entire remaining string as
 the value:
 
-    func(debug,pattern~a,b,c)
+    func(debug,pattern*=a,b,c)
 
 This calls:
 
     func( debug => 1, pattern => 'a,b,c' );
 
-Since C<~> consumes the rest of the string, no parameters can follow
+Since C<*=> consumes the rest of the string, no parameters can follow
 it.
+
+=item Slash-Equals with Delimiter
+
+Use C</=> followed by a delimiter character to quote a value.  The
+first character after C</=> becomes the delimiter, and the value
+continues until the same delimiter appears again:
+
+    func(debug,pattern/=/a,b,c/,verbose)
+
+This calls:
+
+    func( debug => 1, pattern => 'a,b,c', verbose => 1 );
+
+The delimiter can be any character.  Choose one that does not appear
+in the value:
+
+    func(pattern/=/a,b,c/)         # / as delimiter
+    func(path/=|/usr/local/bin|)   # | as delimiter for paths
+    func(text/=:hello:world:)      # : as delimiter
+
+For scripting, control characters like BEL (C<\x07>) or US (C<\x1f>,
+Unit Separator) can be used as delimiters to avoid conflicts with any
+printable characters:
+
+    $delim = "\x07";   # BEL
+    $delim = "\x1f";   # US (Unit Separator)
+    $arg = "data/=${delim}any/chars=here,${delim}";
 
 =back
 
