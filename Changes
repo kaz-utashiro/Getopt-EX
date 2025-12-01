@@ -2,6 +2,13 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.02 2025-12-01T02:44:06Z
+
+    - BREAKING CHANGE: replace ~ syntax with *= and /= for function
+      parameter values
+    - relax key name pattern in arg2kvlist for backward compatibility
+    - fix operator precedence bug in parse error check
+
 3.01 2025-11-29T15:03:02Z
 
     - add IGNORE_NO_FILE option to Loader to silently skip missing RC files

@@ -1,7 +1,7 @@
 package Getopt::EX;
 use 5.014;
 
-our $VERSION = "3.01";
+our $VERSION = "3.02";
 
 1;
 
@@ -12,7 +12,7 @@ Getopt::EX - Getopt Extender
 
 =head1 VERSION
 
-Version 3.01
+Version 3.02
 
 
 =head1 DESCRIPTION
