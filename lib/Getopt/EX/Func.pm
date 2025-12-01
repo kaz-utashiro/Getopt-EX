@@ -68,6 +68,12 @@ sub closure {
 ##
 my $paren_re = qr/( \( (?: [^()]++ | (?-1) )*+ \) )/x;
 
+##
+## Key name pattern for function arguments.
+## Should be \w+ but currently allows more characters for historical reasons.
+##
+my $key_re = qr/[^,=*\/]+/;
+
 sub parse_func {
     my $opt = ref $_[0] eq 'HASH' ? shift : {};
     local $_ = shift;
@@ -113,14 +119,14 @@ sub parse_func {
 sub arg2kvlist {
     my @kv;
     for (@_) {
-	while (/\G \s* (?<key>\w+)
+	while (/\G \s* (?<key>(?>${key_re}))
 	       (?: \*= (?<value>.*)
 	         | \/= (?<delim>.) (?<value>.*?) \g{delim} (?=,|\z) ,*
 	         | (?: = (?<value> (?:[^,()]++ | ${paren_re})*+ ) )? ,* )
 	       /xgcs) {
 	    push @kv, ( $+{key}, $+{value} // 1 );
 	}
-	pos() // 0 == length or die "parse error in \"$_\".\n";
+	(pos() // 0) == length or die "parse error in \"$_\".\n";
     }
     @kv;
 }
@@ -194,7 +200,10 @@ Both will call the function as:
 
 Arguments are passed as I<key> =E<gt> I<value> pairs.  Parameters
 without a value (C<debug> in this example) are assigned the value 1.
-Key names may contain word characters (alphanumeric and underscore).
+Key names should only contain word characters (C<\w>: alphanumeric and
+underscore).  Currently, any characters except C<,>, C<=>, C<*>, and
+C</> are accepted for historical reasons, but this may change in the
+future.
 
 Commas normally separate parameters.  If a value needs to contain
 commas, there are two ways to handle this:
