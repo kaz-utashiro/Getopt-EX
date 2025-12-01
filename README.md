@@ -119,6 +119,17 @@ The user can then invoke the script like this:
 
     % example -Mfoo --begin 'repeat(debug,msg=hello,count=2)'
 
+To include commas in parameter values, use `*=` to take the rest of
+the string, or `/=` with a delimiter:
+
+    func(pattern*=a,b,c)
+    func(pattern/=|a,b,c|)
+
+Both pass `a,b,c` as the value of `pattern`.  The `/=` form allows
+multiple parameters with commas:
+
+    func(pat1/=|a,b|,pat2/=|c,d|)
+
 See [Getopt::EX::Func](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AFunc) for more details.
 
 ## [Getopt::EX::Colormap](https://metacpan.org/pod/Getopt%3A%3AEX%3A%3AColormap)

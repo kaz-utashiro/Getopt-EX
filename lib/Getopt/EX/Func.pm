@@ -113,30 +113,14 @@ sub parse_func {
 sub arg2kvlist {
     my @kv;
     for (@_) {
-	while (/\G \s*
-	       (?<k> \w+ )
-	       (?:
-		   \*= (?<rest> .* )
-		 |
-		   \/= (?<delim> . ) (?<quoted> .*? ) \g{delim} (?=,|\z) ,*
-		 |
-		   (?: = (?<v> (?: [^,()]++ | ${paren_re} )*+ ) )? ,*
-	       )
-	       /xgc
-	    ) {
-	    if (defined $+{rest}) {
-		push @kv, ( $+{k}, $+{rest} );
-		last;
-	    } elsif (defined $+{quoted}) {
-		push @kv, ( $+{k}, $+{quoted} );
-	    } else {
-		push @kv, ( $+{k}, $+{v} // 1 );
-	    }
+	while (/\G \s* (?<key>\w+)
+	       (?: \*= (?<value>.*)
+	         | \/= (?<delim>.) (?<value>.*?) \g{delim} (?=,|\z) ,*
+	         | (?: = (?<value> (?:[^,()]++ | ${paren_re})*+ ) )? ,* )
+	       /xgcs) {
+	    push @kv, ( $+{key}, $+{value} // 1 );
 	}
-	my $pos = pos() // 0;
-	if ($pos != length) {
-	    die "parse error in \"$_\".\n";
-	}
+	pos() // 0 == length or die "parse error in \"$_\".\n";
     }
     @kv;
 }
@@ -210,8 +194,7 @@ Both will call the function as:
 
 Arguments are passed as I<key> =E<gt> I<value> pairs.  Parameters
 without a value (C<debug> in this example) are assigned the value 1.
-Key names may contain word characters (alphanumeric and underscore),
-hyphens, and dots.
+Key names may contain word characters (alphanumeric and underscore).
 
 Commas normally separate parameters.  If a value needs to contain
 commas, there are two ways to handle this:
