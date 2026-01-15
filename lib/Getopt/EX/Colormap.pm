@@ -1,6 +1,6 @@
 package Getopt::EX::Colormap;
 
-our $VERSION = "3.02";
+our $VERSION = "3.03";
 
 use v5.14;
 use utf8;

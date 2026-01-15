@@ -2,6 +2,12 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.03 2026-01-15T14:28:07Z
+
+    - add ExReset() function to reset internal loader and config state
+    - automatically detect fork and reset state in ExConfigure/GetOptionsFromArray
+    - suppress 'Duplicate specification' warnings from Getopt::Long
+
 3.02 2025-12-01T02:44:06Z
 
     - BREAKING CHANGE: replace ~ syntax with *= and /= for function
