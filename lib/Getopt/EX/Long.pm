@@ -25,6 +25,7 @@ our @EXPORT_OK = ( '&GetOptionsFromArray',
 		   '&HelpMessage',
 		   '&VersionMessage',
 		   '&ExConfigure',
+		   '&ExReset',
     );
 use parent qw(Getopt::Long);
 
@@ -33,10 +34,18 @@ use Getopt::Long();
 use Getopt::EX::Loader;
 use Getopt::EX::Func qw(parse_func);
 
-my %ConfigOption = ( AUTO_DEFAULT => 1 );
+my %DefaultConfigOption = ( AUTO_DEFAULT => 1 );
+my %ConfigOption = %DefaultConfigOption;
 my @ValidOptions = ('AUTO_DEFAULT' , @Getopt::EX::Loader::OPTIONS);
 
 my $loader;
+my $loader_pid = $$;  # Set at module load time for fork detection
+
+sub ExReset {
+    undef $loader;
+    %ConfigOption = %DefaultConfigOption;
+    $loader_pid = $$;
+}
 
 sub GetOptions {
     unshift @_, \@ARGV;
@@ -45,6 +54,8 @@ sub GetOptions {
 
 sub GetOptionsFromArray {
     my $argv = $_[0];
+
+    ExReset() if $loader_pid != $$;
 
     set_default() if $ConfigOption{AUTO_DEFAULT};
 
@@ -65,7 +76,11 @@ sub GetOptionsFromArray {
     };
     push @_, @builtins;
 
-    goto &Getopt::Long::GetOptionsFromArray;
+    # Suppress "Duplicate specification" warnings from Getopt::Long
+    local $SIG{__WARN__} = sub {
+	warn @_ unless $_[0] =~ /^Duplicate specification/;
+    };
+    Getopt::Long::GetOptionsFromArray(@_);
 }
 
 sub GetOptionsFromString {
@@ -73,6 +88,7 @@ sub GetOptionsFromString {
 }
 
 sub ExConfigure {
+    ExReset() if $loader_pid != $$;
     my %opt = @_;
     for my $name (@ValidOptions) {
 	if (exists $opt{$name}) {
@@ -154,6 +170,10 @@ sub getoptionsfromarray {
     };
     push @_, @builtins;
 
+    # Suppress "Duplicate specification" warnings from Getopt::Long
+    local $SIG{__WARN__} = sub {
+	warn @_ unless $_[0] =~ /^Duplicate specification/;
+    };
     $obj->SUPER::getoptionsfromarray(@_);
 }
 
@@ -234,6 +254,26 @@ set B<AUTO_DEFAULT> to 0.
 
 Other options including B<RCFILE> and B<BASECLASS> are passed to
 B<Getopt::EX::Loader>.  Read its documentation for details.
+
+=head1 FUNCTIONS
+
+=over 4
+
+=item B<ExConfigure>
+
+Set config options.  See L</CONFIG OPTIONS>.
+
+=item B<ExReset>
+
+Reset the internal loader and configuration to their default state.
+This is useful when you need to reinitialize the module state, for
+example after forking a child process.
+
+Note that B<ExConfigure> and B<GetOptionsFromArray> automatically
+detect forked processes and reset internally, so explicit calls to
+B<ExReset> are usually unnecessary.
+
+=back
 
 =head1 INCOMPATIBILITY
 
