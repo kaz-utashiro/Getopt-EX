@@ -2,6 +2,12 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.04 2026-10-28T10:16:43Z
+
+    - keep the loader and config options for each program name ($0),
+      so that the rc file of one program called as a function is not
+      applied to another (Command::Run nofork)
+
 3.03 2026-01-15T14:28:07Z
 
     - add ExReset() function to reset internal loader and config state
