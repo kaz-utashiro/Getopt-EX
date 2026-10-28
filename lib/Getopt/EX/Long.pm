@@ -35,16 +35,26 @@ use Getopt::EX::Loader;
 use Getopt::EX::Func qw(parse_func);
 
 my %DefaultConfigOption = ( AUTO_DEFAULT => 1 );
-my %ConfigOption = %DefaultConfigOption;
 my @ValidOptions = ('AUTO_DEFAULT' , @Getopt::EX::Loader::OPTIONS);
 
-my $loader;
+# The config options and the loader belong to a program, whose name
+# ($0) determines the rc file and the base class.  They are kept for
+# each program name, so that programs called as functions in one
+# process (Command::Run nofork, for example) do not share them.
+my %ConfigOption;
+my %Loader;
 my $loader_pid = $$;  # Set at module load time for fork detection
 
 sub ExReset {
-    undef $loader;
-    %ConfigOption = %DefaultConfigOption;
+    %ConfigOption = ();
+    %Loader = ();
     $loader_pid = $$;
+}
+
+# Config options of the current program
+sub config_option {
+    ExReset() if $loader_pid != $$;
+    $ConfigOption{$0} //= { %DefaultConfigOption };
 }
 
 sub GetOptions {
@@ -55,13 +65,13 @@ sub GetOptions {
 sub GetOptionsFromArray {
     my $argv = $_[0];
 
-    ExReset() if $loader_pid != $$;
+    my $config = config_option();
 
-    set_default() if $ConfigOption{AUTO_DEFAULT};
+    set_default($config) if $config->{AUTO_DEFAULT};
 
-    $loader //= Getopt::EX::Loader->new(do {
+    my $loader = $Loader{$0} //= Getopt::EX::Loader->new(do {
 	map {
-	    exists $ConfigOption{$_} ? ( $_ => $ConfigOption{$_} ) : ()
+	    exists $config->{$_} ? ( $_ => $config->{$_} ) : ()
 	} @Getopt::EX::Loader::OPTIONS
     });
 
@@ -88,19 +98,20 @@ sub GetOptionsFromString {
 }
 
 sub ExConfigure {
-    ExReset() if $loader_pid != $$;
+    my $config = config_option();
     my %opt = @_;
     for my $name (@ValidOptions) {
 	if (exists $opt{$name}) {
-	    $ConfigOption{$name} = delete $opt{$name};
+	    $config->{$name} = delete $opt{$name};
 	}
     }
     warn "Unknown option: ", Dumper \%opt if %opt;
 }
 
 sub set_default {
+    my $config = shift;
     use List::Util qw(pairmap);
-    pairmap { $ConfigOption{$a} //= $b } get_default();
+    pairmap { $config->{$a} //= $b } get_default();
 }
 
 sub get_default {
@@ -143,7 +154,7 @@ sub new {
     while (defined (my $i = first { $_[$_] eq 'exconfig' } keys @_)) {
 	push @exconfig, @{ (splice @_, $i, 2)[1] };
     }
-    if (@exconfig == 0 and $ConfigOption{AUTO_DEFAULT}) {
+    if (@exconfig == 0 and Getopt::EX::Long::config_option()->{AUTO_DEFAULT}) {
 	@exconfig = Getopt::EX::Long::get_default();
     }
 
@@ -274,6 +285,16 @@ detect forked processes and reset internally, so explicit calls to
 B<ExReset> are usually unnecessary.
 
 =back
+
+=head1 PROGRAM STATE
+
+The config options and the loader (which holds the rc file and the
+modules loaded) belong to the program, whose name C<$0> determines the
+default rc file and base class.  They are kept for each value of
+C<$0>: when C<$0> is changed, as L<Command::Run> does to call a
+program as a function without forking, B<ExConfigure> and
+B<GetOptions> work on the state of that program, and the rc file of
+one program is not applied to another.
 
 =head1 INCOMPATIBILITY
 
