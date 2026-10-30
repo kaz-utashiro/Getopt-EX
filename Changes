@@ -2,6 +2,12 @@ Revision history for Perl extension Getopt-EX
 
 {{$NEXT}}
 
+3.05 2026-10-30T09:59:20Z
+
+    - add USER_SETTINGS config option to stop reading the rc file,
+      PROGRAM to configure a program called as a function, and
+      GETOPTEX_NO_USER_SETTINGS environment variable
+
 3.04 2026-10-28T10:16:43Z
 
     - keep the loader and config options for each program name ($0),
