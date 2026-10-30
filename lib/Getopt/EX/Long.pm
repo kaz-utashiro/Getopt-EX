@@ -34,8 +34,8 @@ use Getopt::Long();
 use Getopt::EX::Loader;
 use Getopt::EX::Func qw(parse_func);
 
-my %DefaultConfigOption = ( AUTO_DEFAULT => 1 );
-my @ValidOptions = ('AUTO_DEFAULT' , @Getopt::EX::Loader::OPTIONS);
+my %DefaultConfigOption = ( AUTO_DEFAULT => 1, USER_SETTINGS => 1 );
+my @ValidOptions = (qw(AUTO_DEFAULT USER_SETTINGS), @Getopt::EX::Loader::OPTIONS);
 
 # The config options and the loader belong to a program, whose name
 # ($0) determines the rc file and the base class.  They are kept for
@@ -51,10 +51,42 @@ sub ExReset {
     $loader_pid = $$;
 }
 
-# Config options of the current program
+# Name of the program: the basename of $0 or the given path
+sub prog_name {
+    my $path = @_ ? shift : $0;
+    $path =~ m{([^/]+)$} ? $1 : $path;
+}
+
+# True when the environment says that the program should not read
+# user settings: GETOPTEX_NO_USER_SETTINGS is 1 or * for all programs,
+# or a list of program names separated by spaces or commas.
+sub env_no_user_settings {
+    my $prog = shift;
+    my $env = $ENV{GETOPTEX_NO_USER_SETTINGS} // return 0;
+    return 0 if $env eq '' or $env eq '0';
+    return 1 if $env eq '1' or $env eq '*';
+    scalar grep { $_ eq $prog } split /[\s,]+/, $env;
+}
+
+# Config options of the current program, or of the named one
 sub config_option {
+    my $prog = prog_name(@_);
     ExReset() if $loader_pid != $$;
-    $ConfigOption{$0} //= { %DefaultConfigOption };
+    $ConfigOption{$prog} //= {
+	%DefaultConfigOption,
+	env_no_user_settings($prog) ? (USER_SETTINGS => 0) : (),
+    };
+}
+
+# Options for Getopt::EX::Loader->new from the config options.  RCFILE
+# is dropped when the program does not read user settings.
+sub loader_options {
+    my $config = shift;
+    my %opt = map {
+	exists $config->{$_} ? ( $_ => $config->{$_} ) : ()
+    } @Getopt::EX::Loader::OPTIONS;
+    delete $opt{RCFILE} unless $config->{USER_SETTINGS};
+    %opt;
 }
 
 sub GetOptions {
@@ -69,11 +101,7 @@ sub GetOptionsFromArray {
 
     set_default($config) if $config->{AUTO_DEFAULT};
 
-    my $loader = $Loader{$0} //= Getopt::EX::Loader->new(do {
-	map {
-	    exists $config->{$_} ? ( $_ => $config->{$_} ) : ()
-	} @Getopt::EX::Loader::OPTIONS
-    });
+    my $loader = $Loader{prog_name()} //= Getopt::EX::Loader->new(loader_options($config));
 
     $loader->deal_with($argv);
 
@@ -98,8 +126,8 @@ sub GetOptionsFromString {
 }
 
 sub ExConfigure {
-    my $config = config_option();
     my %opt = @_;
+    my $config = config_option(delete $opt{PROGRAM} // $0);
     for my $name (@ValidOptions) {
 	if (exists $opt{$name}) {
 	    $config->{$name} = delete $opt{$name};
@@ -154,9 +182,16 @@ sub new {
     while (defined (my $i = first { $_[$_] eq 'exconfig' } keys @_)) {
 	push @exconfig, @{ (splice @_, $i, 2)[1] };
     }
-    if (@exconfig == 0 and Getopt::EX::Long::config_option()->{AUTO_DEFAULT}) {
+    my $config = Getopt::EX::Long::config_option();
+    if (@exconfig == 0 and $config->{AUTO_DEFAULT}) {
 	@exconfig = Getopt::EX::Long::get_default();
     }
+    my %exconfig = @exconfig;
+    if (exists $exconfig{USER_SETTINGS}) {
+	$config->{USER_SETTINGS} = delete $exconfig{USER_SETTINGS};
+    }
+    delete $exconfig{RCFILE} unless $config->{USER_SETTINGS};
+    @exconfig = %exconfig;
 
     my $obj = $class->SUPER::new(@_);
 
@@ -261,6 +296,35 @@ Config options B<RCFILE> and B<BASECLASS> are automatically set based
 on the name of the command executable.  If you don't want this behavior,
 set B<AUTO_DEFAULT> to 0.
 
+=item USER_SETTINGS
+
+Whether to read the startup rc file of the program, F<~/.>I<prog>F<rc>
+or the file given by B<RCFILE>.  Defaults to 1.  When set to 0, the
+rc file is not read.  Modules loaded with B<-M> and their default
+options are not affected.  The environment variable
+B<GETOPTEX_NO_USER_SETTINGS> sets it to 0 from outside of the
+program (see L</ENVIRONMENT>).
+
+A program which takes default options from somewhere else than the
+rc file can skip them as well; see B<config_option>.
+
+=item PROGRAM
+
+Not a config option itself, but names the program whose config
+options are set by this B<ExConfigure> call.  Default is the current
+program, the basename of C<$0>.
+
+This is for a program which calls another program as a function in
+the same process, as L<Command::Run> does in its nofork mode: the
+callee reads its own rc file, because its config options are kept
+apart from those of the caller (see L</PROGRAM STATE>).  The rc file
+holds the settings of the user for the callee run from the command
+line, and the output of the caller should not depend on them.  The
+caller turns them off for the callee by name, before the first
+B<GetOptions> call of the callee:
+
+  ExConfigure(PROGRAM => 'ansicolumn', USER_SETTINGS => 0);
+
 =back
 
 Other options including B<RCFILE> and B<BASECLASS> are passed to
@@ -284,17 +348,56 @@ Note that B<ExConfigure> and B<GetOptionsFromArray> automatically
 detect forked processes and reset internally, so explicit calls to
 B<ExReset> are usually unnecessary.
 
+=item B<config_option> [ I<program> ]
+
+Return the hash reference to the config options of the current
+program, or of the named one.
+
+Some programs take default options from an environment variable as
+well, as B<greple> does with C<GREPLEOPTS>.  This module does not
+handle such variables, but the program can read C<USER_SETTINGS>
+through this function and skip them when it is 0, along with the rc
+file:
+
+  if (Getopt::EX::Long::config_option()->{USER_SETTINGS}) {
+      unshift @ARGV, shellwords($ENV{GREPLEOPTS} // '');
+  }
+
+=back
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item GETOPTEX_NO_USER_SETTINGS
+
+Set B<USER_SETTINGS> to 0 for the programs named in it, separated by
+spaces or commas, or for every program when it is C<1> or C<*>, as
+far as the programs read their rc file through this module.  Use it
+to run programs without the settings of the user, in tests or in a
+container, and to reach programs which are started as separate
+processes.  It is read when the config options of a program are first
+used, so it has to be set before that.
+
 =back
 
 =head1 PROGRAM STATE
 
 The config options and the loader (which holds the rc file and the
 modules loaded) belong to the program, whose name C<$0> determines the
-default rc file and base class.  They are kept for each value of
-C<$0>: when C<$0> is changed, as L<Command::Run> does to call a
-program as a function without forking, B<ExConfigure> and
-B<GetOptions> work on the state of that program, and the rc file of
-one program is not applied to another.
+default rc file and base class.  They are kept for each program
+name, the basename of C<$0>: when C<$0> is changed, as
+L<Command::Run> does to call a program as a function without forking,
+B<ExConfigure> and B<GetOptions> work on the state of that program,
+and the rc file of one program is not applied to another.
+
+The state of a program is created when it is first used, and the
+loader is created at its first B<GetOptions> call and kept.  Config
+options given for a program afterwards, with B<PROGRAM> or through the
+environment, do not change the loader which has already read the rc
+file.  When the process is forked, the state is reset in the child, so
+a caller should set the config options of the callee right before
+calling it.
 
 =head1 INCOMPATIBILITY
 
